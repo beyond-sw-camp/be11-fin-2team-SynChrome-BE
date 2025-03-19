@@ -1,6 +1,4 @@
-# be11-fin-2team-SynChrome-BE
-
-md_content = """# Synchrome 🚀
+# Synchrome🚀
 
 ### 실시간 커뮤니케이션 및 협업을 위한 올인원 플랫폼
 
@@ -26,12 +24,3 @@ Synchrome은 **모든 협업 기능을 통합하여 하나의 공간에서 빠�
 ✅ **Elasticsearch 기반 검색 기능 도입**으로 메시지, 파일 및 협업 데이터를 신속하고 정확하게 검색 가능  
 
 ---
-"""
-
-# 파일 저장
-file_path = "/mnt/data/Synchrome_README.md"
-with open(file_path, "w", encoding="utf-8") as file:
-    file.write(md_content)
-
-# 파일 경로 반환
-file_path
