@@ -47,12 +47,12 @@
 | 문서명 | 분류 | 설명 | 다운로드 |
 |:----------------------------------|:--------------------------|:------------------------------------------|:---------------------------------------------|
 | 프로젝트 기획서 (프로젝트기획) | 프로젝트기획 | 프로젝트 배경, 목적, 추진 전략 등 | [📎 프로젝트 기획서](./docs/프로젝트_기획서.pdf) |
-| 요구사항 정의서 (프로젝트기획) | 프로젝트기획 | 기능 및 비기능 요구사항 정의 | [📎 요구사항 정의서](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?usp=sharing) |
+| 요구사항 정의서 (프로젝트기획) | 프로젝트기획 | 기능 및 비기능 요구사항 정의 | [📎 요구사항 정의서](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?gid=1069002790#gid=1069002790) |
 | 시스템 아키텍처 설계서 (프로젝트기획) | 프로젝트기획 | 시스템 구성 및 흐름도 | [📎 시스템 아키텍처 설계서](./docs/시스템_아키텍처_설계서.pdf) |
-| WBS (프로젝트기획) | 프로젝트기획 | 업무 분장 및 세부 일정 | [📎 WBS](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?usp=sharing) |
+| WBS (프로젝트기획) | 프로젝트기획 | 업무 분장 및 세부 일정 | [📎 WBS](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?gid=1938375019#gid=1938375019) |
 | ERD (프로젝트기획) | 프로젝트기획 | 데이터베이스 구조 및 관계 | [📎 ERD](./docs/ERD.pdf) |
 | 화면설계서 (프로젝트기획) | 프로젝트기획 | UI/UX 화면 흐름 및 구조 | [📎 화면설계서](./docs/화면설계서.pdf) |
-| 프로그램사양서 (백엔드 설계 및 구축) | 백엔드 설계 및 구축 | 각 기능별 상세 사양 기술 | [📎 프로그램사양서](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?usp=sharing) |
+| 프로그램사양서 (백엔드 설계 및 구축) | 백엔드 설계 및 구축 | 각 기능별 상세 사양 기술 | [📎 프로그램사양서](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?gid=282459126#gid=282459126) |
 | 단위 테스트 결과서 (백엔드 설계 및 구축) | 백엔드 설계 및 구축 | 기능별 테스트 수행 결과 | [📎 단위 테스트 결과서](./docs/단위_테스트_결과서.pdf) |
 | UI/UX 단위 테스트 결과서 (프론트엔드 설계 및 구축) | 프론트엔드 설계 및 구축 | 화면 기반 사용자 테스트 결과 | [📎 UI/UX 단위 테스트 결과서](./docs/UIUX_단위_테스트_결과서.pdf) |
 | 배포 후 통합 테스트 결과서 (시스템 통합) | 시스템 통합 | 배포 후 통합 테스트 결과 정리 | [📎 배포 후 통합 테스트 결과서](./docs/배포후_통합_테스트_결과서.pdf) |
@@ -95,7 +95,7 @@
 
 ## 📑 요구사항 정의서 (프로젝트기획)
 - 기능적 / 비기능 요구사항, 유즈케이스
-👉 [📎 문서 보기](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?usp=sharing)
+👉 [📎 문서 보기](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?gid=1069002790#gid=1069002790)
 
 ---
 
@@ -108,7 +108,7 @@
 
 ## 📑 WBS (프로젝트기획)
 - 업무 분류 체계, 일정계획
-👉 [📎 문서 보기](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?usp=sharing)
+👉 [📎 문서 보기](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?gid=1938375019#gid=1938375019)
 
 ---
 
@@ -128,7 +128,7 @@
 
 ## 📑 프로그램사양서 (백엔드 설계 및 구축)
 - 상세 기능별 사양, 입력/출력 정의
-👉 [📎 문서 보기](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?usp=sharing)
+👉 [📎 문서 보기](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?gid=282459126#gid=282459126)
 
 ---
 
