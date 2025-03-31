@@ -24,7 +24,7 @@ public class User extends BaseTimeEntity {
     private ChannelManager channelManager;
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private Delete delete = Delete.N;
+    private Del del = Del.N;
     @Enumerated(EnumType.STRING)
-    private Master master;
+    private Mas mas;
 }

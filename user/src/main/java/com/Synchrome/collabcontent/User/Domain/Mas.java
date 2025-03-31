@@ -1,5 +1,5 @@
 package com.Synchrome.collabcontent.User.Domain;
 
-public enum Master {
+public enum Mas {
     Y,N
 }
