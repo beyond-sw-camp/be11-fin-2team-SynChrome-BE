@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 public class UserSaveReqDto {
     private String name;
     private String email;
-    private String password;
 }

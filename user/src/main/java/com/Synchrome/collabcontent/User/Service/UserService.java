@@ -1,13 +1,10 @@
 package com.Synchrome.collabcontent.User.Service;
 
-import com.Synchrome.collabcontent.User.Domain.Role;
 import com.Synchrome.collabcontent.User.Domain.User;
 import com.Synchrome.collabcontent.User.Dto.AccessTokendto;
 import com.Synchrome.collabcontent.User.Dto.GoogleProfileDto;
-import com.Synchrome.collabcontent.User.Dto.LoginDto;
 import com.Synchrome.collabcontent.User.Dto.UserSaveReqDto;
 import com.Synchrome.collabcontent.User.Repository.UserRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -38,24 +35,8 @@ public class UserService {
     }
 
     public User save(UserSaveReqDto userSaveReqDto){
-        String password = passwordEncoder.encode(userSaveReqDto.getPassword());
-        User user = User.builder().name(userSaveReqDto.getName()).email(userSaveReqDto.getEmail()).password(password).build();
+        User user = User.builder().name(userSaveReqDto.getName()).email(userSaveReqDto.getEmail()).build();
         userRepository.save(user);
-        return user;
-    }
-
-    public User login(LoginDto dto){
-        boolean check = true;
-        Optional<User> optionalUser = userRepository.findByEmail(dto.getEmail());
-        if (!optionalUser.isPresent()) {
-            throw new IllegalArgumentException("ID 또는 비밀번호가 일치하지 않습니다.");
-        }
-
-        User user = optionalUser.get();
-
-        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("ID 또는 비밀번호가 일치하지 않습니다.");
-        }
         return user;
     }
 
