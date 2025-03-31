@@ -1,5 +1,5 @@
 package com.Synchrome.collabcontent.User.Domain;
 
-public enum Delete {
+public enum Del {
     Y,N
 }

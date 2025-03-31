@@ -8,7 +8,6 @@ import com.Synchrome.collabcontent.User.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -20,7 +19,6 @@ import java.util.Optional;
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Value("${oauth.google.client-id}")
     private String googleClientId;
@@ -29,9 +27,8 @@ public class UserService {
     @Value("${oauth.google.redirect-uri}")
     private String googleRedirectUri;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public User save(UserSaveReqDto userSaveReqDto){
