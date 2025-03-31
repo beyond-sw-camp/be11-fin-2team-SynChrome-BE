@@ -3,7 +3,7 @@ spring:
     port: 6379
     host: localhost
   datasource:
-    url: jdbc:mariadb://localhost:3306/livechat?serverTimezone=Asia/Seoul
+    url: jdbc:mariadb://localhost:3306/user?serverTimezone=Asia/Seoul
     username: root
     password: 1234
     driver-class-name: org.mariadb.jdbc.Driver
@@ -13,19 +13,20 @@ spring:
     database: mysql
     database-platform: org.hibernate.dialect.MariaDBDialect
     generate-ddl: true
+    show_sql: true
   application:
-    #    member-service?? ???? eureka? ??
-    name: member-service
-  kafka:
-    kafka-server: localhost:9092
-    consumer:
-      #      groupid? ??? ??? ???? ID??, ??? ?? ID? ?? ????? ???? ???? consume.
-      group-id: member-group
-      #      ?? ??? ??? ????? ?? ?? (latest: ??? ??? ???? ???? ??)
-      auto-offset-reset: earliest
+    name: user-service
+#  kafka:
+#    kafka-server: localhost:9092
+#    consumer:
+#      group-id: user-group
+#      auto-offset-reset: earliest
   jackson:
     date-format: yyyy-MM-dd HH:mm
     time-zone: Asia/Seoul
+
+server:
+  port: 0
 
 eureka:
   client:
