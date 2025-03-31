@@ -41,6 +41,7 @@ public class UserController {
         AccessTokendto accessTokendto = userService.getAccessToken(dto.getCode());
         GoogleProfileDto googleProfileDto = userService.getGoogleProfile(accessTokendto.getAccess_token());
         User originalUser = userService.getUserByEmail(googleProfileDto.getEmail());
+        System.out.println("컨트롤러 : " + originalUser);
         if(originalUser == null){
             UserSaveReqDto response = UserSaveReqDto.builder().email(googleProfileDto.getEmail()).name(googleProfileDto.getName()).build();
             originalUser = userService.save(response);

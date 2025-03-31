@@ -18,9 +18,7 @@ public class JwtAuthFilter implements GlobalFilter {
     private String secretKey;
 
     private static final List<String> ALLOWED_PATHS = List.of(
-            "/user/create",
-            "/user/doLogin",
-            "/user/refresh-token"
+            "/user/google/doLogin"
     );
 
     @Override
@@ -29,6 +27,8 @@ public class JwtAuthFilter implements GlobalFilter {
         System.out.println("gateway token 검증 시작");
         String bearerToken = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         String path = exchange.getRequest().getURI().getRawPath();
+        System.out.println("path : " + exchange.getRequest().getURI());
+
         // 인증이 필요 없는 경로는 필터를 통과
         if (ALLOWED_PATHS.contains(path)) {
             return chain.filter(exchange);

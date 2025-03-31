@@ -38,7 +38,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
 	implementation 'io.openvidu:openvidu-java-client:2.30.0'
-//	eureka 의존성 추가
+	//	eureka 의존성 추가
 	implementation	'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	// Kafka Core (Producer, Consumer, Admin 등)
 	implementation 'org.springframework.kafka:spring-kafka'
