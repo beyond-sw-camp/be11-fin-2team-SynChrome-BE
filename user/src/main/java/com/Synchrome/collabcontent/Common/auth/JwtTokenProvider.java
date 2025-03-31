@@ -36,9 +36,8 @@ public class JwtTokenProvider {
         ENCRYPT_RT_SECRET_KEY = new SecretKeySpec(java.util.Base64.getDecoder().decode(secretKeyRT), SignatureAlgorithm.HS512.getJcaName());
     }
 
-    public String createToken(String email,String role){
-        Claims claims = Jwts.claims().setSubject(email);
-        claims.put("role",role);
+    public String createToken(Long id){
+        Claims claims = Jwts.claims().setSubject((String.valueOf(id)));
         Date now = new Date();
 //        claims는 사용자 정보(페이로드 정보)
         String token = Jwts.builder()
@@ -50,9 +49,8 @@ public class JwtTokenProvider {
         return token;
     }
 
-    public String createRefreshToken(String email,String role){
-        Claims claims = Jwts.claims().setSubject(email);
-        claims.put("role",role);
+    public String createRefreshToken(Long id){
+        Claims claims = Jwts.claims().setSubject((String.valueOf(id)));
         Date now = new Date();
 //        claims는 사용자 정보(페이로드 정보)
         String token = Jwts.builder()

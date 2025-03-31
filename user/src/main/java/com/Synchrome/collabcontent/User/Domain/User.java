@@ -16,11 +16,7 @@ public class User extends BaseTimeEntity {
     private Long id;
     private String name;
     private String email;
-    private String password;
     private String profile;
-    @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private Role role = Role.USER;
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private Active active = Active.Y;

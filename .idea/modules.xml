@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Synchrome.iml" filepath="$PROJECT_DIR$/.idea/Synchrome.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/collabcontent.main.iml" filepath="$PROJECT_DIR$/.idea/modules/collabcontent.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/user.main.iml" filepath="$PROJECT_DIR$/.idea/modules/user.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/workspace.main.iml" filepath="$PROJECT_DIR$/.idea/modules/workspace.main.iml" />
     </modules>

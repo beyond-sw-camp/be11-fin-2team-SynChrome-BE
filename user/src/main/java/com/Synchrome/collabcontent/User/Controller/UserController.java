@@ -36,36 +36,17 @@ public class UserController {
         this.redisTemplate = redisTemplate;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> memberCreate(@Valid @RequestBody UserSaveReqDto userSaveReqDto){
-        User user = userService.save(userSaveReqDto);
-        return new ResponseEntity<>(user.getId(), HttpStatus.CREATED);
-    }
-
-    @PostMapping("/doLogin")
-    public ResponseEntity<?> doLogin(@RequestBody LoginDto dto){
-        User user = userService.login(dto);
-        String token = jwtTokenProvider.createToken(user.getEmail() ,user.getRole().toString());
-        String refreshToken = jwtTokenProvider.createRefreshToken(user.getEmail() ,user.getRole().toString());
-        redisTemplate.opsForValue().set(user.getEmail(),refreshToken, 200, TimeUnit.DAYS);
-        Map<String, Object> loginInfo = new HashMap<>();
-        loginInfo.put("id",user.getId());
-        loginInfo.put("token",token);
-        loginInfo.put("refreshToken",refreshToken);
-        return new ResponseEntity<>(loginInfo,HttpStatus.OK);
-    }
-
     @PostMapping("/google/doLogin")
     public ResponseEntity<?> googleDoLogin(@RequestBody GoogleLoginDto dto){
         AccessTokendto accessTokendto = userService.getAccessToken(dto.getCode());
         GoogleProfileDto googleProfileDto = userService.getGoogleProfile(accessTokendto.getAccess_token());
         User originalUser = userService.getUserByEmail(googleProfileDto.getEmail());
         if(originalUser == null){
-            GoogleResponseDto response = GoogleResponseDto.builder().email(googleProfileDto.getEmail()).name(googleProfileDto.getName()).build();
-            return new ResponseEntity<>(response,HttpStatus.OK);
+            UserSaveReqDto response = UserSaveReqDto.builder().email(googleProfileDto.getEmail()).name(googleProfileDto.getName()).build();
+            originalUser = userService.save(response);
         }
-        String jwtToken = jwtTokenProvider.createToken(originalUser.getEmail(), originalUser.getRole().toString());
-        String jwtRefreshToken = jwtTokenProvider.createRefreshToken(originalUser.getEmail() ,originalUser.getRole().toString());
+        String jwtToken = jwtTokenProvider.createToken(originalUser.getId());
+        String jwtRefreshToken = jwtTokenProvider.createRefreshToken(originalUser.getId());
         Map<String, Object> loginInfo = new HashMap<>();
         loginInfo.put("id",originalUser.getId());
         loginInfo.put("token",jwtToken);
