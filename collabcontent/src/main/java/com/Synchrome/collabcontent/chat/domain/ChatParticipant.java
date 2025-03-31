@@ -1,6 +1,6 @@
 package com.Synchrome.collabcontent.chat.domain;
 
-import com.Synchrome.collabcontent.Common.domain.BaseTimeEntity;
+import com.Synchrome.collabcontent.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,9 +22,5 @@ public class ChatParticipant  extends BaseTimeEntity {
     @JoinColumn(name = "chat_room_id", nullable = false)
     private ChatRoom chatRoom;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
-
-
+    private Long userId;
 }

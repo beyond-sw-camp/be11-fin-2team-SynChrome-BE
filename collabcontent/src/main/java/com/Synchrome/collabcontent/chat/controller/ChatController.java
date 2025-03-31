@@ -2,15 +2,14 @@ package com.Synchrome.collabcontent.chat.controller;
 
 
 import com.Synchrome.collabcontent.chat.dto.ChatMessageDto;
-import com.Synchrome.collabcontent.chat.dto.ChatRoomListResDto;
+import com.Synchrome.collabcontent.chat.dto.ChatRoomResDto;
+import com.Synchrome.collabcontent.chat.dto.CreateGroupRoomReqDto;
 import com.Synchrome.collabcontent.chat.dto.MyChatListResDto;
 import com.Synchrome.collabcontent.chat.service.ChatService;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
+import com.Synchrome.collabcontent.common.auth.annotation.CurrentUserId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -22,70 +21,44 @@ public class ChatController {
         this.chatService = chatService;
     }
 
-    //    그룹채팅방 개설
-    @PostMapping("/room/group/create")
-    public ResponseEntity<?> createGroupRoom(@RequestParam String roomName){
-        chatService.createGroupRoom(roomName);
-        return ResponseEntity.ok().build();
-    }
-
-    //    그룹채팅목록조회
-    @GetMapping("/room/group/list")
-    public ResponseEntity<?> getGroupChatRooms(){
-        List<ChatRoomListResDto> chatRooms = chatService.getGroupchatRooms();
-        return new ResponseEntity<>(chatRooms, HttpStatus.OK);
-    }
-
-    //    그룹채팅방참여
-    @PostMapping("/room/group/{roomId}/join")
-    public ResponseEntity<?> joinGroupChatRoom(@PathVariable Long roomId){
-        chatService.addParticipantToGroupChat(roomId);
-        return ResponseEntity.ok().build();
-    }
-
-    //    이전 메시지 조회
-    @GetMapping("/history/{roomId}")
-    public ResponseEntity<?> getChatHistory(
-            @PathVariable Long roomId,
-            @RequestParam(defaultValue = "30") Integer limit,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime before
-    ) {
-        List<ChatMessageDto> chatMessageDtos = chatService.getChatHistory(roomId, limit, before);
-        return new ResponseEntity<>(chatMessageDtos, HttpStatus.OK);
-    }
-
-    //    채팅메시지 읽음처리
-    @PostMapping("/room/{roomId}/read")
-    public ResponseEntity<?> messageRead(@PathVariable Long roomId){
-        chatService.messageRead(roomId);
-        return ResponseEntity.ok().build();
-    }
-
-    //    내채팅방목록조회 : roomId, roomName, 그룹채팅여부, 메시지읽음개수
     @GetMapping("/my/rooms")
-    public ResponseEntity<?> getMyChatRooms(){
-        List<MyChatListResDto> myChatListResDtos = chatService.getMyChatRooms();
-        return new ResponseEntity<>(myChatListResDtos, HttpStatus.OK);
+    public ResponseEntity<List<MyChatListResDto>> getMyChatRooms(@CurrentUserId Long userId) {
+        return ResponseEntity.ok(chatService.getMyChatRooms(userId));
     }
 
-    //    채팅방 나가기
     @DeleteMapping("/room/group/{roomId}/leave")
-    public ResponseEntity<?> leaveGroupChatRoom(@PathVariable Long roomId){
-        chatService.leaveGroupChatRoom(roomId);
+    public ResponseEntity<Void> leaveGroupChat(@CurrentUserId Long userId,
+                                               @PathVariable Long roomId) {
+        chatService.leaveGroupChat(userId, roomId);
         return ResponseEntity.ok().build();
     }
 
-    //    개인 채팅방 개설 또는 기존roomId return
-    @PostMapping("/room/private/create")
-    public ResponseEntity<?> getOrCreatePrivateRoom(@RequestParam Long otherMemberId){
-        Long roomId = chatService.getOrCreatePrivateRoom(otherMemberId);
-        return new ResponseEntity<>(roomId, HttpStatus.OK);
+    @PostMapping("/room/group/create")
+    public ResponseEntity<Void> createGroupChatRoom(@CurrentUserId Long userId,
+                                                    @RequestBody CreateGroupRoomReqDto requestDto) {
+        chatService.createGroupChatRoom(userId, requestDto.getRoomName());
+        return ResponseEntity.ok().build();
     }
 
-    //    스레드의 댓글 조회
-    @GetMapping("/thread/{parentId}")
-    public ResponseEntity<?> getReplies(@PathVariable Long parentId) {
-        List<ChatMessageDto> replies = chatService.getReplies(parentId);
-        return new ResponseEntity<>(replies, HttpStatus.OK);
+    @PostMapping("/room/group/{roomId}/join")
+    public ResponseEntity<Void> joinGroupChatRoom(@CurrentUserId Long userId,
+                                                  @PathVariable Long roomId) {
+        chatService.joinGroupChatRoom(userId, roomId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/room/group/list")
+    public ResponseEntity<List<ChatRoomResDto>> getAllGroupChatRooms() {
+        return ResponseEntity.ok(chatService.getAllGroupChatRooms());
+    }
+
+    @GetMapping("/chat/history/{roomId}")
+    public ResponseEntity<List<ChatMessageDto>> getChatHistory(
+            @PathVariable Long roomId,
+            @RequestParam(required = false, defaultValue = "30") int limit,
+            @RequestParam(required = false) Long before) {
+
+        List<ChatMessageDto> messages = chatService.getChatMessages(roomId, limit, before);
+        return ResponseEntity.ok(messages);
     }
 }
