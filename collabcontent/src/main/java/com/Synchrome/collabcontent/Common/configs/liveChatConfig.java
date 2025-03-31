@@ -1,4 +1,4 @@
-package com.Synchrome.collabcontent.Common.config;
+package com.Synchrome.collabcontent.Common.configs;
 
 import io.openvidu.java.client.OpenVidu;
 import org.springframework.beans.factory.annotation.Value;

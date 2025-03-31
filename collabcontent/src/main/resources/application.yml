@@ -2,6 +2,32 @@ spring:
   application:
     #    user-service?? ???? eureka? ??
     name: collabcontent-service
+  redis:
+    host: localhost
+    port: 6379
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/chatdb
+    username: root
+    password: 1234
+  jpa:
+    database: mysql
+    #    InnoDB
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show_sql: true
+  kafka:
+    bootstrap-servers: localhost:9092  # ✅ 카프카 서버 주소
+    consumer:
+      group-id: chat-group             # ✅ 컨슈머 그룹 ID
+      auto-offset-reset: latest        # earliest | latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 eureka:
   client:
     serviceUrl:
