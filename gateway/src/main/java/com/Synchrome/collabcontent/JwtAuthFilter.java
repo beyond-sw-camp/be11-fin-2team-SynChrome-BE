@@ -1,6 +1,5 @@
 package com.Synchrome.collabcontent;
 
-
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -19,16 +18,15 @@ public class JwtAuthFilter implements GlobalFilter {
     private String secretKey;
 
     private static final List<String> ALLOWED_PATHS = List.of(
-            "/member/create",
-            "/member/doLogin",
-            "/member/refresh-token",
-            "/product/list"
+            "/user/create",
+            "/user/doLogin",
+            "/user/refresh-token"
     );
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         // token 검증
-        System.out.println("token 검증 시작");
+        System.out.println("gateway token 검증 시작");
         String bearerToken = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         String path = exchange.getRequest().getURI().getRawPath();
         // 인증이 필요 없는 경로는 필터를 통과
