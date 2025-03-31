@@ -1,6 +1,6 @@
 package com.Synchrome.collabcontent.chat.domain;
 
-import com.Synchrome.collabcontent.Common.domain.BaseTimeEntity;
+import com.Synchrome.collabcontent.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,9 +24,7 @@ public class ChatMessage extends BaseTimeEntity {
     @JoinColumn(name = "chat_room_id", nullable = false)
     private ChatRoom chatRoom;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    private Long userId;
 
     @Column(nullable = false, length = 500)
     private String content;
@@ -34,8 +32,5 @@ public class ChatMessage extends BaseTimeEntity {
     @OneToMany(mappedBy = "chatMessage", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ReadStatus> readStatuses = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private ChatMessage parent;
-
+    private Long parentId;
 }

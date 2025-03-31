@@ -14,10 +14,10 @@ import java.time.LocalDateTime;
 @Builder
 public class ChatMessageDto {
     private Long id;
+    private Long userId;
     private Long roomId;
     private String message;
-    private String senderEmail;
-    private LocalDateTime createdTime; // 🔥 추가됨
-    private Long parentId; // ✅ 추가
+    private LocalDateTime createdTime;
+    private Long parentId;
 
 }

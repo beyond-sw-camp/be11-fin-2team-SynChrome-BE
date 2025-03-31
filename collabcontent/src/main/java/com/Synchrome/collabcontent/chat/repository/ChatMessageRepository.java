@@ -13,18 +13,12 @@ import java.util.List;
 
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
-    List<ChatMessage> findByChatRoomOrderByCreatedTimeAsc(ChatRoom chatRoom);
-    @Query("""
-    SELECT m FROM ChatMessage m
-    WHERE m.chatRoom = :chatRoom
-      AND (:beforeTime IS NULL OR m.createdTime < :beforeTime)
-      AND m.parent IS NULL
-    ORDER BY m.createdTime DESC
-""")
-    List<ChatMessage> findPagedRootMessages(@Param("chatRoom") ChatRoom chatRoom,
-                                            @Param("beforeTime") LocalDateTime beforeTime,
-                                            Pageable pageable);
+    @Query("SELECT m FROM ChatMessage m WHERE m.chatRoom.id = :roomId ORDER BY m.id DESC")
+    List<ChatMessage> findTopByChatRoomIdOrderByIdDesc(@Param("roomId") Long roomId, Pageable pageable);
 
-    List<ChatMessage> findByParentOrderByCreatedTimeAsc(ChatMessage parent);
-
+    @Query("SELECT m FROM ChatMessage m WHERE m.chatRoom.id = :roomId AND m.id < :beforeId ORDER BY m.id DESC")
+    List<ChatMessage> findByChatRoomIdAndIdLessThanOrderByIdDesc(
+            @Param("roomId") Long roomId,
+            @Param("beforeId") Long beforeId,
+            Pageable pageable);
 }
