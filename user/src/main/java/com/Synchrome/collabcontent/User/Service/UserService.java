@@ -1,0 +1,94 @@
+package com.Synchrome.collabcontent.User.Service;
+
+import com.Synchrome.collabcontent.User.Domain.Role;
+import com.Synchrome.collabcontent.User.Domain.User;
+import com.Synchrome.collabcontent.User.Dto.AccessTokendto;
+import com.Synchrome.collabcontent.User.Dto.GoogleProfileDto;
+import com.Synchrome.collabcontent.User.Dto.LoginDto;
+import com.Synchrome.collabcontent.User.Dto.UserSaveReqDto;
+import com.Synchrome.collabcontent.User.Repository.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClient;
+
+import java.util.Optional;
+
+@Service
+@Transactional
+public class UserService {
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Value("${oauth.google.client-id}")
+    private String googleClientId;
+    @Value("${oauth.google.client-secret}")
+    private String googleClientSecret;
+    @Value("${oauth.google.redirect-uri}")
+    private String googleRedirectUri;
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public User save(UserSaveReqDto userSaveReqDto){
+        String password = passwordEncoder.encode(userSaveReqDto.getPassword());
+        User user = User.builder().name(userSaveReqDto.getName()).email(userSaveReqDto.getEmail()).password(password).build();
+        userRepository.save(user);
+        return user;
+    }
+
+    public User login(LoginDto dto){
+        boolean check = true;
+        Optional<User> optionalUser = userRepository.findByEmail(dto.getEmail());
+        if (!optionalUser.isPresent()) {
+            throw new IllegalArgumentException("ID 또는 비밀번호가 일치하지 않습니다.");
+        }
+
+        User user = optionalUser.get();
+
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("ID 또는 비밀번호가 일치하지 않습니다.");
+        }
+        return user;
+    }
+
+    public AccessTokendto getAccessToken(String code){
+        RestClient restClient = RestClient.create();
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("code",code);
+        params.add("client_id",googleClientId);
+        params.add("client_secret",googleClientSecret);
+        params.add("redirect_uri",googleRedirectUri);
+        params.add("grant_type", "authorization_code");
+        ResponseEntity<AccessTokendto> response = restClient.post()
+                .uri("https://oauth2.googleapis.com/token")
+                .header("Content-Type","application/x-www-form-urlencoded")
+                .body(params)
+                .retrieve()
+                .toEntity(AccessTokendto.class);
+        return response.getBody();
+    }
+
+    public GoogleProfileDto getGoogleProfile(String token){
+        RestClient restClient = RestClient.create();
+        ResponseEntity<GoogleProfileDto> response = restClient.post()
+                .uri("https://openidconnect.googleapis.com/v1/userinfo")
+                .header("Authorization","Bearer " +token)
+                .retrieve()
+                .toEntity(GoogleProfileDto.class);
+        return response.getBody();
+    }
+
+    public User getUserByEmail(String email){
+        User user = userRepository.findByEmail(email).orElse(null);
+        return user;
+    }
+
+}

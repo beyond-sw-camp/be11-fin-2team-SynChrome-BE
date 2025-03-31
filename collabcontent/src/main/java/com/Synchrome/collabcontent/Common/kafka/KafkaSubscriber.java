@@ -1,5 +1,6 @@
 package com.Synchrome.collabcontent.Common.kafka;
 
+import com.Synchrome.collabcontent.canvas.dto.DocumentMessageDto;
 import com.Synchrome.collabcontent.chat.dto.ChatMessageDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
