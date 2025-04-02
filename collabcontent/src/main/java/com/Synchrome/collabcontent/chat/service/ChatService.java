@@ -126,4 +126,8 @@ public class ChatService {
                 .collect(Collectors.toList());
     }
 
+    public boolean isRoomParticipant(Long roomId, Long userId){
+        return chatParticipantRepository.findByUserIdAndChatRoomId(userId, roomId).isPresent();
+    }
+
 }

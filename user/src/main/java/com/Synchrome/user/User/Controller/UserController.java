@@ -2,7 +2,6 @@ package com.Synchrome.user.User.Controller;
 
 import com.Synchrome.user.Common.auth.JwtTokenProvider;
 import com.Synchrome.user.User.Domain.User;
-import com.Synchrome.collabcontent.User.Dto.*;
 import com.Synchrome.user.User.Dto.AccessTokendto;
 import com.Synchrome.user.User.Dto.GoogleLoginDto;
 import com.Synchrome.user.User.Dto.GoogleProfileDto;

@@ -50,14 +50,14 @@ public class StompHandler implements ChannelInterceptor {
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-            String email = claims.getSubject();
+            Long userId = Long.parseLong(claims.getSubject());
             String destination = accessor.getDestination();
 
             // ✅ 채팅 구독일 경우
             if (destination.startsWith("/topic/chat/")) {
                 String roomId = destination.split("/")[3]; // 예: /topic/chat/123
-                if (!chatService.isRoomPaticipant(email, Long.parseLong(roomId))) {
-                    throw new AuthenticationServiceException("해당 채팅방에 권한이 없습니다.");
+                if (!chatService.isRoomParticipant(Long.parseLong(roomId), userId)) {
+                    throw new IllegalArgumentException("해당 채팅방에 권한이 없습니다.");
                 }
             }
 
@@ -65,8 +65,8 @@ public class StompHandler implements ChannelInterceptor {
             else if (destination.startsWith("/topic/document/")) {
                 String docId = destination.split("/")[3]; // 예: /topic/document/doc-123
                 // 👉 문서 접근 권한 확인 (DocumentService 등에서 확인 필요)
-                // 예시: if (!documentService.hasAccess(email, docId)) { ... }
-                System.out.println("문서 구독 권한 검사: docId = " + docId + ", user = " + email);
+                // 예시: if (!documentService.hasAccess(userId, docId)) { ... }
+                System.out.println("문서 구독 권한 검사: docId = " + docId + ", user = " + userId);
             }
         }
 
