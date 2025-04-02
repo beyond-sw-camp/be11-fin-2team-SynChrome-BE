@@ -3,10 +3,16 @@ package com.Synchrome.user.User.Service;
 import com.Synchrome.user.User.Domain.User;
 import com.Synchrome.user.User.Dto.AccessTokendto;
 import com.Synchrome.user.User.Dto.GoogleProfileDto;
+import com.Synchrome.user.User.Dto.UserInfoDto;
 import com.Synchrome.user.User.Dto.UserSaveReqDto;
 import com.Synchrome.user.User.Repository.UserRepository;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -17,6 +23,8 @@ import org.springframework.web.client.RestClient;
 @Transactional
 public class UserService {
     private final UserRepository userRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper = new ObjectMapper().configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, false);
 
     @Value("${oauth.google.client-id}")
     private String googleClientId;
@@ -25,8 +33,9 @@ public class UserService {
     @Value("${oauth.google.redirect-uri}")
     private String googleRedirectUri;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, @Qualifier("userInfoDB") RedisTemplate<String, Object> redisTemplate) {
         this.userRepository = userRepository;
+        this.redisTemplate = redisTemplate;
     }
 
     public User save(UserSaveReqDto userSaveReqDto){
@@ -64,8 +73,35 @@ public class UserService {
 
     public User getUserByEmail(String email){
         User user = userRepository.findByEmail(email).orElse(null);
-        System.out.println("서비스 : " + user);
         return user;
     }
 
+    public void userInfoCaching(User loginuser){
+        String redisKey = String.valueOf(loginuser.getId());
+        UserInfoDto userInfoDto = UserInfoDto.builder().id(loginuser.getId()).name(loginuser.getName()).email(loginuser.getEmail()).build();
+        try {
+            String userInfoJson = objectMapper.writeValueAsString(userInfoDto);
+            redisTemplate.opsForValue().set(redisKey, userInfoJson);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Redis 저장 중 오류 발생", e);
+        }
+    }
+
+    public UserInfoDto getUserInfo(Long id){
+        String redisKey = String.valueOf(id);
+        try {
+            String cachedUserInfoJson = (String) redisTemplate.opsForValue().get(redisKey);
+            if (cachedUserInfoJson != null) {
+                return objectMapper.readValue(cachedUserInfoJson, UserInfoDto.class);
+            }
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Redis 조회 중 오류 발생", e);
+        }
+        return null;
+    }
+
+    public void deleteUserInfo(Long id){
+        String redisKey = String.valueOf(id);
+        redisTemplate.delete(redisKey);
+    }
 }

@@ -1,4 +1,4 @@
-package com.Synchrome.collabcontent.liveChat.Dtos;
+package com.Synchrome.user.User.Dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-public class SessionDeleteDto {
-    private String sessionId;
+@Data
+public class UserInfoDto {
+    private Long id;
+    private String name;
+    private String email;
 }
