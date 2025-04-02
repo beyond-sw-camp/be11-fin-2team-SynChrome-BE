@@ -33,9 +33,10 @@ public class JwtAuthFilter implements GlobalFilter {
         if (ALLOWED_PATHS.contains(path)) {
             return chain.filter(exchange);
         }
-        System.out.println("이건 나오면 안되는 로그...");
+
         try {
             if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
+                System.out.println(bearerToken);
                 throw new IllegalArgumentException("token 관련 예외 발생");
             }
             String token = bearerToken.substring(7);
