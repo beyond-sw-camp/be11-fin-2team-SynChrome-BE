@@ -111,12 +111,12 @@ public class ChatService {
 
         if (beforeId == null) {
             // 최신 메시지부터
-            messages = chatMessageRepository.findTopByChatRoomIdAndParentIdIsNullOrderByIdDesc(roomId, PageRequest.of(0, limit));
+            messages = chatMessageRepository.findByChatRoomIdAndParentIdIsNullOrderByIdDesc(roomId, PageRequest.of(0, limit));
         } else {
             // 특정 메시지보다 이전 메시지
             messages = chatMessageRepository.findByChatRoomIdAndIdLessThanAndParentIdIsNullOrderByIdDesc(roomId, beforeId, PageRequest.of(0, limit));
         }
-
+        System.out.println(messages);
         return messages.stream()
                 .map(m -> ChatMessageDto.builder()
                         .id(m.getId())
