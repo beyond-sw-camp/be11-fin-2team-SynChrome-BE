@@ -1,5 +1,6 @@
 package com.Synchrome.collabcontent.common.redis;
 
+import com.Synchrome.collabcontent.common.auth.annotation.CurrentUserId;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -8,20 +9,19 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class RedisSessionManager {
-
     private final RedisTemplate<String, String> redisTemplate;
 
     public RedisSessionManager(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
-    private String getKey() {
-        return "ws:sessions";
+    private String getKey(){
+        return "ws:session:";
     }
 
     public void addSession(String sessionId) {
         redisTemplate.opsForSet().add(getKey(), sessionId);
-        redisTemplate.expire(getKey(), 1, TimeUnit.DAYS);
+        redisTemplate.expire(getKey(), 30, TimeUnit.MINUTES);
     }
 
     public void removeSession(String sessionId) {

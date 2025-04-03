@@ -13,6 +13,8 @@ import com.Synchrome.collabcontent.chat.repository.ChatParticipantRepository;
 import com.Synchrome.collabcontent.chat.repository.ChatRoomRepository;
 import com.Synchrome.collabcontent.chat.repository.ReadStatusRepository;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -109,10 +111,10 @@ public class ChatService {
 
         if (beforeId == null) {
             // 최신 메시지부터
-            messages = chatMessageRepository.findTopByChatRoomIdOrderByIdDesc(roomId, PageRequest.of(0, limit));
+            messages = chatMessageRepository.findTopByChatRoomIdAndParentIdIsNullOrderByIdDesc(roomId, PageRequest.of(0, limit));
         } else {
             // 특정 메시지보다 이전 메시지
-            messages = chatMessageRepository.findByChatRoomIdAndIdLessThanOrderByIdDesc(roomId, beforeId, PageRequest.of(0, limit));
+            messages = chatMessageRepository.findByChatRoomIdAndIdLessThanAndParentIdIsNullOrderByIdDesc(roomId, beforeId, PageRequest.of(0, limit));
         }
 
         return messages.stream()
@@ -136,4 +138,30 @@ public class ChatService {
         unreadStatuses.forEach(status -> status.updateIsRead(true));
         readStatusRepository.saveAll(unreadStatuses);
     }
+
+    public List<ChatMessageDto> getThreadMessages(Long parentId, int limit, Long beforeId) {
+        List<ChatMessage> messages;
+
+        Pageable pageable = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "id"));
+
+        if (beforeId == null) {
+            // 최신 메시지부터
+            messages = chatMessageRepository.findByParentIdOrderByIdDesc(parentId, pageable);
+        } else {
+            // 특정 메시지 ID보다 이전
+            messages = chatMessageRepository.findByParentIdAndIdLessThanOrderByIdDesc(parentId, beforeId, pageable);
+        }
+
+        return messages.stream()
+                .map(m -> ChatMessageDto.builder()
+                        .id(m.getId())
+                        .userId(m.getUserId())
+                        .roomId(m.getChatRoom().getId())
+                        .message(m.getContent())
+                        .createdTime(m.getCreatedTime())
+                        .parentId(m.getParentId())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
 }
