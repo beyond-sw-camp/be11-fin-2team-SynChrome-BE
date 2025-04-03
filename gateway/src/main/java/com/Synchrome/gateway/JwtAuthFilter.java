@@ -4,13 +4,17 @@ import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.cloud.gateway.support.ServerWebExchangeUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class JwtAuthFilter implements GlobalFilter {
@@ -22,8 +26,7 @@ public class JwtAuthFilter implements GlobalFilter {
 
     private static final List<String> ALLOWED_PATHS = List.of(
             "/user/google/doLogin",
-            "/connect/**",
-            "/subscribe/**"
+            "/connect/**"
     );
 
     @Override
@@ -38,6 +41,14 @@ public class JwtAuthFilter implements GlobalFilter {
 
         // ✅ 경로 패턴 검사
         boolean isAllowed = ALLOWED_PATHS.stream().anyMatch(allowed -> pathMatcher.match(allowed, path));
+
+//        exchange.getAttributes().forEach((key, value) -> {
+//            System.out.println("🪵 Gateway attr - " + key + " = " + value);
+//        });
+
+
+//        boolean isAllowed = ALLOWED_PATHS.stream()
+//                .anyMatch(allowed -> pathMatcher.match(allowed, originalPath));
 
         if (isAllowed) {
             System.out.println("인증 우회");

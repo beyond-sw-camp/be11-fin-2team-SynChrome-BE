@@ -25,7 +25,6 @@ public class StompHandler implements ChannelInterceptor {
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        System.out.println("스톰프 preSend");
         final StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
         if(StompCommand.CONNECT == accessor.getCommand()){
@@ -57,6 +56,7 @@ public class StompHandler implements ChannelInterceptor {
             // ✅ 채팅 구독일 경우
             if (destination.startsWith("/topic/chat/")) {
                 String roomId = destination.split("/")[3]; // 예: /topic/chat/123
+                System.out.println("채팅방 구독 : " + roomId);
                 if (!chatService.isRoomParticipant(Long.parseLong(roomId), userId)) {
                     throw new IllegalArgumentException("해당 채팅방에 권한이 없습니다.");
                 }

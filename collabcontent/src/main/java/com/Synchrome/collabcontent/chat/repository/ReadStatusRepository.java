@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface ReadStatusRepository extends JpaRepository<ReadStatus, Long> {
     Long countByChatRoomAndUserIdAndIsReadFalse(ChatRoom chatRoom, Long userId);
+
+    List<ReadStatus> findAllByChatRoomIdAndUserIdAndIsReadFalse(Long roomId, Long userId);
 }
