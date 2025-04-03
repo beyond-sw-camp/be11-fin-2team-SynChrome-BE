@@ -1,4 +1,4 @@
-package com.Synchrome.collabcontent.liveChat.Service;
+package com.Synchrome.collabcontent.livechat.service;
 
 
 import com.Synchrome.collabcontent.liveChat.Domain.LiveChat;

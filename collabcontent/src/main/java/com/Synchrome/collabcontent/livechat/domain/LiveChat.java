@@ -1,4 +1,4 @@
-package com.Synchrome.collabcontent.liveChat.Domain;
+package com.Synchrome.collabcontent.livechat.domain;
 
 
 import jakarta.persistence.*;
