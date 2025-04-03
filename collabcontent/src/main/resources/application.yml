@@ -1,6 +1,5 @@
 spring:
   application:
-    #    user-service?? ???? eureka? ??
     name: collabcontent-service
   redis:
     host: localhost
@@ -16,7 +15,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     generate-ddl: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show_sql: true
   kafka:
     bootstrap-servers: localhost:9092  # ✅ 카프카 서버 주소
@@ -32,7 +31,7 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
-# port ?? 0?? ??? ??????? port ??
+
 server:
   port: 0
 

@@ -53,13 +53,27 @@ public class ChatController {
         return ResponseEntity.ok(chatService.getAllGroupChatRooms());
     }
 
-    @GetMapping("/chat/history/{roomId}")
+    @GetMapping("/history/{roomId}")
     public ResponseEntity<?> getChatHistory(
             @PathVariable Long roomId,
             @RequestParam(required = false, defaultValue = "30") int limit,
             @RequestParam(required = false) Long before) {
 
         List<ChatMessageDto> messages = chatService.getChatMessages(roomId, limit, before);
+        return new ResponseEntity<>(messages, HttpStatus.OK);
+    }
+
+    @PostMapping("/room/{roomId}/read")
+    public ResponseEntity<?> readStatusUpdate(@PathVariable Long roomId, @CurrentUserId Long userId){
+        chatService.readStatusUpdate(roomId, userId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/thread/{parentId}")
+    public ResponseEntity<?> getThreadHistory(@PathVariable Long parentId,
+            @RequestParam(defaultValue = "30") int limit,
+            @RequestParam(required = false) Long before){
+        List<ChatMessageDto> messages =chatService.getThreadMessages(parentId, limit, before);
         return new ResponseEntity<>(messages, HttpStatus.OK);
     }
 }
