@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
-    List<ChatMessage> findTopByChatRoomIdAndParentIdIsNullOrderByIdDesc(Long roomId, Pageable pageable);
+    List<ChatMessage> findByChatRoomIdAndParentIdIsNullOrderByIdDesc(Long roomId, Pageable pageable);
 
     List<ChatMessage> findByChatRoomIdAndIdLessThanAndParentIdIsNullOrderByIdDesc(Long roomId, Long beforeId, Pageable pageable);
 
