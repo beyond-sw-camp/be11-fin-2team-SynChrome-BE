@@ -3,9 +3,9 @@ package com.Synchrome.collabcontent.livechat.controller;
 import java.util.Map;
 
 
-import com.Synchrome.collabcontent.liveChat.Dtos.SessionCreateDto;
-import com.Synchrome.collabcontent.liveChat.Dtos.SessionDeleteDto;
-import com.Synchrome.collabcontent.liveChat.Service.LiveChatService;
+import com.Synchrome.collabcontent.livechat.dtos.SessionCreateDto;
+import com.Synchrome.collabcontent.livechat.dtos.SessionDeleteDto;
+import com.Synchrome.collabcontent.livechat.service.LiveChatService;
 import io.openvidu.java.client.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
