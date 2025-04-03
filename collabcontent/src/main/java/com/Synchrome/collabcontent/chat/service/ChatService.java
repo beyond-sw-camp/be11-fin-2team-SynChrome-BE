@@ -4,6 +4,7 @@ package com.Synchrome.collabcontent.chat.service;
 import com.Synchrome.collabcontent.chat.domain.ChatMessage;
 import com.Synchrome.collabcontent.chat.domain.ChatParticipant;
 import com.Synchrome.collabcontent.chat.domain.ChatRoom;
+import com.Synchrome.collabcontent.chat.domain.ReadStatus;
 import com.Synchrome.collabcontent.chat.dto.ChatMessageDto;
 import com.Synchrome.collabcontent.chat.dto.ChatRoomResDto;
 import com.Synchrome.collabcontent.chat.dto.MyChatListResDto;
@@ -130,4 +131,9 @@ public class ChatService {
         return chatParticipantRepository.findByUserIdAndChatRoomId(userId, roomId).isPresent();
     }
 
+    public void readStatusUpdate(Long roomId, Long userId) {
+        List<ReadStatus> unreadStatuses = readStatusRepository.findAllByChatRoomIdAndUserIdAndIsReadFalse(roomId, userId);
+        unreadStatuses.forEach(status -> status.updateIsRead(true));
+        readStatusRepository.saveAll(unreadStatuses);
+    }
 }
