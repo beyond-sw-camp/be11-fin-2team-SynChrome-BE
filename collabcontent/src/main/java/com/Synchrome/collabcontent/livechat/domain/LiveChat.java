@@ -1,4 +1,5 @@
-package com.Synchrome.collabcontent.livechat.domain;
+package com.Synchrome.collabcontent.liveChat.Domain;
+
 
 import jakarta.persistence.*;
 import lombok.*;
