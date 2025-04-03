@@ -7,6 +7,7 @@ import com.Synchrome.collabcontent.chat.dto.CreateGroupRoomReqDto;
 import com.Synchrome.collabcontent.chat.dto.MyChatListResDto;
 import com.Synchrome.collabcontent.chat.service.ChatService;
 import com.Synchrome.collabcontent.common.auth.annotation.CurrentUserId;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,12 +54,12 @@ public class ChatController {
     }
 
     @GetMapping("/chat/history/{roomId}")
-    public ResponseEntity<List<ChatMessageDto>> getChatHistory(
+    public ResponseEntity<?> getChatHistory(
             @PathVariable Long roomId,
             @RequestParam(required = false, defaultValue = "30") int limit,
             @RequestParam(required = false) Long before) {
 
         List<ChatMessageDto> messages = chatService.getChatMessages(roomId, limit, before);
-        return ResponseEntity.ok(messages);
+        return new ResponseEntity<>(messages, HttpStatus.OK);
     }
 }

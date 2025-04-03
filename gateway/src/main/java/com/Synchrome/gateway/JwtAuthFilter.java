@@ -7,6 +7,7 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import java.util.List;
@@ -17,25 +18,35 @@ public class JwtAuthFilter implements GlobalFilter {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+
     private static final List<String> ALLOWED_PATHS = List.of(
-            "/user/google/doLogin"
+            "/user/google/doLogin",
+            "/connect/**",
+            "/subscribe/**"
     );
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         // token 검증
+        System.out.println("-----------------------------------");
         System.out.println("gateway token 검증 시작");
         String bearerToken = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        System.out.println(exchange.getRequest().getHeaders());
         String path = exchange.getRequest().getURI().getRawPath();
-        System.out.println("path : " + exchange.getRequest().getURI());
+        System.out.println("path : " + exchange.getRequest().getURI().getRawPath());
 
-        // 인증이 필요 없는 경로는 필터를 통과
-        if (ALLOWED_PATHS.contains(path)) {
-            return chain.filter(exchange);
+        // ✅ 경로 패턴 검사
+        boolean isAllowed = ALLOWED_PATHS.stream().anyMatch(allowed -> pathMatcher.match(allowed, path));
+
+        if (isAllowed) {
+            System.out.println("인증 우회");
+            return chain.filter(exchange); // 인증 우회
         }
-        System.out.println("이건 나오면 안되는 로그...");
+        System.out.println("인증 수행");
         try {
             if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
+                System.out.println("bearerToken : " + bearerToken);
                 throw new IllegalArgumentException("token 관련 예외 발생");
             }
             String token = bearerToken.substring(7);

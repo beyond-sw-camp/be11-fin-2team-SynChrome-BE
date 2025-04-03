@@ -1,11 +1,11 @@
-package com.Synchrome.collabcontent.livechat.controller;
+package com.Synchrome.collabcontent.liveChat.Controller;
 
 import java.util.Map;
 
 
-import com.Synchrome.collabcontent.livechat.dtos.SessionCreateDto;
-import com.Synchrome.collabcontent.livechat.dtos.SessionDeleteDto;
-import com.Synchrome.collabcontent.livechat.service.LiveChatService;
+import com.Synchrome.collabcontent.liveChat.Dtos.SessionCreateDto;
+import com.Synchrome.collabcontent.liveChat.Dtos.SessionDeleteDto;
+import com.Synchrome.collabcontent.liveChat.Service.LiveChatService;
 import io.openvidu.java.client.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*")
+import java.util.Map;
+
 @RestController
 @RequestMapping("/liveChat")
 public class liveChatController {
@@ -38,10 +39,12 @@ public class liveChatController {
     @PostMapping("/sessions")
     public ResponseEntity<String> initializeSession(@RequestBody(required = false) Map<String, Object> params)
             throws OpenViduJavaClientException, OpenViduHttpException {
+        System.out.println(params.get("customSessionId"));
         SessionProperties properties = SessionProperties.fromJson(params).build();
         Session session = openvidu.createSession(properties); // session 생성
         SessionCreateDto dto = SessionCreateDto.builder().sessionId(session.getSessionId()).build();
         liveChatService.save(dto);
+        System.out.println(session.getSessionId());
         return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
     }
 
