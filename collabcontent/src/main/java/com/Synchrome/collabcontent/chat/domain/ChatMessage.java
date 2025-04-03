@@ -33,4 +33,5 @@ public class ChatMessage extends BaseTimeEntity {
     private List<ReadStatus> readStatuses = new ArrayList<>();
 
     private Long parentId;
+
 }

@@ -13,12 +13,11 @@ import java.util.List;
 
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
-    @Query("SELECT m FROM ChatMessage m WHERE m.chatRoom.id = :roomId ORDER BY m.id DESC")
-    List<ChatMessage> findTopByChatRoomIdOrderByIdDesc(@Param("roomId") Long roomId, Pageable pageable);
+    List<ChatMessage> findTopByChatRoomIdAndParentIdIsNullOrderByIdDesc(Long roomId, Pageable pageable);
 
-    @Query("SELECT m FROM ChatMessage m WHERE m.chatRoom.id = :roomId AND m.id < :beforeId ORDER BY m.id DESC")
-    List<ChatMessage> findByChatRoomIdAndIdLessThanOrderByIdDesc(
-            @Param("roomId") Long roomId,
-            @Param("beforeId") Long beforeId,
-            Pageable pageable);
+    List<ChatMessage> findByChatRoomIdAndIdLessThanAndParentIdIsNullOrderByIdDesc(Long roomId, Long beforeId, Pageable pageable);
+
+    List<ChatMessage> findByParentIdOrderByIdDesc(Long parentId, Pageable pageable);
+
+    List<ChatMessage> findByParentIdAndIdLessThanOrderByIdDesc(Long parentId, Long beforeId, Pageable pageable);
 }

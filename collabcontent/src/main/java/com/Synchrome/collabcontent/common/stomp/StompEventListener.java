@@ -1,5 +1,6 @@
 package com.Synchrome.collabcontent.common.stomp;
 
+import com.Synchrome.collabcontent.common.auth.annotation.CurrentUserId;
 import com.Synchrome.collabcontent.common.redis.RedisSessionManager;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
