@@ -1,4 +1,4 @@
-package com.Synchrome.collabcontent.liveChat.Domain;
+package com.Synchrome.collabcontent.livechat.domain;
 
 public enum IsEnded {
     Y,N
