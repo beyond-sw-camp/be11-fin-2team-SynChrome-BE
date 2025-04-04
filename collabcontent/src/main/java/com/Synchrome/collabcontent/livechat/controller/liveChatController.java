@@ -3,6 +3,8 @@ package com.Synchrome.collabcontent.liveChat.Controller;
 import java.util.Map;
 
 
+import com.Synchrome.collabcontent.liveChat.Domain.Participants;
+import com.Synchrome.collabcontent.liveChat.Dtos.ParticipantAddDto;
 import com.Synchrome.collabcontent.liveChat.Dtos.SessionCreateDto;
 import com.Synchrome.collabcontent.liveChat.Dtos.SessionDeleteDto;
 import com.Synchrome.collabcontent.liveChat.Service.LiveChatService;
@@ -44,7 +46,6 @@ public class liveChatController {
         Session session = openvidu.createSession(properties); // session 생성
         SessionCreateDto dto = SessionCreateDto.builder().sessionId(session.getSessionId()).build();
         liveChatService.save(dto);
-        System.out.println(session.getSessionId());
         return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
     }
 
@@ -64,6 +65,13 @@ public class liveChatController {
     @PostMapping("/delete")
     public ResponseEntity<?> deleteSession(@RequestBody SessionDeleteDto sessionDeleteDto){
         Boolean response = liveChatService.delete(sessionDeleteDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/addParticipant")
+    public ResponseEntity<?> addParticipant(@RequestBody ParticipantAddDto participantAddDto){
+        Participants participants = liveChatService.participants(participantAddDto);
+        Long response = participants.getId();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
