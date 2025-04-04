@@ -1,4 +1,4 @@
-package com.Synchrome.collabcontent.LiveChat.Dtos;
+package com.Synchrome.collabcontent.livechat.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

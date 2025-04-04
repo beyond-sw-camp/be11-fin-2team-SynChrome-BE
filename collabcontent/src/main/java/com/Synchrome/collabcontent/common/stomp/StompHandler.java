@@ -56,6 +56,7 @@ public class StompHandler implements ChannelInterceptor {
             // ✅ 채팅 구독일 경우
             if (destination.startsWith("/topic/chat/")) {
                 String roomId = destination.split("/")[3]; // 예: /topic/chat/123
+                System.out.println("채팅방 구독 : " + roomId);
                 if (!chatService.isRoomParticipant(Long.parseLong(roomId), userId)) {
                     throw new IllegalArgumentException("해당 채팅방에 권한이 없습니다.");
                 }

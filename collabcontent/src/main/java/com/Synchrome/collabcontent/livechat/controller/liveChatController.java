@@ -1,6 +1,7 @@
-package com.Synchrome.collabcontent.liveChat.Controller;
+package com.Synchrome.collabcontent.livechat.controller;
 
 import java.util.Map;
+
 
 
 import com.Synchrome.collabcontent.liveChat.Domain.Participants;

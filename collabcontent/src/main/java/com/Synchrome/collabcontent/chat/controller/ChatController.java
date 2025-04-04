@@ -7,6 +7,7 @@ import com.Synchrome.collabcontent.chat.dto.CreateGroupRoomReqDto;
 import com.Synchrome.collabcontent.chat.dto.MyChatListResDto;
 import com.Synchrome.collabcontent.chat.service.ChatService;
 import com.Synchrome.collabcontent.common.auth.annotation.CurrentUserId;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,13 +53,27 @@ public class ChatController {
         return ResponseEntity.ok(chatService.getAllGroupChatRooms());
     }
 
-    @GetMapping("/chat/history/{roomId}")
-    public ResponseEntity<List<ChatMessageDto>> getChatHistory(
+    @GetMapping("/history/{roomId}")
+    public ResponseEntity<?> getChatHistory(
             @PathVariable Long roomId,
             @RequestParam(required = false, defaultValue = "30") int limit,
             @RequestParam(required = false) Long before) {
 
         List<ChatMessageDto> messages = chatService.getChatMessages(roomId, limit, before);
-        return ResponseEntity.ok(messages);
+        return new ResponseEntity<>(messages, HttpStatus.OK);
+    }
+
+    @PostMapping("/room/{roomId}/read")
+    public ResponseEntity<?> readStatusUpdate(@PathVariable Long roomId, @CurrentUserId Long userId){
+        chatService.readStatusUpdate(roomId, userId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/thread/{parentId}")
+    public ResponseEntity<?> getThreadHistory(@PathVariable Long parentId,
+            @RequestParam(defaultValue = "20") int limit,
+            @RequestParam(required = false) Long before){
+        List<ChatMessageDto> messages =chatService.getThreadMessages(parentId, limit, before);
+        return new ResponseEntity<>(messages, HttpStatus.OK);
     }
 }

@@ -8,6 +8,8 @@ spring:
     name: api-gateway
   cloud:
     gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
       globalcors:
         cors-configurations:
           '[/**]':
@@ -36,6 +38,9 @@ spring:
           filters:
             - StripPrefix=1
           uri: lb://workspace-service
+      httpserver:
+        websocket:
+          max-frame-payload-length: 65536
 
 jwt:
   secretKey: YmV5b25kYWNjZXNzdG9la25zZWNyZXRrZXliZXlvbmRhY2Nlc3N0b2VrbnNlY3JldGtleWJleW9uZGFjY2Vzc3RvZWtuc2VjcmV0a2V5YmV5b25kYWNjZXNzdG9la25zZWNyZXRrZXk=

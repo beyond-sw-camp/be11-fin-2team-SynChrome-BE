@@ -1,4 +1,4 @@
-package com.Synchrome.collabcontent.livechat.dtos;
+package com.Synchrome.workspace.calender.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-public class RecordingReqDto {
-    private String sessionId;
+@Data
+public class EventDto {
 }
