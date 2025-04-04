@@ -1,7 +1,6 @@
-package com.Synchrome.collabcontent.liveChat.Domain;
+package com.Synchrome.collabcontent.livechat.domain;
 
 import com.Synchrome.collabcontent.common.domain.BaseTimeEntity;
-import com.Synchrome.collabcontent.liveChat.Repository.ParticipantsRepository;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

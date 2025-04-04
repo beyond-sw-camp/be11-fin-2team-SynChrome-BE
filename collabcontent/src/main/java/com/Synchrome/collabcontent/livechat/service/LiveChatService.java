@@ -2,15 +2,14 @@ package com.Synchrome.collabcontent.livechat.service;
 
 
 
-import com.Synchrome.collabcontent.liveChat.Domain.LiveChat;
-import com.Synchrome.collabcontent.liveChat.Domain.Participants;
-import com.Synchrome.collabcontent.liveChat.Dtos.ParticipantAddDto;
-import com.Synchrome.collabcontent.liveChat.Dtos.SessionCreateDto;
-import com.Synchrome.collabcontent.liveChat.Dtos.SessionDeleteDto;
-import com.Synchrome.collabcontent.liveChat.Repository.LiveChatRepository;
-import com.Synchrome.collabcontent.liveChat.Repository.ParticipantsRepository;
+import com.Synchrome.collabcontent.livechat.domain.LiveChat;
+import com.Synchrome.collabcontent.livechat.domain.Participants;
+import com.Synchrome.collabcontent.livechat.dtos.ParticipantAddDto;
+import com.Synchrome.collabcontent.livechat.dtos.SessionCreateDto;
+import com.Synchrome.collabcontent.livechat.dtos.SessionDeleteDto;
+import com.Synchrome.collabcontent.livechat.repository.LiveChatRepository;
+import com.Synchrome.collabcontent.livechat.repository.ParticipantsRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.Part;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

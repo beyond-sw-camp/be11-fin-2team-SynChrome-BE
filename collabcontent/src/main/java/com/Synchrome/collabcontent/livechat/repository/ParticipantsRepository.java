@@ -1,6 +1,6 @@
-package com.Synchrome.collabcontent.liveChat.Repository;
+package com.Synchrome.collabcontent.livechat.repository;
 
-import com.Synchrome.collabcontent.liveChat.Domain.Participants;
+import com.Synchrome.collabcontent.livechat.domain.Participants;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
