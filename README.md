@@ -123,7 +123,7 @@
 ## 📑 화면설계서 (프로젝트기획)
 > 주요 UI/UX 흐름  
 ![UI 흐름](./images/ui-flow.png)  
-👉 [📎 문서 보기](./docs/화면설계서.pdf)
+👉 [📎 문서 보기](https://www.figma.com/design/uPfg5bZWj3IgpGT3QXOHVM/Synchrome?node-id=17-2&p=f&t=rBab0xfYe9HFknH1-0)
 
 ---
 
