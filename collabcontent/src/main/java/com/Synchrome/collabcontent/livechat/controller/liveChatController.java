@@ -4,19 +4,17 @@ import java.util.Map;
 
 
 
-import com.Synchrome.collabcontent.liveChat.Domain.Participants;
-import com.Synchrome.collabcontent.liveChat.Dtos.ParticipantAddDto;
-import com.Synchrome.collabcontent.liveChat.Dtos.SessionCreateDto;
-import com.Synchrome.collabcontent.liveChat.Dtos.SessionDeleteDto;
-import com.Synchrome.collabcontent.liveChat.Service.LiveChatService;
+import com.Synchrome.collabcontent.livechat.domain.Participants;
+import com.Synchrome.collabcontent.livechat.dtos.ParticipantAddDto;
+import com.Synchrome.collabcontent.livechat.dtos.SessionCreateDto;
+import com.Synchrome.collabcontent.livechat.dtos.SessionDeleteDto;
+import com.Synchrome.collabcontent.livechat.service.LiveChatService;
 import io.openvidu.java.client.*;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/liveChat")
