@@ -1,6 +1,5 @@
 package com.Synchrome.user.User.Dto;
 
-import com.Synchrome.user.User.Domain.Enum.Subscribe;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class UserInfoDto {
-    private Long id;
-    private String name;
-    private String email;
-    private Subscribe subscribe;
+public class PaymentReqDto {
+    private Long userId;
+    private String impUid;
 }

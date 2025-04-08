@@ -1,15 +1,24 @@
 package com.Synchrome.user.User.Service;
 
+import com.Synchrome.user.User.Domain.Enum.Paystatus;
+import com.Synchrome.user.User.Domain.Pay;
 import com.Synchrome.user.User.Domain.User;
 import com.Synchrome.user.User.Dto.AccessTokendto;
 import com.Synchrome.user.User.Dto.GoogleProfileDto;
 import com.Synchrome.user.User.Dto.UserInfoDto;
 import com.Synchrome.user.User.Dto.UserSaveReqDto;
+import com.Synchrome.user.User.Repository.PaymentRepository;
 import com.Synchrome.user.User.Repository.UserRepository;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.siot.IamportRestClient.IamportClient;
+import com.siot.IamportRestClient.request.CancelData;
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,12 +28,18 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 
+import java.math.BigDecimal;
+import java.util.Map;
+
 @Service
 @Transactional
+@Slf4j
 public class UserService {
     private final UserRepository userRepository;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper().configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, false);
+    private final IamportClient iamportClient;
+    private final PaymentRepository paymentRepository;
 
     @Value("${oauth.google.client-id}")
     private String googleClientId;
@@ -33,9 +48,11 @@ public class UserService {
     @Value("${oauth.google.redirect-uri}")
     private String googleRedirectUri;
 
-    public UserService(UserRepository userRepository, @Qualifier("userInfoDB") RedisTemplate<String, Object> redisTemplate) {
+    public UserService(UserRepository userRepository, @Qualifier("userInfoDB") RedisTemplate<String, Object> redisTemplate, IamportClient iamportClient, PaymentRepository paymentRepository) {
         this.userRepository = userRepository;
         this.redisTemplate = redisTemplate;
+        this.iamportClient = iamportClient;
+        this.paymentRepository = paymentRepository;
     }
 
     public User save(UserSaveReqDto userSaveReqDto){
@@ -78,7 +95,7 @@ public class UserService {
 
     public void userInfoCaching(User loginuser){
         String redisKey = String.valueOf(loginuser.getId());
-        UserInfoDto userInfoDto = UserInfoDto.builder().id(loginuser.getId()).name(loginuser.getName()).email(loginuser.getEmail()).build();
+        UserInfoDto userInfoDto = UserInfoDto.builder().id(loginuser.getId()).name(loginuser.getName()).email(loginuser.getEmail()).subscribe(loginuser.getSubscribe()).build();
         try {
             String userInfoJson = objectMapper.writeValueAsString(userInfoDto);
             redisTemplate.opsForValue().set(redisKey, userInfoJson);
@@ -100,8 +117,99 @@ public class UserService {
         return null;
     }
 
+    private String extractImpUid(String impUidJson) {
+        try {
+            // JSON 파싱을 통해 impUid 값 추출 (예: Jackson 사용)
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, String> map = objectMapper.readValue(impUidJson, Map.class);
+            return map.get("impUid");
+        } catch (Exception e) {
+            throw new RuntimeException("impUid 값을 추출하는 중 오류 발생", e);
+        }
+    }
+
     public void deleteUserInfo(Long id){
         String redisKey = String.valueOf(id);
         redisTemplate.delete(redisKey);
+    }
+
+    public void processPayment(String impUid,Long userId) throws Exception {
+        User user = userRepository.findById(userId).orElseThrow(()->new EntityNotFoundException("없는 유저"));  // 현재 로그인한 사용자 정보
+
+        int fee = 100;
+
+        String actualImpUid = extractImpUid(impUid);  // impUid 값 추출 함수 사용
+
+        // impUid를 통해 결제 정보 확인
+        IamportResponse<Payment> paymentResponse = iamportClient.paymentByImpUid(actualImpUid);
+
+        if (paymentResponse.getResponse() == null) {
+            throw new Exception("결제 정보 없음: " + paymentResponse.getMessage());
+        }
+
+        BigDecimal amount = paymentResponse.getResponse().getAmount();
+        if (amount.compareTo(BigDecimal.valueOf(fee)) != 0) {
+            throw new Exception("결제 금액 불일치");
+        }
+
+        try {
+            // 결제 정보가 존재하는지 확인
+            if (paymentResponse.getResponse() == null) {
+                throw new Exception("결제 요청 실패: " + paymentResponse.getMessage());
+            }
+
+            // 결제 금액 및 기타 검증 로직
+            if (paymentResponse.getResponse().getAmount().intValue() != fee) {
+                throw new Exception("결제 금액 불일치");
+            }
+            Pay pay = Pay.builder().user(user).amount(BigDecimal.valueOf(fee)).impUid(actualImpUid).build();
+            paymentRepository.save(pay);
+            user.subscribe();
+
+        } catch (Exception e) {
+            throw new RuntimeException("결제중 오류", e);
+        }
+    }
+
+    public IamportResponse<Payment> cancelPayment(Long userId) throws Exception {
+        Pay myPay = paymentRepository.findByUserAndPaystatus(userRepository.findById(userId).orElseThrow(()->new EntityNotFoundException("없는유저")), Paystatus.PAY).orElseThrow(()->new EntityNotFoundException(("결제 안한 회원입니다.")));
+        String actualImpUid = myPay.getImpUid();// impUid 값 추출 함수 사용
+
+        // DB에서 결제 정보를 조회
+        Pay pay = paymentRepository.findByImpUid(actualImpUid);
+        User user = pay.getUser();
+        if (pay == null) {
+            throw new Exception("해당 impUid에 대한 결제 정보가 없습니다.");
+        }
+
+        // 아임포트 서버에서 결제 정보를 조회
+        IamportResponse<Payment> paymentResponse = iamportClient.paymentByImpUid(actualImpUid);
+
+        // 아임포트와 DB 저장 금액이 일치하는지 확인하는 로직
+        if (paymentResponse.getResponse() != null) {
+            BigDecimal iamportAmount = paymentResponse.getResponse().getAmount();
+            if (pay.getAmount().compareTo(iamportAmount) != 0) {
+                throw new Exception("DB에 저장된 결제 금액과 아임포트에서 확인된 금액이 일치하지 않습니다.");
+            }
+        } else {
+            throw new Exception("아임포트에서 해당 결제 정보를 찾을 수 없습니다.");
+        }
+
+        // 결제 취소 요청(impuid 또는 merchantUid를 통해 취소할 수 있음
+        CancelData cancelData = new CancelData(actualImpUid, true);
+        IamportResponse<Payment> cancelResponse = iamportClient.cancelPaymentByImpUid(cancelData);
+
+
+        if (cancelResponse.getResponse() != null) {
+            log.info("결제 취소 성공: {}", cancelResponse.getResponse());
+
+            // 결제 상태를 CANCEL !
+            pay.cancelPaymentStatus();
+            user.cancelSubscribe();
+        } else {
+            log.error("결제 취소 실패: {}", cancelResponse.getMessage());
+            throw new Exception("결제 취소 실패: " + cancelResponse.getMessage());
+        }
+        return cancelResponse;
     }
 }

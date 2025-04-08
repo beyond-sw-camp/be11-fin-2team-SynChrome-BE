@@ -1,8 +1,12 @@
 package com.Synchrome.user.User.Domain;
 
 import com.Synchrome.user.Common.domain.BaseTimeEntity;
+import com.Synchrome.user.User.Domain.Enum.*;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +23,9 @@ public class User extends BaseTimeEntity {
     private String profile;
     @Enumerated(EnumType.STRING)
     @Builder.Default
+    private Subscribe subscribe = Subscribe.N;
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
     private Active active = Active.Y;
     @Enumerated(EnumType.STRING)
     private ChannelManager channelManager;
@@ -27,4 +34,15 @@ public class User extends BaseTimeEntity {
     private Del del = Del.N;
     @Enumerated(EnumType.STRING)
     private Mas mas;
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Pay> pays = new ArrayList<>();
+
+    public void subscribe(){
+        this.subscribe = Subscribe.Y;
+    }
+
+    public void cancelSubscribe(){
+        this.subscribe = Subscribe.N;
+    }
 }
