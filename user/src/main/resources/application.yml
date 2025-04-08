@@ -33,6 +33,10 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
 
+iamport:
+  api_key: 5226421507036210
+  api_secret: 0DGqSUc8OoGu1Td51b9cypzx8ndn5kFLdUZao3XwE00J4SSchnO8zSFY60p3BXWS5es8z64dAQ5zEOXD
+
 jwt:
   expiration: 1000
   #  ???? ?? 32? ?? ??.(???? ??)

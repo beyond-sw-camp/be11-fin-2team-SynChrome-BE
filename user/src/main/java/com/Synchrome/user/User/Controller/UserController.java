@@ -4,9 +4,8 @@ import com.Synchrome.user.Common.auth.JwtTokenProvider;
 import com.Synchrome.user.User.Domain.User;
 import com.Synchrome.user.User.Dto.*;
 import com.Synchrome.user.User.Service.UserService;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.siot.IamportRestClient.response.IamportResponse;
+import com.siot.IamportRestClient.response.Payment;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -64,5 +63,26 @@ public class UserController {
     public ResponseEntity<?> deleteUserInfo(@RequestBody FindUserDto findUserDto){
         userService.deleteUserInfo(findUserDto.getId());
         return new ResponseEntity<>(findUserDto,HttpStatus.OK);
+    }
+
+    @PostMapping("/pay")
+    public ResponseEntity<?> processPayment(@RequestBody PaymentReqDto paymentReqDto) {
+        try {
+            System.out.println("Received impUid: " + paymentReqDto.getImpUid());
+            userService.processPayment(paymentReqDto.getImpUid(), paymentReqDto.getUserId());
+            return new ResponseEntity<>("결제성공",HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/cancel")
+    public ResponseEntity<?> cancelPayment(@RequestBody CancelPayDto cancelPayDto) {
+        try {
+            IamportResponse<Payment> cancelResponse = userService.cancelPayment(cancelPayDto.getUserId());
+            return new ResponseEntity<>("결제 취소 성공: " + cancelResponse.getResponse().getImpUid(),HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
     }
 }
