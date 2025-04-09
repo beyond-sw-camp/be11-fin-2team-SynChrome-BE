@@ -1,0 +1,24 @@
+package com.Synchrome.collabcontent.opensearch.domain;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import lombok.*;
+
+
+@Getter
+@Setter
+@Data
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+public class tag {
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String name;
+
+    public tag(String name) {
+        this.name = name;
+    }
+}

@@ -17,14 +17,41 @@ spring:
   application:
     #    user-service?? ???? eureka? ??
     name: workspace-service
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/chatdb
+    username: root
+    password: 1234
+  jpa:
+    database: mysql
+    #    InnoDB
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    show_sql: true
+
   jackson:
     date-format: yyyy-MM-dd HH:mm
     time-zone: Asia/Seoul
+
 
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
+
 # port ?? 0?? ??? ??????? port ??
 server:
   port: 0
+cloud:
+  aws:
+    s3:
+      bucket: hans-ordersystem-image
+    credentials:
+      access-key: AKIA2AUOPD3OP5O6TQG2
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
