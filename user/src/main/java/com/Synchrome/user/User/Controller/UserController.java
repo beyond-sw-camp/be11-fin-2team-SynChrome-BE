@@ -6,6 +6,7 @@ import com.Synchrome.user.User.Dto.*;
 import com.Synchrome.user.User.Service.UserService;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import org.hibernate.annotations.processing.Find;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -84,5 +86,11 @@ public class UserController {
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("/myPayList")
+    public ResponseEntity<?> myPayList(@RequestBody FindUserDto findUserDto){
+        List<MyPayListDto> response = userService.payList(findUserDto.getId());
+        return ResponseEntity.ok(response);
     }
 }

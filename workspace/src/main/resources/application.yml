@@ -1,4 +1,19 @@
 spring:
+  redis:
+    port: 6379
+    host: localhost
+  datasource:
+    url: jdbc:mariadb://localhost:3306/workspace?serverTimezone=Asia/Seoul
+    username: root
+    password: 1234
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database: mysql
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    generate-ddl: true
+    show_sql: true
   application:
     #    user-service?? ???? eureka? ??
     name: workspace-service
@@ -15,6 +30,12 @@ spring:
     hibernate:
       ddl-auto: update
     show_sql: true
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm
+    time-zone: Asia/Seoul
+
+
 eureka:
   client:
     serviceUrl:
