@@ -1,0 +1,15 @@
+package com.Synchrome.workspace.space.dtos.sectionDtos;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Data
+public class SectionupdateDto {
+    private Long sectionId;
+    private String title;
+}
