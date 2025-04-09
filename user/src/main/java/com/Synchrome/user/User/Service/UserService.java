@@ -3,10 +3,7 @@ package com.Synchrome.user.User.Service;
 import com.Synchrome.user.User.Domain.Enum.Paystatus;
 import com.Synchrome.user.User.Domain.Pay;
 import com.Synchrome.user.User.Domain.User;
-import com.Synchrome.user.User.Dto.AccessTokendto;
-import com.Synchrome.user.User.Dto.GoogleProfileDto;
-import com.Synchrome.user.User.Dto.UserInfoDto;
-import com.Synchrome.user.User.Dto.UserSaveReqDto;
+import com.Synchrome.user.User.Dto.*;
 import com.Synchrome.user.User.Repository.PaymentRepository;
 import com.Synchrome.user.User.Repository.UserRepository;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -29,7 +26,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -212,4 +212,25 @@ public class UserService {
         }
         return cancelResponse;
     }
+
+
+    public List<MyPayListDto> payList(Long userId) {
+        Optional<List<Pay>> optionalPays = paymentRepository.findByUserId(userId);
+
+        if (optionalPays.isEmpty() || optionalPays.get().isEmpty()) {
+            // 결제 내역이 없으면 빈 리스트 반환
+            return new ArrayList<>();
+        }
+
+        List<Pay> payList = optionalPays.get();
+
+        return payList.stream()
+                .map(pay -> MyPayListDto.builder()
+                        .paystatus(pay.getPaystatus())
+                        .createdTime(pay.getCreatedTime())
+                        .updatedTime(pay.getUpdatedTime())
+                        .build())
+                .toList();
+    }
+
 }

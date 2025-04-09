@@ -1,4 +1,4 @@
-package com.Synchrome.workspace.calender.dto;
+package com.Synchrome.workspace.space.dtos.channelDtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,5 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class EventDto {
+public class ChannelDeleteDto {
+    private Long channelId;
+    private Long userId;
 }
