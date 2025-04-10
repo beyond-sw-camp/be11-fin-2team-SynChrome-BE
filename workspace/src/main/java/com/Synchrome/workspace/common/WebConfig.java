@@ -1,4 +1,4 @@
-package com.Synchrome.workspace.drive.common;
+package com.Synchrome.workspace.common;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

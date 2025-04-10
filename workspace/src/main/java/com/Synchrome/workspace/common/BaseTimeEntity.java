@@ -1,4 +1,4 @@
-package com.Synchrome.workspace.space.common;
+package com.Synchrome.workspace.common;
 
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;

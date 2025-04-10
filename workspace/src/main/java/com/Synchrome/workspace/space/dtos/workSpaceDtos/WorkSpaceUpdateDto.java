@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,5 +14,5 @@ public class WorkSpaceUpdateDto {
     private Long workSpaceId;
     private Long userId;
     private String title;
-//    private MultipartFile logo;
+    private MultipartFile logo;
 }
