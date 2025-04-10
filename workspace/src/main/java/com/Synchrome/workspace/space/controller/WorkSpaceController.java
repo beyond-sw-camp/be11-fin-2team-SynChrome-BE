@@ -1,13 +1,11 @@
 package com.Synchrome.workspace.space.controller;
 
 import com.Synchrome.workspace.space.dtos.channelDtos.*;
-import com.Synchrome.workspace.space.dtos.sectionDtos.FindMySectionDto;
-import com.Synchrome.workspace.space.dtos.sectionDtos.SectionCreateDto;
-import com.Synchrome.workspace.space.dtos.sectionDtos.SectionDeleteDto;
-import com.Synchrome.workspace.space.dtos.sectionDtos.SectionupdateDto;
+import com.Synchrome.workspace.space.dtos.sectionDtos.*;
 import com.Synchrome.workspace.space.dtos.workSpaceDtos.*;
 import com.Synchrome.workspace.space.service.WorkSpaceService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -27,13 +26,13 @@ public class WorkSpaceController {
     }
 
     @PostMapping("/createWorkSpace")
-    public ResponseEntity<?> createWorkSpace(@RequestBody WorkSpaceCreateDto workSpaceCreateDto){
+    public ResponseEntity<?> createWorkSpace(@Valid WorkSpaceCreateDto workSpaceCreateDto) throws IOException {
         Long response = workSpaceService.saveWorkSpace(workSpaceCreateDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/deleteWorkSpace")
-    public ResponseEntity<?> deleteWorkSpace(@RequestBody WorkSpaceDeleteDto workSpaceDeleteDto){
+    public ResponseEntity<?> deleteWorkSpace(@Valid @RequestBody WorkSpaceDeleteDto workSpaceDeleteDto){
         Long workSpaceId = workSpaceDeleteDto.getWorkSpaceId();
         Long userId = workSpaceDeleteDto.getUserId();
         Long response = workSpaceService.deleteMyWorkSpace(workSpaceId,userId);
@@ -46,8 +45,14 @@ public class WorkSpaceController {
     }
 
     @PostMapping("/updateMyWorkSpace")
-    public ResponseEntity<?> updateWorkSpace(@RequestBody WorkSpaceUpdateDto workSpaceUpdateDto){
+    public ResponseEntity<?> updateWorkSpace(@Valid WorkSpaceUpdateDto workSpaceUpdateDto){
         Long response = workSpaceService.updateMyWorkSpace(workSpaceUpdateDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("inviteUser")
+    public ResponseEntity<?> inviteUser(@RequestBody InviteUserDto inviteUserDto){
+        String response = workSpaceService.inviteWorkSpace(inviteUserDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -71,7 +76,7 @@ public class WorkSpaceController {
 
     @PostMapping("/getMySection")
     public ResponseEntity<?> getMySection(@RequestBody FindMySectionDto findMySectionDto){
-        List<String> response = workSpaceService.findMySection(findMySectionDto);
+        List<MySectionResDto> response = workSpaceService.findMySection(findMySectionDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -104,4 +109,11 @@ public class WorkSpaceController {
         Long response = workSpaceService.updateChannel(channelUpdateDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @PostMapping("/getWorkSpaceInfo")
+    public ResponseEntity<?> getWorkspaceInfo(@RequestBody GetWorkSpaceInfoDto getWorkSpaceInfoDto){
+        List<WorkSpaceInfoDto> response = workSpaceService.getMyWorkspaceSectionAndChannels(getWorkSpaceInfoDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

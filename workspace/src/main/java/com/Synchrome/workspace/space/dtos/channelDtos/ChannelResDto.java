@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class ChannelResDto {
     private Long channelId;
+    private Long sectionId;
     private String title;
     private Owner owner;
 }

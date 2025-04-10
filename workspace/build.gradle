@@ -24,8 +24,9 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	implementation 'software.amazon.awssdk:s3:2.17.58'
 	implementation 'org.opensearch.client:opensearch-rest-high-level-client:2.11.0'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
@@ -38,6 +39,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.opensearch:opensearch-core:2.11.0'
 	implementation 'org.opensearch.client:opensearch-rest-client:2.11.0'
+
 	//	eureka 의존성 추가
 	implementation	'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	// Kafka Core (Producer, Consumer, Admin 등)

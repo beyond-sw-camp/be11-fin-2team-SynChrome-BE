@@ -1,18 +1,19 @@
 package com.Synchrome.workspace.space.dtos.workSpaceDtos;
 
+import com.Synchrome.workspace.space.dtos.channelDtos.ChannelResDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
-@NoArgsConstructor
+import java.util.List;
+
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
 @Data
-public class WorkSpaceCreateDto {
+@Builder
+public class WorkSpaceInfoDto {
+    private Long sectionId;
     private String title;
-    private Long userId;
-    private String inviteUrl;
-    private MultipartFile logo;
+    private List<ChannelResDto> channels;
 }

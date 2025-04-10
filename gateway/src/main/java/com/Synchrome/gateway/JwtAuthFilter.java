@@ -26,7 +26,8 @@ public class JwtAuthFilter implements GlobalFilter {
 
     private static final List<String> ALLOWED_PATHS = List.of(
             "/user/google/doLogin",
-            "/connect/**"
+            "/connect/**",
+            "/workspace/**"
     );
 
     @Override

@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface WorkSpaceRepository extends JpaRepository<WorkSpace,Long> {
     Optional<List<WorkSpace>> findByUserIdAndDel(Long userId, Del del);
+    Optional<WorkSpace> findByInviteUrl(String inviteUrl);
 }
