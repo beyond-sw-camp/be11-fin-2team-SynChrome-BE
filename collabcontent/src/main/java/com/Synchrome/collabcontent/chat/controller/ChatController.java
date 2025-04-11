@@ -23,34 +23,29 @@ public class ChatController {
     }
 
     @GetMapping("/my/rooms")
-    public ResponseEntity<List<MyChatListResDto>> getMyChatRooms(@CurrentUserId Long userId) {
-        return ResponseEntity.ok(chatService.getMyChatRooms(userId));
-    }
-
-    @DeleteMapping("/room/group/{roomId}/leave")
-    public ResponseEntity<Void> leaveGroupChat(@CurrentUserId Long userId,
-                                               @PathVariable Long roomId) {
-        chatService.leaveGroupChat(userId, roomId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> getMyChatRooms(@CurrentUserId Long userId) {
+        List<MyChatListResDto> myChatRooms = chatService.getMyChatRooms(userId);
+        return new ResponseEntity<>(myChatRooms, HttpStatus.OK);
     }
 
     @PostMapping("/room/group/create")
-    public ResponseEntity<Void> createGroupChatRoom(@CurrentUserId Long userId,
+    public ResponseEntity<?> createGroupChatRoom(@CurrentUserId Long userId,
                                                     @RequestBody CreateGroupRoomReqDto requestDto) {
-        chatService.createGroupChatRoom(userId, requestDto.getRoomName());
-        return ResponseEntity.ok().build();
+        Long roomId = chatService.createGroupChatRoom(userId, requestDto.getRoomName());
+        return new ResponseEntity<>(roomId, HttpStatus.CREATED);
     }
 
     @PostMapping("/room/group/{roomId}/join")
-    public ResponseEntity<Void> joinGroupChatRoom(@CurrentUserId Long userId,
+    public ResponseEntity<?> joinGroupChatRoom(@CurrentUserId Long userId,
                                                   @PathVariable Long roomId) {
         chatService.joinGroupChatRoom(userId, roomId);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>("채팅방에 참여했습니다", HttpStatus.OK);
     }
 
     @GetMapping("/room/group/list")
-    public ResponseEntity<List<ChatRoomResDto>> getAllGroupChatRooms() {
-        return ResponseEntity.ok(chatService.getAllGroupChatRooms());
+    public ResponseEntity<?> getAllGroupChatRooms() {
+        List<ChatRoomResDto> rooms = chatService.getAllGroupChatRooms();
+        return new ResponseEntity<>(rooms, HttpStatus.OK);
     }
 
     @GetMapping("/history/{roomId}")
@@ -66,7 +61,7 @@ public class ChatController {
     @PostMapping("/room/{roomId}/read")
     public ResponseEntity<?> readStatusUpdate(@PathVariable Long roomId, @CurrentUserId Long userId){
         chatService.readStatusUpdate(roomId, userId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("읽음 처리 성공", HttpStatus.OK);
     }
 
     @GetMapping("/thread/{parentId}")

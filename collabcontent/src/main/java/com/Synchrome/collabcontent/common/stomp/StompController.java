@@ -1,7 +1,8 @@
 package com.Synchrome.collabcontent.common.stomp;
 
 
-import com.Synchrome.collabcontent.canvas.dto.DocumentMessageDto;
+import com.Synchrome.collabcontent.canvas.dto.CanvasMessageDto;
+import com.Synchrome.collabcontent.canvas.service.CanvasService;
 import com.Synchrome.collabcontent.chat.domain.ChatMessage;
 import com.Synchrome.collabcontent.chat.dto.ChatMessageDto;
 import com.Synchrome.collabcontent.chat.service.ChatService;
@@ -20,11 +21,13 @@ public class StompController {
     private final SimpMessageSendingOperations messageTemplate;
     private final ChatService chatService;
     private final KafkaTemplate kafkaTemplate;
+    private final CanvasService canvasService;
 
-    public StompController(SimpMessageSendingOperations messageTemplate, ChatService chatService, KafkaTemplate kafkaTemplate) {
+    public StompController(SimpMessageSendingOperations messageTemplate, ChatService chatService, KafkaTemplate kafkaTemplate, CanvasService canvasService) {
         this.messageTemplate = messageTemplate;
         this.chatService = chatService;
         this.kafkaTemplate = kafkaTemplate;
+        this.canvasService = canvasService;
     }
 
     @MessageMapping("/chat/{roomId}")
@@ -40,11 +43,12 @@ public class StompController {
         kafkaTemplate.send("chat", message);
     }
 
-    @MessageMapping("/document/{documentId}")  // 실제 경로: /publish/document/1
-    public void handleDocumentUpdate(@DestinationVariable Long documentId, DocumentMessageDto documentMessageDto) throws JsonProcessingException {
+    @MessageMapping("/canvas/{canvasId}")
+    public void handleCanvasUpdate(@DestinationVariable Long canvasId, CanvasMessageDto canvasMessageDto) throws JsonProcessingException {
+        canvasService.saveCanvas(canvasMessageDto);
         ObjectMapper objectMapper = new ObjectMapper();
-        String message = objectMapper.writeValueAsString(documentMessageDto);
+        String message = objectMapper.writeValueAsString(canvasMessageDto);
         System.out.println("✅ 캔버스 변경 사항 수신");
-        kafkaTemplate.send("document", message);
+        kafkaTemplate.send("canvas", message);
     }
 }

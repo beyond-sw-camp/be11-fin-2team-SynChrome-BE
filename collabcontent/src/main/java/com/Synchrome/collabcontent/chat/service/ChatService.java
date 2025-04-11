@@ -58,18 +58,19 @@ public class ChatService {
         chatParticipantRepository.delete(participant);
     }
 
-    public void createGroupChatRoom(Long userId, String roomName) {
+    public Long createGroupChatRoom(Long userId, String roomName) {
         ChatRoom chatRoom = ChatRoom.builder()
                 .name(roomName)
                 .isGroupChat("Y")
                 .build();
-        chatRoomRepository.save(chatRoom);
+        Long roomId = chatRoomRepository.save(chatRoom).getId();
 
         ChatParticipant creator = ChatParticipant.builder()
                 .chatRoom(chatRoom)
                 .userId(userId)
                 .build();
         chatParticipantRepository.save(creator);
+        return roomId;
     }
 
     public void joinGroupChatRoom(Long userId, Long roomId) {
