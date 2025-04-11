@@ -116,11 +116,15 @@ public class WorkSpaceService {
     public List<MyWorkSpaceResDto> findMyWorkSpace(Long userId){
         Optional<List<WorkSpace>> optionalWorkSpaces = workSpaceRepository.findByUserIdAndDel(userId, Del.N);
 
-        if (optionalWorkSpaces.isEmpty() || optionalWorkSpaces.get().isEmpty()) {
-            return new ArrayList<>();
-        }
+        List<WorkSpace> workSpaces = optionalWorkSpaces.orElse(new ArrayList<>());
 
-        List<WorkSpace> workSpaces = optionalWorkSpaces.get();
+        List<WorkSpaceParticipant> participants = workSpaceParticipantRepository.findByUserIdAndDel(userId, Del.N);
+        for (WorkSpaceParticipant participant : participants) {
+            WorkSpace ws = participant.getWorkSpace();
+            if (ws.getDel() == Del.N && !workSpaces.contains(ws)) {
+                workSpaces.add(ws);
+            }
+        }
 
         return workSpaces.stream()
                 .map(ws -> MyWorkSpaceResDto.builder()
