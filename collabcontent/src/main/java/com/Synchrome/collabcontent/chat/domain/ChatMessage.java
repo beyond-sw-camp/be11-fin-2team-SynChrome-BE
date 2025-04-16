@@ -29,9 +29,8 @@ public class ChatMessage extends BaseTimeEntity {
     @Column(nullable = false, length = 500)
     private String content;
 
-    @OneToMany(mappedBy = "chatMessage", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<ReadStatus> readStatuses = new ArrayList<>();
-
     private Long parentId;
+
+    private boolean presentUnreadMessage;
 
 }
