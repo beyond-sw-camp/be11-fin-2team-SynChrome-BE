@@ -4,6 +4,7 @@ package com.Synchrome.collabcontent.common.stomp;
 import com.Synchrome.collabcontent.canvas.dto.DocumentMessageDto;
 import com.Synchrome.collabcontent.chat.domain.ChatMessage;
 import com.Synchrome.collabcontent.chat.dto.ChatMessageDto;
+import com.Synchrome.collabcontent.chat.dto.NotificationDto;
 import com.Synchrome.collabcontent.chat.service.ChatService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,6 +14,9 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
 public class StompController {
@@ -38,6 +42,25 @@ public class StompController {
         String message = objectMapper.writeValueAsString(chatMessageReqDto);
         System.out.println("✅ 카프카 프로듀서 실행");
         kafkaTemplate.send("chat", message);
+
+        Pattern pattern = Pattern.compile("@(\\w+)");
+        Matcher matcher = pattern.matcher(chatMessageReqDto.getMessage());
+        while (matcher.find()){
+            String mentionedUserId = matcher.group(1);
+            NotificationDto notification = new NotificationDto();
+            notification.setUserId(Long.valueOf(mentionedUserId));
+            notification.setRoomId(roomId);
+            notification.setFromUserId(chatMessageReqDto.getUserId());
+            notification.setMessage(chatMessageReqDto.getMessage());
+
+            String notificationJson = objectMapper.writeValueAsString(notification);
+            kafkaTemplate.send("notification", notificationJson);
+
+
+
+        }
+
+
     }
 
     @MessageMapping("/document/{documentId}")  // 실제 경로: /publish/document/1

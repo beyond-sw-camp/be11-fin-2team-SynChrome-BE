@@ -1,32 +1,43 @@
 package com.Synchrome.workspace.drive.common;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
 import java.util.UUID;
 
 @Component
 public class S3Uploader {
-    private final AmazonS3 s3;
+    private final S3Client s3Client;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public S3Uploader(AmazonS3 s3) {
-        this.s3 = s3;
+    public S3Uploader(S3Client s3, S3Client s3Client) {
+        this.s3Client = s3Client;
     }
 
     public String uploadFile(MultipartFile file) throws IOException {
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(file.getSize());
 
-        s3.putObject(bucket, fileName, file.getInputStream(), metadata);
+        // 요청 정보 설정
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(fileName)
+                .contentType(file.getContentType()) // MIME 타입 설정
+                .build();
 
-        return s3.getUrl(bucket, fileName).toString(); // 👉 이 URL이 content에 들어감
+        // 실제 업로드
+        s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+
+        // 업로드된 파일의 S3 URL 반환
+        return s3Client.utilities()
+                .getUrl(builder -> builder.bucket(bucket).key(fileName))
+                .toExternalForm();
     }
 }
