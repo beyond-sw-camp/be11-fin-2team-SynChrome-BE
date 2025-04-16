@@ -3,6 +3,9 @@
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/collabcontent" />
+    <file type="web" url="file://$PROJECT_DIR$/configserver" />
+    <file type="web" url="file://$PROJECT_DIR$/eureka" />
+    <file type="web" url="file://$PROJECT_DIR$/gateway" />
     <file type="web" url="file://$PROJECT_DIR$/user" />
     <file type="web" url="file://$PROJECT_DIR$/workspace" />
   </component>

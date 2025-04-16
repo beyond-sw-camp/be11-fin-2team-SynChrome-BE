@@ -1,31 +1,22 @@
 package com.Synchrome.workspace.space.service;
 
-import com.Synchrome.workspace.space.domain.Channel;
-import com.Synchrome.workspace.space.domain.ChannelParticipant;
+import com.Synchrome.workspace.common.S3Uploader;
+import com.Synchrome.workspace.space.domain.*;
 import com.Synchrome.workspace.space.domain.ENUM.Del;
 import com.Synchrome.workspace.space.domain.ENUM.Owner;
-import com.Synchrome.workspace.space.domain.Section;
-import com.Synchrome.workspace.space.domain.WorkSpace;
 import com.Synchrome.workspace.space.dtos.channelDtos.*;
-import com.Synchrome.workspace.space.dtos.sectionDtos.FindMySectionDto;
-import com.Synchrome.workspace.space.dtos.sectionDtos.SectionCreateDto;
-import com.Synchrome.workspace.space.dtos.sectionDtos.SectionDeleteDto;
-import com.Synchrome.workspace.space.dtos.sectionDtos.SectionupdateDto;
-import com.Synchrome.workspace.space.dtos.workSpaceDtos.MyWorkSpaceResDto;
-import com.Synchrome.workspace.space.dtos.workSpaceDtos.WorkSpaceCreateDto;
-import com.Synchrome.workspace.space.dtos.workSpaceDtos.WorkSpaceUpdateDto;
-import com.Synchrome.workspace.space.repository.ChannelParticipantRepository;
-import com.Synchrome.workspace.space.repository.ChannelRepository;
-import com.Synchrome.workspace.space.repository.SectionRepository;
-import com.Synchrome.workspace.space.repository.WorkSpaceRepository;
+import com.Synchrome.workspace.space.dtos.sectionDtos.*;
+import com.Synchrome.workspace.space.dtos.workSpaceDtos.*;
+import com.Synchrome.workspace.space.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.io.IOException;
+
+import java.util.*;
 
 @Service
 @Transactional
@@ -33,23 +24,66 @@ public class WorkSpaceService {
     private final WorkSpaceRepository workSpaceRepository;
     private final SectionRepository sectionRepository;
     private final ChannelRepository channelRepository;
+    private final WorkSpaceParticipantRepository workSpaceParticipantRepository;
     private final ChannelParticipantRepository channelParticipantRepository;
+    private final S3Uploader s3Uploader;
 
-    public WorkSpaceService(WorkSpaceRepository workSpaceRepository, SectionRepository sectionRepository, ChannelRepository channelRepository, ChannelParticipantRepository channelParticipantRepository) {
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+
+    public WorkSpaceService(WorkSpaceRepository workSpaceRepository, SectionRepository sectionRepository, ChannelRepository channelRepository, WorkSpaceParticipantRepository workSpaceParticipantRepository, ChannelParticipantRepository channelParticipantRepository, S3Uploader s3Uploader) {
         this.workSpaceRepository = workSpaceRepository;
         this.sectionRepository = sectionRepository;
         this.channelRepository = channelRepository;
+        this.workSpaceParticipantRepository = workSpaceParticipantRepository;
         this.channelParticipantRepository = channelParticipantRepository;
+        this.s3Uploader = s3Uploader;
     }
 
-    public Long saveWorkSpace(WorkSpaceCreateDto dto){
+    public Long saveWorkSpace(WorkSpaceCreateDto dto) throws IOException {
+        String logoUrl = null;
+        MultipartFile logoFile = dto.getLogo();
+        if (logoFile != null && !logoFile.isEmpty()) {
+            logoUrl = s3Uploader.uploadFile(logoFile);
+        }
         WorkSpace workSpace = WorkSpace.builder()
                 .title(dto.getTitle())
                 .userId(dto.getUserId())
                 .inviteUrl(dto.getInviteUrl())
+                .logo(logoUrl)
                 .build();
-        workSpaceRepository.save(workSpace);
-        return workSpace.getId();
+
+        Section commonSection = Section.builder()
+                .title("공통 섹션")
+                .userId(dto.getUserId())
+                .workSpace(workSpace)
+                .build();
+
+        Channel channel1 = Channel.builder()
+                .title("공지사항")
+                .userId(dto.getUserId())
+                .section(commonSection)
+                .build();
+
+        Channel channel2 = Channel.builder()
+                .title("자유게시판")
+                .userId(dto.getUserId())
+                .section(commonSection)
+                .build();
+
+        commonSection.getChannels().add(channel1);
+        commonSection.getChannels().add(channel2);
+
+        workSpace.getSections().add(commonSection);
+
+        WorkSpace saveWorkSpace = workSpaceRepository.save(workSpace);
+        WorkSpaceParticipant participant = WorkSpaceParticipant.builder()
+                .userId(dto.getUserId())
+                .workSpace(saveWorkSpace)
+                .build();
+
+        workSpaceParticipantRepository.save(participant);
+        return saveWorkSpace.getId();
     }
 
     public Long deleteMyWorkSpace(Long workSpaceId, Long userId){
@@ -82,11 +116,15 @@ public class WorkSpaceService {
     public List<MyWorkSpaceResDto> findMyWorkSpace(Long userId){
         Optional<List<WorkSpace>> optionalWorkSpaces = workSpaceRepository.findByUserIdAndDel(userId, Del.N);
 
-        if (optionalWorkSpaces.isEmpty() || optionalWorkSpaces.get().isEmpty()) {
-            return new ArrayList<>();
-        }
+        List<WorkSpace> workSpaces = optionalWorkSpaces.orElse(new ArrayList<>());
 
-        List<WorkSpace> workSpaces = optionalWorkSpaces.get();
+        List<WorkSpaceParticipant> participants = workSpaceParticipantRepository.findByUserIdAndDel(userId, Del.N);
+        for (WorkSpaceParticipant participant : participants) {
+            WorkSpace ws = participant.getWorkSpace();
+            if (ws.getDel() == Del.N && !workSpaces.contains(ws)) {
+                workSpaces.add(ws);
+            }
+        }
 
         return workSpaces.stream()
                 .map(ws -> MyWorkSpaceResDto.builder()
@@ -118,15 +156,18 @@ public class WorkSpaceService {
         for (Channel channel : channels) {
             channel.delete();
         }
-        sectionRepository.delete(section);
+        section.delete();
         return section.getId(); // 삭제된 섹션 ID 반환
     }
 
-    public List<String> findMySection(FindMySectionDto dto){
+    public List<MySectionResDto> findMySection(FindMySectionDto dto){
         List<Section> sections = sectionRepository.findByUserIdAndWorkSpaceIdAndDel(dto.getUserId(), dto.getWorkSpaceId(),Del.N);
 
         return sections.stream()
-                .map(Section::getTitle)
+                .map(section -> MySectionResDto.builder()
+                        .sectionId(section.getId())
+                        .title(section.getTitle())
+                        .build())
                 .toList();
     }
 
@@ -141,6 +182,7 @@ public class WorkSpaceService {
         Channel myChannel = Channel.builder().title(dto.getTitle()).userId(dto.getUserId()).section(section).build();
         Channel saveChannel = channelRepository.save(myChannel);
         ChannelParticipant channelParticipant = ChannelParticipant.builder().userId(dto.getUserId()).channel(saveChannel).build();
+        channelParticipantRepository.save(channelParticipant);
         return saveChannel.getId();
     }
 
@@ -173,6 +215,7 @@ public class WorkSpaceService {
         for (Channel channel : myChannels) {
             result.add(ChannelResDto.builder()
                     .channelId(channel.getId())
+                    .sectionId(channel.getSection().getId())
                     .title(channel.getTitle())
                     .owner(Owner.M)
                     .build());
@@ -181,6 +224,7 @@ public class WorkSpaceService {
         for (Channel channel : joinedChannels) {
             result.add(ChannelResDto.builder()
                     .channelId(channel.getId())
+                    .sectionId(channel.getSection().getId())
                     .title(channel.getTitle())
                     .owner(Owner.Y)
                     .build());
@@ -193,5 +237,80 @@ public class WorkSpaceService {
         Section section = sectionRepository.findById(dto.getSectionId()).orElseThrow(()->new EntityNotFoundException("없는 섹션"));
         channel.update(section,dto.getTitle());
         return channel.getId();
+    }
+
+    public String inviteWorkSpace(InviteUserDto dto){
+        WorkSpace workSpace = workSpaceRepository.findByInviteUrl(dto.getInviteUrl())
+                .orElseThrow(() -> new EntityNotFoundException("없는 워크스페이스"));
+
+        Long userId = dto.getUserId();
+        boolean alreadyExists = workSpaceParticipantRepository.existsByUserIdAndWorkSpace(userId, workSpace);
+
+        if (!alreadyExists) {
+            WorkSpaceParticipant participant = WorkSpaceParticipant.builder()
+                    .userId(userId)
+                    .workSpace(workSpace)
+                    .build();
+
+            workSpaceParticipantRepository.save(participant);
+        }
+
+        return "유저 워크스페이스에 초대되었습니다.";
+    }
+
+    public List<WorkSpaceInfoDto> getMyWorkspaceSectionAndChannels(GetWorkSpaceInfoDto dto) {
+        Long workSpaceId = dto.getWorkSpaceId();
+        Long userId = dto.getUserId();
+
+        // 1. 내가 만든 섹션
+        List<Section> mySections = sectionRepository.findByWorkSpaceIdAndUserIdAndDel(workSpaceId,userId, Del.N);
+
+        // 2. 섹션별로 내가 만든 채널 매핑
+        List<WorkSpaceInfoDto> mySectionList = mySections.stream()
+                .map(section -> {
+                    List<ChannelResDto> myChannels = section.getChannels().stream()
+                            .filter(c -> c.getUserId().equals(userId) && c.getDel() == Del.N)
+                            .map(channel -> ChannelResDto.builder()
+                                    .channelId(channel.getId())
+                                    .sectionId(section.getId())
+                                    .title(channel.getTitle())
+                                    .build())
+                            .toList();
+
+                    return WorkSpaceInfoDto.builder()
+                            .sectionId(section.getId())
+                            .title(section.getTitle())
+                            .channels(myChannels)
+                            .build();
+                })
+                .toList();
+
+        // 3. 내가 초대된 채널들 중, 내가 만든 채널은 제외하고, 워크스페이스 내 채널만 필터
+        List<ChannelParticipant> joined = channelParticipantRepository.findByUserId(userId);
+        List<ChannelResDto> joinedChannelDtos = joined.stream()
+                .map(ChannelParticipant::getChannel)
+                .filter(channel -> !channel.getUserId().equals(userId)) // 내가 만든 채널은 제외
+                .filter(channel -> channel.getDel() == Del.N)
+                .filter(channel -> channel.getSection().getWorkSpace().getId().equals(workSpaceId))
+                .map(channel -> ChannelResDto.builder()
+                        .channelId(channel.getId())
+                        .sectionId(channel.getSection().getId())
+                        .title(channel.getTitle())
+                        .build())
+                .toList();
+
+        // 4. 공통 섹션(내가 참여한 채널들)
+        if (!joinedChannelDtos.isEmpty()) {
+            WorkSpaceInfoDto sharedSection = WorkSpaceInfoDto.builder()
+                    .sectionId(null)
+                    .title("공통")
+                    .channels(joinedChannelDtos)
+                    .build();
+
+            mySectionList = new ArrayList<>(mySectionList); // 불변 List일 수도 있으니 복사
+            mySectionList.add(sharedSection);
+        }
+
+        return mySectionList;
     }
 }

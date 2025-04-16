@@ -1,7 +1,8 @@
 package com.Synchrome.workspace.space.domain;
 
-import com.Synchrome.workspace.space.common.BaseTimeEntity;
+import com.Synchrome.workspace.common.BaseTimeEntity;
 import com.Synchrome.workspace.space.domain.ENUM.Del;
+import com.Synchrome.workspace.space.domain.ENUM.Owner;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,9 @@ public class Channel extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private Del del = Del.N;
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private Owner owner = Owner.U;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "section_id")
     private Section section;

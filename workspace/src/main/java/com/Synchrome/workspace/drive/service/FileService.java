@@ -1,6 +1,6 @@
 package com.Synchrome.workspace.drive.service;
 
-import com.Synchrome.workspace.drive.common.S3Uploader;
+import com.Synchrome.workspace.common.S3Uploader;
 import com.Synchrome.workspace.drive.domain.document;
 import com.Synchrome.workspace.drive.domain.tag;
 import com.Synchrome.workspace.drive.repository.documentRepository;

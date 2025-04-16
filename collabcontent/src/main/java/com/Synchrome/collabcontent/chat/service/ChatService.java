@@ -8,6 +8,7 @@ import com.Synchrome.collabcontent.chat.domain.ReadStatus;
 import com.Synchrome.collabcontent.chat.dto.ChatMessageDto;
 import com.Synchrome.collabcontent.chat.dto.ChatRoomResDto;
 import com.Synchrome.collabcontent.chat.dto.MyChatListResDto;
+import com.Synchrome.collabcontent.chat.dto.ReadStatusCreateDto;
 import com.Synchrome.collabcontent.chat.repository.ChatMessageRepository;
 import com.Synchrome.collabcontent.chat.repository.ChatParticipantRepository;
 import com.Synchrome.collabcontent.chat.repository.ChatRoomRepository;
@@ -40,12 +41,29 @@ public class ChatService {
 
         return participants.stream().map(cp -> {
             ChatRoom room = cp.getChatRoom();
-            Long unreadCount = readStatusRepository.countByChatRoomAndUserIdAndIsReadFalse(room, userId);
+            Long roomId = room.getId();
+
+            // 해당 유저의 ReadStatus 가져오기
+            ReadStatus readStatus = readStatusRepository
+                    .findByUserIdAndChatRoomId(userId, roomId)
+                    .orElse(null);
+
+            boolean hasUnread = false;
+
+            if (readStatus != null) {
+                // 해당 시점 이후 메시지 있는지 확인
+                hasUnread = chatMessageRepository.existsByChatRoomIdAndIdGreaterThan(
+                        roomId, readStatus.getLastReadMessageId());
+            } else {
+                // 처음 들어간 채팅방이거나 읽음 처리 전 => 모두 안읽음 처리
+                hasUnread = chatMessageRepository.existsByChatRoomId(roomId);
+            }
+
             return MyChatListResDto.builder()
-                    .roomId(room.getId())
+                    .roomId(roomId)
                     .roomName(room.getName())
                     .isGroupChat(room.getIsGroupChat())
-                    .unReadCount(unreadCount)
+                    .presentUnreadMessage(hasUnread)
                     .build();
         }).collect(Collectors.toList());
     }
@@ -58,18 +76,19 @@ public class ChatService {
         chatParticipantRepository.delete(participant);
     }
 
-    public void createGroupChatRoom(Long userId, String roomName) {
+    public Long createGroupChatRoom(Long userId, String roomName) {
         ChatRoom chatRoom = ChatRoom.builder()
                 .name(roomName)
                 .isGroupChat("Y")
                 .build();
-        chatRoomRepository.save(chatRoom);
+        Long roomId = chatRoomRepository.save(chatRoom).getId();
 
         ChatParticipant creator = ChatParticipant.builder()
                 .chatRoom(chatRoom)
                 .userId(userId)
                 .build();
         chatParticipantRepository.save(creator);
+        return roomId;
     }
 
     public void joinGroupChatRoom(Long userId, Long roomId) {
@@ -133,10 +152,9 @@ public class ChatService {
         return chatParticipantRepository.findByUserIdAndChatRoomId(userId, roomId).isPresent();
     }
 
-    public void readStatusUpdate(Long roomId, Long userId) {
-        List<ReadStatus> unreadStatuses = readStatusRepository.findAllByChatRoomIdAndUserIdAndIsReadFalse(roomId, userId);
-        unreadStatuses.forEach(status -> status.updateIsRead(true));
-        readStatusRepository.saveAll(unreadStatuses);
+    public void readStatusUpdate(Long roomId, ReadStatusCreateDto dto) {
+        ReadStatus myReadStatus = ReadStatus.builder().chatRoomId(roomId).userId(dto.getUserId()).lastReadMessageId(dto.getLastReadMessageId()).build();
+        ReadStatus readStatus = readStatusRepository.save(myReadStatus);
     }
 
     public List<ChatMessageDto> getThreadMessages(Long parentId, int limit, Long beforeId) {

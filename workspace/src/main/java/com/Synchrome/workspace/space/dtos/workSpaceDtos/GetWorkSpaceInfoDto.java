@@ -4,15 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Data
-public class WorkSpaceCreateDto {
-    private String title;
+public class GetWorkSpaceInfoDto {
+    private Long workSpaceId;
     private Long userId;
-    private String inviteUrl;
-    private MultipartFile logo;
 }

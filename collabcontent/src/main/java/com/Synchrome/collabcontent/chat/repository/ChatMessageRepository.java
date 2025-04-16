@@ -20,4 +20,7 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
     List<ChatMessage> findByParentIdOrderByIdDesc(Long parentId, Pageable pageable);
 
     List<ChatMessage> findByParentIdAndIdLessThanOrderByIdDesc(Long parentId, Long beforeId, Pageable pageable);
+
+    boolean existsByChatRoomIdAndIdGreaterThan(Long chatRoomId, Long id);
+    boolean existsByChatRoomId(Long chatRoomId);
 }
