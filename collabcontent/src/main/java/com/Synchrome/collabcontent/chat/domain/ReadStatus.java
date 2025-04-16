@@ -18,20 +18,12 @@ public class ReadStatus extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_room_id", nullable = false)
-    private ChatRoom chatRoom;
-
-    private Long userId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_message_id", nullable = false)
-    private ChatMessage chatMessage;
+    @Column(nullable = false)
+    private Long chatRoomId;
 
     @Column(nullable = false)
-    private Boolean isRead;
+    private Long userId;
 
-    public void updateIsRead(boolean isRead){
-        this.isRead = isRead;
-    }
+    @Column(nullable = false)
+    private Long lastReadMessageId;
 }

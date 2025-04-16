@@ -6,10 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReadStatusRepository extends JpaRepository<ReadStatus, Long> {
-    Long countByChatRoomAndUserIdAndIsReadFalse(ChatRoom chatRoom, Long userId);
-
-    List<ReadStatus> findAllByChatRoomIdAndUserIdAndIsReadFalse(Long roomId, Long userId);
+    Optional<ReadStatus> findByUserIdAndChatRoomId(Long userId, Long chatRoomId);
 }

@@ -4,14 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.jmx.export.annotation.ManagedNotifications;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MyChatListResDto {
-    private Long roomId;
-    private String roomName;
-    private String isGroupChat;
-    private boolean presentUnreadMessage;
+@Data
+public class ReadStatusCreateDto {
+    private Long userId;
+    private Long lastReadMessageId;
 }

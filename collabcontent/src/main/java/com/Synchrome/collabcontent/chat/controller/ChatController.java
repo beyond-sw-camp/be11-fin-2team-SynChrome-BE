@@ -1,10 +1,7 @@
 package com.Synchrome.collabcontent.chat.controller;
 
 
-import com.Synchrome.collabcontent.chat.dto.ChatMessageDto;
-import com.Synchrome.collabcontent.chat.dto.ChatRoomResDto;
-import com.Synchrome.collabcontent.chat.dto.CreateGroupRoomReqDto;
-import com.Synchrome.collabcontent.chat.dto.MyChatListResDto;
+import com.Synchrome.collabcontent.chat.dto.*;
 import com.Synchrome.collabcontent.chat.service.ChatService;
 import com.Synchrome.collabcontent.common.auth.annotation.CurrentUserId;
 import org.springframework.http.HttpStatus;
@@ -59,8 +56,8 @@ public class ChatController {
     }
 
     @PostMapping("/room/{roomId}/read")
-    public ResponseEntity<?> readStatusUpdate(@PathVariable Long roomId, @CurrentUserId Long userId){
-        chatService.readStatusUpdate(roomId, userId);
+    public ResponseEntity<?> readStatusUpdate(@PathVariable Long roomId, @RequestBody ReadStatusCreateDto readStatusCreateDto){
+        chatService.readStatusUpdate(roomId,readStatusCreateDto);
         return new ResponseEntity<>("읽음 처리 성공", HttpStatus.OK);
     }
 
