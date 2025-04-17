@@ -130,6 +130,7 @@ public class WorkSpaceService {
                 .map(ws -> MyWorkSpaceResDto.builder()
                         .workSpaceId(ws.getId())
                         .workSpaceTitle(ws.getTitle())
+                        .logo(ws.getLogo())
                         .build())
                 .toList();
     }
