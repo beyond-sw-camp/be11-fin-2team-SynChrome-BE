@@ -2,6 +2,7 @@ package com.Synchrome.collabcontent.common.kafka;
 
 import com.Synchrome.collabcontent.canvas.dto.CanvasMessageDto;
 import com.Synchrome.collabcontent.chat.dto.ChatMessageDto;
+import com.Synchrome.collabcontent.chat.dto.NotificationDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +32,13 @@ public class KafkaSubscriber {
         System.out.println("📄 문서 ID: " + canvasId);
         System.out.println("인코딩 메시지 : " + docMessage.getUpdate());
         messagingTemplate.convertAndSend("/topic/canvas/" + canvasId, docMessage.getUpdate());
+    }
+
+    @KafkaListener(topics = "notification", groupId = "noti-group")
+    public void listenNotification(String messageJson) throws JsonProcessingException {
+        NotificationDto noti = objectMapper.readValue(messageJson, NotificationDto.class);
+
+        // 유저 전용 알림 채널로 메시지 전송
+        messagingTemplate.convertAndSend("/topic/notify/" + noti.getUserId(), noti);
     }
 }

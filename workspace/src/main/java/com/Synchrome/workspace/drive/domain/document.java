@@ -2,7 +2,7 @@ package com.Synchrome.workspace.drive.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import jakarta.persistence.GeneratedValue;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

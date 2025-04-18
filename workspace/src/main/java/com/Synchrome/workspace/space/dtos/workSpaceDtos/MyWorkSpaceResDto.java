@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class MyWorkSpaceResDto {
     private Long workSpaceId;
     private String workSpaceTitle;
+    private String logo;
 }
