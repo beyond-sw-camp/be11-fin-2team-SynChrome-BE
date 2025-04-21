@@ -1,5 +1,6 @@
 package com.Synchrome.workspace.space.service;
 
+import com.Synchrome.workspace.common.InviteCodeGenerator;
 import com.Synchrome.workspace.common.S3Uploader;
 import com.Synchrome.workspace.space.domain.*;
 import com.Synchrome.workspace.space.domain.ENUM.Del;
@@ -11,8 +12,10 @@ import com.Synchrome.workspace.space.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
@@ -46,10 +49,15 @@ public class WorkSpaceService {
         if (logoFile != null && !logoFile.isEmpty()) {
             logoUrl = s3Uploader.uploadFile(logoFile);
         }
+        String code;
+        do {
+            code = InviteCodeGenerator.generate(6); // 예: 6자리 영문+숫자
+        } while (workSpaceRepository.existsByInviteUrl(code));
+
         WorkSpace workSpace = WorkSpace.builder()
                 .title(dto.getTitle())
                 .userId(dto.getUserId())
-                .inviteUrl(dto.getInviteUrl())
+                .inviteUrl(code)
                 .logo(logoUrl)
                 .build();
 
@@ -57,18 +65,21 @@ public class WorkSpaceService {
                 .title("공통 섹션")
                 .userId(dto.getUserId())
                 .workSpace(workSpace)
+                .owner(Owner.C)
                 .build();
 
         Channel channel1 = Channel.builder()
                 .title("공지사항")
                 .userId(dto.getUserId())
                 .section(commonSection)
+                .owner(Owner.C)
                 .build();
 
         Channel channel2 = Channel.builder()
                 .title("자유게시판")
                 .userId(dto.getUserId())
                 .section(commonSection)
+                .owner(Owner.C)
                 .build();
 
         commonSection.getChannels().add(channel1);
@@ -240,45 +251,36 @@ public class WorkSpaceService {
         return channel.getId();
     }
 
-    public String inviteWorkSpace(InviteUserDto dto){
-        WorkSpace workSpace = workSpaceRepository.findByInviteUrl(dto.getInviteUrl())
-                .orElseThrow(() -> new EntityNotFoundException("없는 워크스페이스"));
-
-        Long userId = dto.getUserId();
-        boolean alreadyExists = workSpaceParticipantRepository.existsByUserIdAndWorkSpace(userId, workSpace);
-
-        if (!alreadyExists) {
-            WorkSpaceParticipant participant = WorkSpaceParticipant.builder()
-                    .userId(userId)
-                    .workSpace(workSpace)
-                    .build();
-
-            workSpaceParticipantRepository.save(participant);
-        }
-
-        return "유저 워크스페이스에 초대되었습니다.";
-    }
 
     public List<WorkSpaceInfoDto> getMyWorkspaceSectionAndChannels(GetWorkSpaceInfoDto dto) {
         Long workSpaceId = dto.getWorkSpaceId();
         Long userId = dto.getUserId();
 
-        // 1. 내가 만든 섹션
-        List<Section> mySections = sectionRepository.findByWorkSpaceIdAndUserIdAndDel(workSpaceId,userId, Del.N);
+        WorkSpace selectedWorkSpace = workSpaceRepository.findById(workSpaceId)
+                .orElseThrow(() -> new EntityNotFoundException("없는 워크스페이스"));
 
-        // 2. 섹션별로 내가 만든 채널 매핑
+        // ✅ 1. 내 개인 섹션 (Owner.U)만 조회
+        List<Section> mySections = sectionRepository.findByWorkSpaceIdAndUserIdAndDel(workSpaceId, userId, Del.N).stream()
+                .filter(section -> section.getOwner() == Owner.U)
+                .toList();
+
+        // ✅ 2. 내 섹션에서 내가 만든 채널만 매핑
         List<WorkSpaceInfoDto> mySectionList = mySections.stream()
                 .map(section -> {
                     List<ChannelResDto> myChannels = section.getChannels().stream()
                             .filter(c -> c.getUserId().equals(userId) && c.getDel() == Del.N)
+                            .filter(c -> c.getOwner() == Owner.U)
                             .map(channel -> ChannelResDto.builder()
                                     .channelId(channel.getId())
                                     .sectionId(section.getId())
                                     .title(channel.getTitle())
+                                    .owner(Owner.U)
                                     .build())
                             .toList();
 
                     return WorkSpaceInfoDto.builder()
+                            .workspaceId(selectedWorkSpace.getId())
+                            .workspaceTitle(selectedWorkSpace.getTitle())
                             .sectionId(section.getId())
                             .title(section.getTitle())
                             .channels(myChannels)
@@ -286,32 +288,133 @@ public class WorkSpaceService {
                 })
                 .toList();
 
-        // 3. 내가 초대된 채널들 중, 내가 만든 채널은 제외하고, 워크스페이스 내 채널만 필터
-        List<ChannelParticipant> joined = channelParticipantRepository.findByUserId(userId);
-        List<ChannelResDto> joinedChannelDtos = joined.stream()
+        // ✅ 3. 공통 채널
+        List<ChannelResDto> commonChannelDtos = channelRepository.findBySection_WorkSpaceIdAndDel(workSpaceId, Del.N).stream()
+                .filter(channel -> channel.getOwner() == Owner.C)
+                .map(channel -> ChannelResDto.builder()
+                        .channelId(channel.getId())
+                        .sectionId(channel.getSection().getId())
+                        .title(channel.getTitle())
+                        .owner(Owner.C)
+                        .build())
+                .toList();
+
+        // ✅ 4. 초대받은 채널
+        List<ChannelResDto> invitedChannelDtos = channelParticipantRepository.findByUserId(userId).stream()
                 .map(ChannelParticipant::getChannel)
-                .filter(channel -> !channel.getUserId().equals(userId)) // 내가 만든 채널은 제외
+                .filter(channel -> !channel.getUserId().equals(userId)) // 내가 만든 거 제외
                 .filter(channel -> channel.getDel() == Del.N)
+                .filter(channel -> channel.getOwner() == Owner.U) // 공통 아닌 개인 채널 중 초대받은 것만
                 .filter(channel -> channel.getSection().getWorkSpace().getId().equals(workSpaceId))
                 .map(channel -> ChannelResDto.builder()
                         .channelId(channel.getId())
                         .sectionId(channel.getSection().getId())
                         .title(channel.getTitle())
+                        .owner(Owner.U)
                         .build())
                 .toList();
 
-        // 4. 공통 섹션(내가 참여한 채널들)
-        if (!joinedChannelDtos.isEmpty()) {
+        // ✅ 5. 공통 섹션 구성
+        List<ChannelResDto> allSharedChannels = new ArrayList<>();
+        allSharedChannels.addAll(commonChannelDtos);
+        allSharedChannels.addAll(invitedChannelDtos);
+
+        Section commonSection = sectionRepository.findByWorkSpaceIdAndOwnerAndDel(workSpaceId, Owner.C, Del.N)
+                .orElse(null);
+
+        if (!allSharedChannels.isEmpty()) {
             WorkSpaceInfoDto sharedSection = WorkSpaceInfoDto.builder()
-                    .sectionId(null)
+                    .workspaceId(selectedWorkSpace.getId())
+                    .workspaceTitle(selectedWorkSpace.getTitle())
+                    .sectionId(commonSection != null ? commonSection.getId() : null) // ✅ 여기!
                     .title("공통")
-                    .channels(joinedChannelDtos)
+                    .channels(allSharedChannels)
                     .build();
 
-            mySectionList = new ArrayList<>(mySectionList); // 불변 List일 수도 있으니 복사
+            mySectionList = new ArrayList<>(mySectionList);
             mySectionList.add(sharedSection);
         }
 
+
         return mySectionList;
     }
+
+    public void inviteUsersToWorkspace(Long workspaceId, List<Long> userIds) {
+        WorkSpace workspace = workSpaceRepository.findById(workspaceId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 워크스페이스입니다."));
+
+        List<Long> existingUserIds = workSpaceParticipantRepository
+                .findByWorkSpaceIdAndDel(workspaceId, Del.N).stream()
+                .map(WorkSpaceParticipant::getUserId)
+                .toList();
+
+        List<Long> duplicated = userIds.stream()
+                .filter(existingUserIds::contains)
+                .toList();
+
+        if (!duplicated.isEmpty()) {
+            throw new IllegalArgumentException("이미 참여 중인 사용자입니다: " + duplicated);
+        }
+
+        List<WorkSpaceParticipant> newParticipants = userIds.stream()
+                .map(userId -> WorkSpaceParticipant.builder()
+                        .userId(userId)
+                        .workSpace(workspace)
+                        .build())
+                .toList();
+
+        workSpaceParticipantRepository.saveAll(newParticipants);
+    }
+
+
+
+    public Long getWorkspaceIdByInviteUrl(String inviteUrl) {
+        WorkSpace workspace = workSpaceRepository.findByInviteUrlAndDel(inviteUrl, Del.N)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "초대코드가 유효하지 않습니다."));
+
+        return workspace.getId();
+    }
+
+    public void acceptInvite(Long workspaceId, Long userId) {
+        WorkSpace workspace = workSpaceRepository.findByIdAndDel(workspaceId, Del.N)
+                .orElseThrow(() -> new RuntimeException("워크스페이스가 존재하지 않거나 삭제되었습니다."));
+
+        boolean alreadyJoined = workSpaceParticipantRepository.existsByWorkSpaceIdAndUserIdAndDel(workspaceId, userId, Del.N);
+        if (alreadyJoined) return;
+
+        WorkSpaceParticipant participant = WorkSpaceParticipant.builder()
+                .userId(userId)
+                .workSpace(workspace)
+                .build();
+
+        workSpaceParticipantRepository.save(participant);
+    }
+
+    public void inviteUserToChannel(Long channelId, List<Long> userIds) {
+        Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 채널입니다."));
+
+        List<Long> existingUserIds = channelParticipantRepository
+                .findByChannelIdAndDel(channelId, Del.N).stream()
+                .map(ChannelParticipant::getUserId)
+                .toList();
+
+        List<Long> duplicated = userIds.stream()
+                .filter(existingUserIds::contains)
+                .toList();
+
+        if (!duplicated.isEmpty()) {
+            throw new IllegalArgumentException("이미 채널에 참여 중인 사용자입니다: " + duplicated);
+        }
+
+        List<ChannelParticipant> newParticipants = userIds.stream()
+                .map(userId -> ChannelParticipant.builder()
+                        .userId(userId)
+                        .channel(channel)
+                        .build())
+                .toList();
+
+        channelParticipantRepository.saveAll(newParticipants);
+    }
+
 }

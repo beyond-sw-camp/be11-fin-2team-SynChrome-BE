@@ -12,5 +12,5 @@ import java.util.List;
 public interface ChannelRepository extends JpaRepository<Channel,Long> {
     List<Channel> findBySectionIdAndDel(Long sectionId, Del del);
     List<Channel> findByUserIdAndDel(Long userId, Del del);
-
+    List<Channel> findBySection_WorkSpaceIdAndDel(Long workSpaceId, Del del);
 }
