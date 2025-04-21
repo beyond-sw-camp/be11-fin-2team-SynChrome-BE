@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface ChannelParticipantRepository extends JpaRepository<ChannelParticipant,Long> {
     List<ChannelParticipant> findByUserId(Long userId);
+    List<ChannelParticipant> findByChannelIdAndDel(Long channelId, Del del);
 }

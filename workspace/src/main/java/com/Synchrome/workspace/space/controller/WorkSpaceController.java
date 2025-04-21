@@ -1,5 +1,6 @@
 package com.Synchrome.workspace.space.controller;
 
+import com.Synchrome.workspace.space.domain.WorkSpace;
 import com.Synchrome.workspace.space.dtos.channelDtos.*;
 import com.Synchrome.workspace.space.dtos.sectionDtos.*;
 import com.Synchrome.workspace.space.dtos.workSpaceDtos.*;
@@ -8,10 +9,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -50,11 +48,6 @@ public class WorkSpaceController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("inviteUser")
-    public ResponseEntity<?> inviteUser(@RequestBody InviteUserDto inviteUserDto){
-        String response = workSpaceService.inviteWorkSpace(inviteUserDto);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
 
     @PostMapping("/createSection")
     public ResponseEntity<?> createSection(@RequestBody SectionCreateDto sectionCreateDto){
@@ -115,5 +108,29 @@ public class WorkSpaceController {
         List<WorkSpaceInfoDto> response = workSpaceService.getMyWorkspaceSectionAndChannels(getWorkSpaceInfoDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+//    여러 회원을 한번에 초대하는 url
+    @PostMapping("/invite")
+    public ResponseEntity<String> inviteUsersToWorkspace(@RequestBody MultiWorkSpaceInviteDto dto) {
+        workSpaceService.inviteUsersToWorkspace(dto.getWorkspaceId(), dto.getUserIds());
+        return ResponseEntity.ok("워크스페이스에 유저들을 초대했습니다.");
+    }
 
+    @GetMapping("/invite/{inviteUrl}")
+    public ResponseEntity<Long> previewInvite(@PathVariable String inviteUrl) {
+        Long response = workSpaceService.getWorkspaceIdByInviteUrl(inviteUrl);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+//    초대코드를 타고 들어오는 단일 회원 초대
+    @PostMapping("/accept")
+    public ResponseEntity<String> acceptInvite(@RequestBody InviteAcceptDto dto) {
+        workSpaceService.acceptInvite(dto.getWorkspaceId(), dto.getUserId());
+        return ResponseEntity.ok("워크스페이스에 성공적으로 참여했습니다.");
+    }
+
+    @PostMapping("/channel/invite")
+    public ResponseEntity<String> inviteUserToChannel(@RequestBody ChannelInviteDto dto) {
+        workSpaceService.inviteUserToChannel(dto.getChannelId(), dto.getUserIds());
+        return ResponseEntity.ok("채널에 초대 완료");
+    }
 }

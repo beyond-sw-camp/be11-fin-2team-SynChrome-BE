@@ -13,6 +13,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class WorkSpaceCreateDto {
     private String title;
     private Long userId;
-    private String inviteUrl;
     private MultipartFile logo;
 }
