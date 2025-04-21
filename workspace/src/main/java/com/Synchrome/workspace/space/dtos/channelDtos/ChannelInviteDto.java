@@ -1,4 +1,4 @@
-package com.Synchrome.workspace.space.dtos.workSpaceDtos;
+package com.Synchrome.workspace.space.dtos.channelDtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,10 +7,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Data
-public class InviteUserDto {
-    private Long userId;
+public class ChannelInviteDto {
+    private Long channelId;
+    private List<Long> userIds;
 }
