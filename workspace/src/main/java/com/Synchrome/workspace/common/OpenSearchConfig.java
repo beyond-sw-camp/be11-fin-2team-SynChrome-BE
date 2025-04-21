@@ -21,7 +21,7 @@ public class OpenSearchConfig {
                 new UsernamePasswordCredentials("admin", "36167e1564A!")); // 여기에 실제 유저/비번
 
         return new RestHighLevelClient(
-                RestClient.builder(new HttpHost("search-opensearch-xy3slsx2paeawfpdwfgvhnxe4q.aos.ap-northeast-2.on.aws", 443, "https"))
+                RestClient.builder(new HttpHost("search-opensearch-ceoxcprbhdzmtytpptbqos7f7m.aos.ap-northeast-2.on.aws", 443, "https"))
                         .setHttpClientConfigCallback(httpClientBuilder ->
                                 httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider))
         );

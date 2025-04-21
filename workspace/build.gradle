@@ -39,7 +39,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.opensearch:opensearch-core:2.11.0'
 	implementation 'org.opensearch.client:opensearch-rest-client:2.11.0'
-
 	//	eureka 의존성 추가
 	implementation	'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	// Kafka Core (Producer, Consumer, Admin 등)
