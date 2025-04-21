@@ -9,7 +9,7 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     database: mysql
     database-platform: org.hibernate.dialect.MariaDBDialect
     generate-ddl: true
@@ -32,10 +32,10 @@ server:
 cloud:
   aws:
     s3:
-      bucket: hans-ordersystem-image
+      bucket: stomachforce
     credentials:
-      access-key: AKIA2AUOPD3OP5O6TQG2
-      secret-key: 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
+      access-key: AKIAT4GVRVENSQ6EB6P6
+      secret-key: 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
     region:
       static: ap-northeast-2
     stack:
