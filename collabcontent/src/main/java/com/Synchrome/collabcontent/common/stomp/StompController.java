@@ -7,6 +7,7 @@ import com.Synchrome.collabcontent.chat.domain.ChatMessage;
 import com.Synchrome.collabcontent.chat.dto.ChatMessageDto;
 import com.Synchrome.collabcontent.chat.dto.NotificationDto;
 import com.Synchrome.collabcontent.chat.service.ChatService;
+import com.Synchrome.collabcontent.chat.service.NotificationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -26,12 +27,14 @@ public class StompController {
     private final ChatService chatService;
     private final KafkaTemplate kafkaTemplate;
     private final CanvasService canvasService;
+    private final NotificationService notificationService;
 
-    public StompController(SimpMessageSendingOperations messageTemplate, ChatService chatService, KafkaTemplate kafkaTemplate, CanvasService canvasService) {
+    public StompController(SimpMessageSendingOperations messageTemplate, ChatService chatService, KafkaTemplate kafkaTemplate, CanvasService canvasService, NotificationService notificationService) {
         this.messageTemplate = messageTemplate;
         this.chatService = chatService;
         this.kafkaTemplate = kafkaTemplate;
         this.canvasService = canvasService;
+        this.notificationService = notificationService;
     }
 
     @MessageMapping("/chat/{roomId}")
@@ -50,6 +53,14 @@ public class StompController {
         Matcher matcher = pattern.matcher(chatMessageReqDto.getMessage());
         while (matcher.find()){
             String mentionedUserId = matcher.group(1);
+            // ✅ DB에 저장
+            notificationService.saveNotification(
+                    Long.valueOf(mentionedUserId),
+                    chatMessageReqDto.getUserId(),
+                    roomId,
+                    chatMessageReqDto.getMessage(),
+                    chatMessage.getId()
+            );
             NotificationDto notification = new NotificationDto();
             notification.setUserId(Long.valueOf(mentionedUserId));
             notification.setRoomId(roomId);

@@ -18,4 +18,5 @@ public class NotificationDto {
     private Long roomId;
     private String message;
     private LocalDateTime timestamp;
+    private Long chatMessageId;
 }

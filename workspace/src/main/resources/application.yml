@@ -14,6 +14,11 @@ spring:
     database-platform: org.hibernate.dialect.MariaDBDialect
     generate-ddl: true
     show_sql: true
+  servlet:
+    multipart: # ✅ 이 부분 추가!
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
   application:
     name: workspace-service
   jackson:
@@ -32,10 +37,10 @@ server:
 cloud:
   aws:
     s3:
-      bucket: hans-ordersystem-image
+      bucket: stomachforce
     credentials:
-      access-key: AKIA2AUOPD3OP5O6TQG2
-      secret-key: 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
+      access-key: AKIAT4GVRVENSQ6EB6P6
+      secret-key: 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
     region:
       static: ap-northeast-2
     stack:

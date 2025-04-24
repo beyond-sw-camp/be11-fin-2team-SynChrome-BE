@@ -1,9 +1,12 @@
 package com.Synchrome.collabcontent.chat.controller;
 
 
+import com.Synchrome.collabcontent.chat.domain.ChatMessage;
 import com.Synchrome.collabcontent.chat.dto.*;
+import com.Synchrome.collabcontent.chat.repository.ChatMessageRepository;
 import com.Synchrome.collabcontent.chat.service.ChatService;
 import com.Synchrome.collabcontent.common.auth.annotation.CurrentUserId;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +17,11 @@ import java.util.List;
 @RequestMapping("/chat")
 public class ChatController {
     private final ChatService chatService;
+    private final ChatMessageRepository chatMessageRepository;
 
-    public ChatController(ChatService chatService) {
+    public ChatController(ChatService chatService, ChatMessageRepository chatMessageRepository) {
         this.chatService = chatService;
+        this.chatMessageRepository = chatMessageRepository;
     }
 
     @GetMapping("/my/rooms")
@@ -67,5 +72,12 @@ public class ChatController {
             @RequestParam(required = false) Long before){
         List<ChatMessageDto> messages =chatService.getThreadMessages(parentId, limit, before);
         return new ResponseEntity<>(messages, HttpStatus.OK);
+    }
+
+    @GetMapping("/message/{messageId}")
+    public ChatMessageDto getSingleMessage(@PathVariable Long messageId) {
+        ChatMessage message = chatMessageRepository.findById(messageId)
+                .orElseThrow(() -> new EntityNotFoundException("Message not found"));
+        return ChatMessageDto.fromEntity(message);
     }
 }
