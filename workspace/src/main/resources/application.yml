@@ -24,7 +24,16 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm
     time-zone: Asia/Seoul
-
+  kafka:
+    bootstrap-servers: localhost:9092  # ✅ 카프카 서버 주소
+    consumer:
+      group-id: workspace-group             # ✅ 컨슈머 그룹 ID
+      auto-offset-reset: latest        # earliest | latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
 eureka:
   client:
