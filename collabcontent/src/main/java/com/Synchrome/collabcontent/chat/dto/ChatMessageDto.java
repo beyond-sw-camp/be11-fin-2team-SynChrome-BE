@@ -1,6 +1,7 @@
 package com.Synchrome.collabcontent.chat.dto;
 
 
+import com.Synchrome.collabcontent.chat.domain.ChatMessage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,5 +20,17 @@ public class ChatMessageDto {
     private String message;
     private LocalDateTime createdTime;
     private Long parentId;
+
+    public static ChatMessageDto fromEntity(ChatMessage entity) {
+        return ChatMessageDto.builder()
+                .id(entity.getId())
+                .userId(entity.getUserId())
+                .roomId(entity.getChatRoom().getId())
+                .message(entity.getContent())
+                .createdTime(entity.getCreatedTime())
+                .parentId(entity.getParentId())
+                .build();
+    }
+
 
 }

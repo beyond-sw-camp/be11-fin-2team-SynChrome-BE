@@ -33,10 +33,10 @@ public class FileController {
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(
             @RequestPart(value = "file", required = false) MultipartFile file,
-            @RequestParam("title") String title,
-            @RequestParam("content") String content,
-            @RequestParam("authorId") String authorId,
-            @RequestParam("tags") String tagString
+            @RequestPart("title") String title,
+            @RequestPart(value = "content", required = false) String content,
+            @RequestPart("authorId") String authorId,
+            @RequestPart("tags") String tagString
     ) throws IOException {
         List<String> tags = Arrays.stream(tagString.split(","))
                 .map(String::trim)
