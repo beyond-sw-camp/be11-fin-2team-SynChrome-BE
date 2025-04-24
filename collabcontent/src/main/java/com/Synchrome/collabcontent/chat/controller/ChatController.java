@@ -26,9 +26,8 @@ public class ChatController {
     }
 
     @PostMapping("/room/group/create")
-    public ResponseEntity<?> createGroupChatRoom(@CurrentUserId Long userId,
-                                                    @RequestBody CreateGroupRoomReqDto requestDto) {
-        Long roomId = chatService.createGroupChatRoom(userId, requestDto.getRoomName());
+    public ResponseEntity<?> createGroupChatRoom(@RequestBody CreateGroupRoomReqDto requestDto) {
+        Long roomId = chatService.createGroupChatRoom(requestDto.getUserId(), requestDto.getRoomName());
         return new ResponseEntity<>(roomId, HttpStatus.CREATED);
     }
 

@@ -30,17 +30,19 @@ public class WorkSpaceService {
     private final WorkSpaceParticipantRepository workSpaceParticipantRepository;
     private final ChannelParticipantRepository channelParticipantRepository;
     private final S3Uploader s3Uploader;
+    private final WorkSpaceFeign workSpaceFeign;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public WorkSpaceService(WorkSpaceRepository workSpaceRepository, SectionRepository sectionRepository, ChannelRepository channelRepository, WorkSpaceParticipantRepository workSpaceParticipantRepository, ChannelParticipantRepository channelParticipantRepository, S3Uploader s3Uploader) {
+    public WorkSpaceService(WorkSpaceRepository workSpaceRepository, SectionRepository sectionRepository, ChannelRepository channelRepository, WorkSpaceParticipantRepository workSpaceParticipantRepository, ChannelParticipantRepository channelParticipantRepository, S3Uploader s3Uploader, WorkSpaceFeign workSpaceFeign) {
         this.workSpaceRepository = workSpaceRepository;
         this.sectionRepository = sectionRepository;
         this.channelRepository = channelRepository;
         this.workSpaceParticipantRepository = workSpaceParticipantRepository;
         this.channelParticipantRepository = channelParticipantRepository;
         this.s3Uploader = s3Uploader;
+        this.workSpaceFeign = workSpaceFeign;
     }
 
     public Long saveWorkSpace(WorkSpaceCreateDto dto) throws IOException {
@@ -75,12 +77,18 @@ public class WorkSpaceService {
                 .owner(Owner.C)
                 .build();
 
+        CreateGroupRoomReqDto roomReq1 = new CreateGroupRoomReqDto(dto.getUserId(), "공지사항");
+        workSpaceFeign.createGroupChatRoom(roomReq1);
+
         Channel channel2 = Channel.builder()
                 .title("자유게시판")
                 .userId(dto.getUserId())
                 .section(commonSection)
                 .owner(Owner.C)
                 .build();
+
+        CreateGroupRoomReqDto roomReq2 = new CreateGroupRoomReqDto(dto.getUserId(), "자유게시판");
+        workSpaceFeign.createGroupChatRoom(roomReq2);
 
         commonSection.getChannels().add(channel1);
         commonSection.getChannels().add(channel2);
@@ -195,6 +203,8 @@ public class WorkSpaceService {
         Channel saveChannel = channelRepository.save(myChannel);
         ChannelParticipant channelParticipant = ChannelParticipant.builder().userId(dto.getUserId()).channel(saveChannel).build();
         channelParticipantRepository.save(channelParticipant);
+        CreateGroupRoomReqDto reqDto = new CreateGroupRoomReqDto(dto.getUserId(), dto.getTitle());
+        workSpaceFeign.createGroupChatRoom(reqDto);
         return saveChannel.getId();
     }
 
