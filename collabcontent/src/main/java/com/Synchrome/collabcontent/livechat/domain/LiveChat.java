@@ -18,6 +18,8 @@ public class LiveChat extends BaseTimeEntity {
     private Long id;
     @Column(nullable = false)
     private String sessionId;
+    @Column(nullable = false)
+    private Long channelId;
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private IsEnded isEnded = IsEnded.N;

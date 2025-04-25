@@ -3,11 +3,8 @@ package com.Synchrome.collabcontent.livechat.controller;
 import java.util.Map;
 
 
-
 import com.Synchrome.collabcontent.livechat.domain.Participants;
-import com.Synchrome.collabcontent.livechat.dtos.ParticipantAddDto;
-import com.Synchrome.collabcontent.livechat.dtos.SessionCreateDto;
-import com.Synchrome.collabcontent.livechat.dtos.SessionDeleteDto;
+import com.Synchrome.collabcontent.livechat.dtos.*;
 import com.Synchrome.collabcontent.livechat.service.LiveChatService;
 import io.openvidu.java.client.*;
 import jakarta.annotation.PostConstruct;
@@ -43,8 +40,6 @@ public class liveChatController {
         System.out.println(params.get("customSessionId"));
         SessionProperties properties = SessionProperties.fromJson(params).build();
         Session session = openvidu.createSession(properties); // session 생성
-        SessionCreateDto dto = SessionCreateDto.builder().sessionId(session.getSessionId()).build();
-        liveChatService.save(dto);
         return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
     }
 
@@ -61,6 +56,13 @@ public class liveChatController {
         return new ResponseEntity<>(connection.getToken(), HttpStatus.OK);
     }
 
+    @PostMapping("/save")
+    public ResponseEntity<?> saveSession(@RequestBody SessionCreateDto dto){
+        liveChatService.save(dto);
+        String response = "ok";
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
     @PostMapping("/delete")
     public ResponseEntity<?> deleteSession(@RequestBody SessionDeleteDto sessionDeleteDto){
         Boolean response = liveChatService.delete(sessionDeleteDto);
@@ -71,6 +73,12 @@ public class liveChatController {
     public ResponseEntity<?> addParticipant(@RequestBody ParticipantAddDto participantAddDto){
         Participants participants = liveChatService.participants(participantAddDto);
         Long response = participants.getId();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/getSessionId")
+    public ResponseEntity<?> findSessionId(@RequestBody FindSessionIdDto dto){
+        SessionIdResDto response = liveChatService.findSession(dto);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
