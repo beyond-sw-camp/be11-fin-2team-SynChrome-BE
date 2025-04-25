@@ -56,7 +56,7 @@ public class UserService {
     }
 
     public User save(UserSaveReqDto userSaveReqDto){
-        User user = User.builder().name(userSaveReqDto.getName()).email(userSaveReqDto.getEmail()).build();
+        User user = User.builder().profile(userSaveReqDto.getProfile()).name(userSaveReqDto.getName()).email(userSaveReqDto.getEmail()).build();
         userRepository.save(user);
         return user;
     }
@@ -95,7 +95,7 @@ public class UserService {
 
     public void userInfoCaching(User loginuser){
         String redisKey = String.valueOf(loginuser.getId());
-        UserInfoDto userInfoDto = UserInfoDto.builder().id(loginuser.getId()).name(loginuser.getName()).email(loginuser.getEmail()).subscribe(loginuser.getSubscribe()).build();
+        UserInfoDto userInfoDto = UserInfoDto.builder().profile(loginuser.getProfile()).id(loginuser.getId()).name(loginuser.getName()).email(loginuser.getEmail()).subscribe(loginuser.getSubscribe()).build();
         try {
             String userInfoJson = objectMapper.writeValueAsString(userInfoDto);
             redisTemplate.opsForValue().set(redisKey, userInfoJson);

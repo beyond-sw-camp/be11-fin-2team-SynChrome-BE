@@ -3,9 +3,11 @@ package com.Synchrome.user.User.Controller;
 import com.Synchrome.user.Common.auth.JwtTokenProvider;
 import com.Synchrome.user.User.Domain.User;
 import com.Synchrome.user.User.Dto.*;
+import com.Synchrome.user.User.Repository.UserRepository;
 import com.Synchrome.user.User.Service.UserService;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.annotations.processing.Find;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +23,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    private final UserRepository userRepository;
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -30,7 +33,8 @@ public class UserController {
     @Value("${jwt.secretKeyRT}")
     private String secretKeyRT;
 
-    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider, RedisTemplate<String, Object> redisTemplate) {
+    public UserController(UserRepository userRepository, UserService userService, JwtTokenProvider jwtTokenProvider, RedisTemplate<String, Object> redisTemplate) {
+        this.userRepository = userRepository;
         this.userService = userService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.redisTemplate = redisTemplate;
@@ -42,15 +46,18 @@ public class UserController {
         GoogleProfileDto googleProfileDto = userService.getGoogleProfile(accessTokendto.getAccess_token());
         User originalUser = userService.getUserByEmail(googleProfileDto.getEmail());
         if(originalUser == null){
-            UserSaveReqDto response = UserSaveReqDto.builder().email(googleProfileDto.getEmail()).name(googleProfileDto.getName()).build();
+            UserSaveReqDto response = UserSaveReqDto.builder().profile(googleProfileDto.getPicture()).email(googleProfileDto.getEmail()).name(googleProfileDto.getName()).build();
             originalUser = userService.save(response);
         }
-        String jwtToken = jwtTokenProvider.createToken(originalUser.getId());
+        String jwtToken = jwtTokenProvider.createToken(originalUser.getId(), originalUser.getName());
         String jwtRefreshToken = jwtTokenProvider.createRefreshToken(originalUser.getId());
         Map<String, Object> loginInfo = new HashMap<>();
         loginInfo.put("id",originalUser.getId());
         loginInfo.put("token",jwtToken);
         loginInfo.put("refreshToken",jwtRefreshToken);
+        loginInfo.put("name", originalUser.getName());
+        loginInfo.put("profile", originalUser.getProfile());
+        loginInfo.put("email", originalUser.getEmail());
         userService.userInfoCaching(originalUser);
         return new ResponseEntity<>(loginInfo,HttpStatus.OK);
     }
@@ -92,5 +99,12 @@ public class UserController {
     public ResponseEntity<?> myPayList(@RequestBody FindUserDto findUserDto){
         List<MyPayListDto> response = userService.payList(findUserDto.getId());
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/user/{id}/name")
+    public ResponseEntity<String> getUserName(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("사용자 없음"));
+        return ResponseEntity.ok(user.getName());
     }
 }
