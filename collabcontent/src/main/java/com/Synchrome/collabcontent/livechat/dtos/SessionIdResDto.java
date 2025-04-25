@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-public class SessionCreateDto {
-    private Long channelId;
-    private String sessionId;
+@Data
+public class SessionIdResDto {
+    String sessionId;
 }

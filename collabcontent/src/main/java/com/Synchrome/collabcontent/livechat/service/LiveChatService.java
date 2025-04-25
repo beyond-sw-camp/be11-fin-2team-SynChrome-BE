@@ -4,14 +4,14 @@ package com.Synchrome.collabcontent.livechat.service;
 
 import com.Synchrome.collabcontent.livechat.domain.LiveChat;
 import com.Synchrome.collabcontent.livechat.domain.Participants;
-import com.Synchrome.collabcontent.livechat.dtos.ParticipantAddDto;
-import com.Synchrome.collabcontent.livechat.dtos.SessionCreateDto;
-import com.Synchrome.collabcontent.livechat.dtos.SessionDeleteDto;
+import com.Synchrome.collabcontent.livechat.dtos.*;
 import com.Synchrome.collabcontent.livechat.repository.LiveChatRepository;
 import com.Synchrome.collabcontent.livechat.repository.ParticipantsRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -28,6 +28,7 @@ public class LiveChatService {
         boolean exists = liveChatRepository.existsBySessionId(dto.getSessionId());
         if (!exists) {
             LiveChat liveChat = LiveChat.builder()
+                    .channelId(dto.getChannelId())
                     .sessionId(dto.getSessionId())
                     .build();
             liveChatRepository.save(liveChat);
@@ -46,4 +47,10 @@ public class LiveChatService {
         Participants addParticipant = participantsRepository.save(participant);
         return addParticipant;
     }
+
+    public SessionIdResDto findSession(FindSessionIdDto dto){
+        LiveChat liveChat = liveChatRepository.findByChannelId(dto.getChannelId()).orElseThrow(() -> new EntityNotFoundException("없는 화상회의방"));
+        return SessionIdResDto.builder().sessionId(liveChat.getSessionId()).build();
+    }
+
 }
