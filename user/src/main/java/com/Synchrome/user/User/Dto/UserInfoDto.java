@@ -15,4 +15,5 @@ public class UserInfoDto {
     private String name;
     private String email;
     private Subscribe subscribe;
+    private String profile;
 }

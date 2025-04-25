@@ -20,6 +20,8 @@ public class ChatMessageDto {
     private String message;
     private LocalDateTime createdTime;
     private Long parentId;
+    private Long workspaceId;
+
 
     public static ChatMessageDto fromEntity(ChatMessage entity) {
         return ChatMessageDto.builder()
@@ -29,6 +31,7 @@ public class ChatMessageDto {
                 .message(entity.getContent())
                 .createdTime(entity.getCreatedTime())
                 .parentId(entity.getParentId())
+                .workspaceId(entity.getWorkspaceId())
                 .build();
     }
 
