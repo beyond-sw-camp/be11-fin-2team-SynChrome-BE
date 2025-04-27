@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @Builder
 @Data
-public class GoogleLoginDto {
-    private String code;
+public class UpdateProfileDto {
+    private Long userId;
+    private MultipartFile newProfile;
 }

@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,8 +46,9 @@ public class UserController {
         AccessTokendto accessTokendto = userService.getAccessToken(dto.getCode());
         GoogleProfileDto googleProfileDto = userService.getGoogleProfile(accessTokendto.getAccess_token());
         User originalUser = userService.getUserByEmail(googleProfileDto.getEmail());
+        String basicProfile = "https://stomachforce.s3.ap-northeast-2.amazonaws.com/basicProfile.jpg";
         if(originalUser == null){
-            UserSaveReqDto response = UserSaveReqDto.builder().profile(googleProfileDto.getPicture()).email(googleProfileDto.getEmail()).name(googleProfileDto.getName()).build();
+            UserSaveReqDto response = UserSaveReqDto.builder().profile(basicProfile).email(googleProfileDto.getEmail()).name(googleProfileDto.getName()).build();
             originalUser = userService.save(response);
         }
         String jwtToken = jwtTokenProvider.createToken(originalUser.getId(), originalUser.getName());
@@ -107,4 +109,11 @@ public class UserController {
                 .orElseThrow(() -> new EntityNotFoundException("사용자 없음"));
         return ResponseEntity.ok(user.getName());
     }
+
+    @PostMapping("/updateProfile")
+    public ResponseEntity<?> updateProfile(UpdateProfileDto updateProfileDto) throws IOException {
+        Long response = userService.newProfile(updateProfileDto);
+        return ResponseEntity.ok(response);
+    }
+
 }
