@@ -11,4 +11,26 @@
       </profile>
     </annotationProcessing>
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="collabcontent" options="-parameters" />
+      <module name="collabcontent.main" options="-parameters" />
+      <module name="collabcontent.test" options="-parameters" />
+      <module name="configserver" options="-parameters" />
+      <module name="configserver.main" options="-parameters" />
+      <module name="configserver.test" options="-parameters" />
+      <module name="eureka" options="-parameters" />
+      <module name="eureka.main" options="-parameters" />
+      <module name="eureka.test" options="-parameters" />
+      <module name="gateway" options="-parameters" />
+      <module name="gateway.main" options="-parameters" />
+      <module name="gateway.test" options="-parameters" />
+      <module name="user" options="-parameters" />
+      <module name="user.main" options="-parameters" />
+      <module name="user.test" options="-parameters" />
+      <module name="workspace" options="-parameters" />
+      <module name="workspace.main" options="-parameters" />
+      <module name="workspace.test" options="-parameters" />
+    </option>
+  </component>
 </project>
