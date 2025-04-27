@@ -1,7 +1,7 @@
 package com.Synchrome.collabcontent.common.stomp;
 
 
-import com.Synchrome.collabcontent.canvas.dto.CanvasMessageDto;
+import com.Synchrome.collabcontent.canvas.dto.CanvasUpdateReqDto;
 import com.Synchrome.collabcontent.canvas.service.CanvasService;
 import com.Synchrome.collabcontent.chat.domain.ChatMessage;
 import com.Synchrome.collabcontent.chat.dto.ChatMessageDto;
@@ -78,8 +78,7 @@ public class StompController {
     }
 
     @MessageMapping("/canvas/{canvasId}")
-    public void handleCanvasUpdate(@DestinationVariable Long canvasId, CanvasMessageDto canvasMessageDto) throws JsonProcessingException {
-        canvasService.saveCanvas(canvasMessageDto);
+    public void handleCanvasUpdate(@DestinationVariable Long canvasId, CanvasUpdateReqDto canvasMessageDto) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         String message = objectMapper.writeValueAsString(canvasMessageDto);
         System.out.println("✅ 캔버스 변경 사항 수신");

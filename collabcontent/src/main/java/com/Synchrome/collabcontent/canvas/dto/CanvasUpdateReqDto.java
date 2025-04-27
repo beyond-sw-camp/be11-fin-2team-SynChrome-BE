@@ -2,9 +2,10 @@ package com.Synchrome.collabcontent.canvas.dto;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
-public class CanvasMessageDto {
+public class CanvasUpdateReqDto {
     private Long canvasId;
-    private Long userId;
     private String update; // base64 encoded Yjs update
 }
