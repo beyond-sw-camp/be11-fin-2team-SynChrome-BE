@@ -2,6 +2,7 @@ package com.Synchrome.collabcontent.livechat.service;
 
 
 
+import com.Synchrome.collabcontent.livechat.domain.IsEnded;
 import com.Synchrome.collabcontent.livechat.domain.LiveChat;
 import com.Synchrome.collabcontent.livechat.domain.Participants;
 import com.Synchrome.collabcontent.livechat.dtos.*;
@@ -22,6 +23,7 @@ public class LiveChatService {
     public LiveChatService(LiveChatRepository liveChatRepository, ParticipantsRepository participantsRepository) {
         this.liveChatRepository = liveChatRepository;
         this.participantsRepository = participantsRepository;
+
     }
 
     public void save(SessionCreateDto dto){
@@ -49,8 +51,13 @@ public class LiveChatService {
     }
 
     public SessionIdResDto findSession(FindSessionIdDto dto){
-        LiveChat liveChat = liveChatRepository.findByChannelId(dto.getChannelId()).orElseThrow(() -> new EntityNotFoundException("없는 화상회의방"));
-        return SessionIdResDto.builder().sessionId(liveChat.getSessionId()).build();
+        return liveChatRepository.findTopByChannelIdAndIsEndedOrderByCreatedTimeDesc(dto.getChannelId(), IsEnded.N)
+                .map(liveChat -> SessionIdResDto.builder()
+                        .sessionId(liveChat.getSessionId())
+                        .build())
+                .orElse(SessionIdResDto.builder()
+                        .sessionId(null) // ❗ 세션 없으면 null 주기
+                        .build());
     }
 
 }
