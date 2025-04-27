@@ -45,4 +45,8 @@ public class User extends BaseTimeEntity {
     public void cancelSubscribe(){
         this.subscribe = Subscribe.N;
     }
+
+    public void updateMyProfile(String newProfile){
+        this.profile = newProfile;
+    }
 }
