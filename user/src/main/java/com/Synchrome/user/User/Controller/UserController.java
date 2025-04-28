@@ -116,4 +116,13 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/findInviteUsers")
+    public ResponseEntity<?> findInviteUser(@RequestBody FindInviteUserDto findInviteUserDto){
+        List<Long> userIds = userService.InviteUsers(findInviteUserDto);
+        InviteUserResDto response = InviteUserResDto.builder()
+                .userId(userIds)
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
 }
