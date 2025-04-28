@@ -1,6 +1,7 @@
 package com.Synchrome.workspace.calendar.controller;
 
 import com.Synchrome.workspace.calendar.dto.ColorCategoryDto;
+import com.Synchrome.workspace.calendar.dto.ColorWorkspaceDto;
 import com.Synchrome.workspace.calendar.dto.EventDto;
 import com.Synchrome.workspace.calendar.dto.EventExceptionRequestDto;
 import com.Synchrome.workspace.calendar.service.CalendarService;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/calendar")
+@RequestMapping("/api/calendar")
 public class CalendarController {
     private final CalendarService calendarService;
     private final EventService eventService;
@@ -141,5 +142,22 @@ public ResponseEntity<?> promoteOrDelete(@PathVariable Long eventId) {
         return ResponseEntity.noContent().build();
     }
 
+    //  유저별 워크스페이스라벨 색상 전체 조회
+    @GetMapping("/color-workspaces")
+    public ResponseEntity<List<ColorWorkspaceDto>> getColorWorkspaces(
+            @RequestHeader("X-User-Id") Long userId
+    ) {
+        List<ColorWorkspaceDto> result = eventService.getAllByUserId(userId);
+        return ResponseEntity.ok(result);
+    }
 
+    // 색상 변경
+    @PatchMapping("/color-workspace")
+    public ResponseEntity<Void> updateColor(
+            @RequestHeader("X-User-Id") Long userId,
+            @RequestBody ColorWorkspaceDto dto
+    ) {
+        eventService.updateColor(userId, dto.getWorkspaceId(), dto.getColor());
+        return ResponseEntity.ok().build();
+    }
 }

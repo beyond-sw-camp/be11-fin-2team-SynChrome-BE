@@ -1,5 +1,7 @@
 package com.Synchrome.workspace.space.service;
 
+import com.Synchrome.workspace.calendar.domain.ColorWorkspace;
+import com.Synchrome.workspace.calendar.repository.ColorWorkspaceRepository;
 import com.Synchrome.workspace.common.InviteCodeGenerator;
 import com.Synchrome.workspace.common.S3Uploader;
 import com.Synchrome.workspace.space.domain.*;
@@ -30,17 +32,19 @@ public class WorkSpaceService {
     private final WorkSpaceParticipantRepository workSpaceParticipantRepository;
     private final ChannelParticipantRepository channelParticipantRepository;
     private final S3Uploader s3Uploader;
+    private final ColorWorkspaceRepository colorWorkspaceRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public WorkSpaceService(WorkSpaceRepository workSpaceRepository, SectionRepository sectionRepository, ChannelRepository channelRepository, WorkSpaceParticipantRepository workSpaceParticipantRepository, ChannelParticipantRepository channelParticipantRepository, S3Uploader s3Uploader) {
+    public WorkSpaceService(WorkSpaceRepository workSpaceRepository, SectionRepository sectionRepository, ChannelRepository channelRepository, WorkSpaceParticipantRepository workSpaceParticipantRepository, ChannelParticipantRepository channelParticipantRepository, S3Uploader s3Uploader, ColorWorkspaceRepository colorWorkspaceRepository) {
         this.workSpaceRepository = workSpaceRepository;
         this.sectionRepository = sectionRepository;
         this.channelRepository = channelRepository;
         this.workSpaceParticipantRepository = workSpaceParticipantRepository;
         this.channelParticipantRepository = channelParticipantRepository;
         this.s3Uploader = s3Uploader;
+        this.colorWorkspaceRepository = colorWorkspaceRepository;
     }
 
     public Long saveWorkSpace(WorkSpaceCreateDto dto) throws IOException {
@@ -94,6 +98,15 @@ public class WorkSpaceService {
                 .build();
 
         workSpaceParticipantRepository.save(participant);
+
+//        워크스페이스 생성시 캘린더용 워크스페이스 필터링 생성 로직
+        ColorWorkspace colorWorkspace = ColorWorkspace.create(
+                dto.getUserId(),
+                saveWorkSpace,
+                generateDefaultColor(dto.getUserId(), saveWorkSpace.getId())
+        );
+        colorWorkspaceRepository.save(colorWorkspace);
+
         return saveWorkSpace.getId();
     }
 
@@ -415,6 +428,11 @@ public class WorkSpaceService {
                 .toList();
 
         channelParticipantRepository.saveAll(newParticipants);
+    }
+
+    private String generateDefaultColor(Long userId, Long workspaceId) {
+        String[] colors = {"#3498db", "#e67e22", "#2ecc71", "#9b59b6", "#1abc9c"};
+        return colors[Math.abs(Objects.hash(userId, workspaceId)) % colors.length];
     }
 
 }
