@@ -1,5 +1,6 @@
-package com.Synchrome.user.User.Dto;
+package com.Synchrome.collabcontent.livechat.dtos;
 
+import com.google.errorprone.annotations.NoAllocation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
-public class UserSaveReqDto {
-    private String name;
-    private String email;
-    private String profile;
+public class FindSessionIdDto {
+    private Long channelId;
 }

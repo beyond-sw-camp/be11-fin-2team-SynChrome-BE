@@ -11,9 +11,12 @@ import com.Synchrome.workspace.space.dtos.channelDtos.*;
 import com.Synchrome.workspace.space.dtos.sectionDtos.*;
 import com.Synchrome.workspace.space.dtos.workSpaceDtos.*;
 import com.Synchrome.workspace.space.repository.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,24 +29,30 @@ import java.util.*;
 @Service
 @Transactional
 public class WorkSpaceService {
+    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Object> userInfoRedisTemplate;
     private final WorkSpaceRepository workSpaceRepository;
     private final SectionRepository sectionRepository;
     private final ChannelRepository channelRepository;
     private final WorkSpaceParticipantRepository workSpaceParticipantRepository;
     private final ChannelParticipantRepository channelParticipantRepository;
     private final S3Uploader s3Uploader;
+    private final WorkSpaceFeign workSpaceFeign;
     private final ColorWorkspaceRepository colorWorkspaceRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public WorkSpaceService(WorkSpaceRepository workSpaceRepository, SectionRepository sectionRepository, ChannelRepository channelRepository, WorkSpaceParticipantRepository workSpaceParticipantRepository, ChannelParticipantRepository channelParticipantRepository, S3Uploader s3Uploader, ColorWorkspaceRepository colorWorkspaceRepository) {
+    public WorkSpaceService(RedisTemplate<String, String> redisTemplate, RedisTemplate<String, Object> userInfoRedisTemplate, WorkSpaceRepository workSpaceRepository, SectionRepository sectionRepository, ChannelRepository channelRepository, WorkSpaceParticipantRepository workSpaceParticipantRepository, ChannelParticipantRepository channelParticipantRepository, S3Uploader s3Uploader, WorkSpaceFeign workSpaceFeign, ColorWorkspaceRepository colorWorkspaceRepository) {
+        this.redisTemplate = redisTemplate;
+        this.userInfoRedisTemplate = userInfoRedisTemplate;
         this.workSpaceRepository = workSpaceRepository;
         this.sectionRepository = sectionRepository;
         this.channelRepository = channelRepository;
         this.workSpaceParticipantRepository = workSpaceParticipantRepository;
         this.channelParticipantRepository = channelParticipantRepository;
         this.s3Uploader = s3Uploader;
+        this.workSpaceFeign = workSpaceFeign;
         this.colorWorkspaceRepository = colorWorkspaceRepository;
     }
 
@@ -79,12 +88,18 @@ public class WorkSpaceService {
                 .owner(Owner.C)
                 .build();
 
+        CreateGroupRoomReqDto roomReq1 = new CreateGroupRoomReqDto(dto.getUserId(), "공지사항");
+        workSpaceFeign.createGroupChatRoom(roomReq1);
+
         Channel channel2 = Channel.builder()
                 .title("자유게시판")
                 .userId(dto.getUserId())
                 .section(commonSection)
                 .owner(Owner.C)
                 .build();
+
+        CreateGroupRoomReqDto roomReq2 = new CreateGroupRoomReqDto(dto.getUserId(), "자유게시판");
+        workSpaceFeign.createGroupChatRoom(roomReq2);
 
         commonSection.getChannels().add(channel1);
         commonSection.getChannels().add(channel2);
@@ -98,17 +113,46 @@ public class WorkSpaceService {
                 .build();
 
         workSpaceParticipantRepository.save(participant);
+        // ✅ Redis에서 유저 정보 꺼내기
+        String redisKey = String.valueOf(dto.getUserId());
+        String userInfoJson = (String) userInfoRedisTemplate.opsForValue().get(redisKey);
 
-//        워크스페이스 생성시 캘린더용 워크스페이스 필터링 생성 로직
-        ColorWorkspace colorWorkspace = ColorWorkspace.create(
-                dto.getUserId(),
-                saveWorkSpace,
-                generateDefaultColor(dto.getUserId(), saveWorkSpace.getId())
-        );
-        colorWorkspaceRepository.save(colorWorkspace);
+        if (userInfoJson == null) {
+            throw new RuntimeException("Redis에 유저 정보가 존재하지 않습니다.");
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserInfoDto userInfo = objectMapper.readValue(userInfoJson, UserInfoDto.class);
+
+        Map<String, String> userInfoMap = new HashMap<>();
+        userInfoMap.put("userId", String.valueOf(userInfo.getId()));
+        userInfoMap.put("name", userInfo.getName());
+        userInfoMap.put("email", userInfo.getEmail());
+        userInfoMap.put("profile", userInfo.getProfile());
+
+        String workspaceRedisKey = "workspace:participants:" + saveWorkSpace.getId();
+        String json = objectMapper.writeValueAsString(userInfoMap);
+        redisTemplate.opsForList().rightPush(workspaceRedisKey, json);
+
+
 
         return saveWorkSpace.getId();
     }
+
+    public Long getRecentWorkspaceId(Long userId) {
+        String key = "recent_workspace:" + userId;
+        String value = redisTemplate.opsForValue().get(key);
+        if (value == null) {
+            throw new EntityNotFoundException("최근 접속 워크스페이스 정보가 없습니다.");
+        }
+        return Long.parseLong(value);
+    }
+
+    public void setRecentWorkspace(Long userId, Long workSpaceId) {
+        String key = "recent_workspace:" + userId;
+        redisTemplate.opsForValue().set(key, String.valueOf(workSpaceId));
+    }
+
 
     public Long deleteMyWorkSpace(Long workSpaceId, Long userId){
         WorkSpace workSpace = workSpaceRepository.findById(workSpaceId).orElseThrow(()->new EntityNotFoundException("없는 워크스페이스"));
@@ -208,6 +252,8 @@ public class WorkSpaceService {
         Channel saveChannel = channelRepository.save(myChannel);
         ChannelParticipant channelParticipant = ChannelParticipant.builder().userId(dto.getUserId()).channel(saveChannel).build();
         channelParticipantRepository.save(channelParticipant);
+        CreateGroupRoomReqDto reqDto = new CreateGroupRoomReqDto(dto.getUserId(), dto.getTitle());
+        workSpaceFeign.createGroupChatRoom(reqDto);
         return saveChannel.getId();
     }
 
@@ -388,7 +434,7 @@ public class WorkSpaceService {
         return workspace.getId();
     }
 
-    public void acceptInvite(Long workspaceId, Long userId) {
+    public void acceptInvite(Long workspaceId, Long userId) throws JsonProcessingException {
         WorkSpace workspace = workSpaceRepository.findByIdAndDel(workspaceId, Del.N)
                 .orElseThrow(() -> new RuntimeException("워크스페이스가 존재하지 않거나 삭제되었습니다."));
 
@@ -401,6 +447,26 @@ public class WorkSpaceService {
                 .build();
 
         workSpaceParticipantRepository.save(participant);
+        // ✅ Redis에서 유저 정보 꺼내기
+        String redisKey = String.valueOf(userId);
+        String userInfoJson = (String) userInfoRedisTemplate.opsForValue().get(redisKey);
+
+        if (userInfoJson == null) {
+            throw new RuntimeException("Redis에 유저 정보가 존재하지 않습니다.");
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        UserInfoDto userInfo = objectMapper.readValue(userInfoJson, UserInfoDto.class);
+
+        Map<String, String> userInfoMap = new HashMap<>();
+        userInfoMap.put("userId", String.valueOf(userInfo.getId()));
+        userInfoMap.put("name", userInfo.getName());
+        userInfoMap.put("email", userInfo.getEmail());
+        userInfoMap.put("profile", userInfo.getProfile());
+
+        String workspaceRedisKey = "workspace:participants:" + workspaceId;
+        String json = objectMapper.writeValueAsString(userInfoMap);
+        redisTemplate.opsForList().rightPush(workspaceRedisKey, json);
     }
 
     public void inviteUserToChannel(Long channelId, List<Long> userIds) {

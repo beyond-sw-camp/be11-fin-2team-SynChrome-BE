@@ -33,4 +33,6 @@ public class ChatMessage extends BaseTimeEntity {
 
     private boolean presentUnreadMessage;
 
+    private Long workspaceId;
+
 }

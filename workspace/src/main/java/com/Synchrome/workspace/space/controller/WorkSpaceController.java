@@ -5,28 +5,51 @@ import com.Synchrome.workspace.space.dtos.channelDtos.*;
 import com.Synchrome.workspace.space.dtos.sectionDtos.*;
 import com.Synchrome.workspace.space.dtos.workSpaceDtos.*;
 import com.Synchrome.workspace.space.service.WorkSpaceService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/workspace")
 public class WorkSpaceController {
     private final WorkSpaceService workSpaceService;
+    private final RedisTemplate<String, String> redisTemplate;
 
-    public WorkSpaceController(WorkSpaceService workSpaceService) {
+    public WorkSpaceController(WorkSpaceService workSpaceService, RedisTemplate<String, String> redisTemplate) {
         this.workSpaceService = workSpaceService;
+        this.redisTemplate = redisTemplate;
     }
 
     @PostMapping("/createWorkSpace")
     public ResponseEntity<?> createWorkSpace(@Valid WorkSpaceCreateDto workSpaceCreateDto) throws IOException {
         Long response = workSpaceService.saveWorkSpace(workSpaceCreateDto);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    @PostMapping("/getRecentWorkspace")
+    public ResponseEntity<Long> getRecentWorkspace(@RequestBody Map<String, Long> body) {
+        Long userId = body.get("userId");
+        Long response = workSpaceService.getRecentWorkspaceId(userId);
+        return ResponseEntity.ok(response);
+    }
+
+
+    @PostMapping("/setRecentWorkspace")
+    public ResponseEntity<Void> setRecentWorkspace(@RequestBody Map<String, Long> body) {
+        Long userId = body.get("userId");
+        Long workSpaceId = body.get("workSpaceId");
+        workSpaceService.setRecentWorkspace(userId, workSpaceId);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/deleteWorkSpace")
@@ -123,7 +146,7 @@ public class WorkSpaceController {
 
 //    초대코드를 타고 들어오는 단일 회원 초대
     @PostMapping("/accept")
-    public ResponseEntity<String> acceptInvite(@RequestBody InviteAcceptDto dto) {
+    public ResponseEntity<String> acceptInvite(@RequestBody InviteAcceptDto dto) throws JsonProcessingException {
         workSpaceService.acceptInvite(dto.getWorkspaceId(), dto.getUserId());
         return ResponseEntity.ok("워크스페이스에 성공적으로 참여했습니다.");
     }
@@ -132,5 +155,23 @@ public class WorkSpaceController {
     public ResponseEntity<String> inviteUserToChannel(@RequestBody ChannelInviteDto dto) {
         workSpaceService.inviteUserToChannel(dto.getChannelId(), dto.getUserIds());
         return ResponseEntity.ok("채널에 초대 완료");
+    }
+
+    @GetMapping("/participants/{workspaceId}")
+    public ResponseEntity<List<Map<String, String>>> getParticipants(@PathVariable Long workspaceId) throws JsonProcessingException {
+        String redisKey = "workspace:participants:" + workspaceId;
+        List<String> entries = redisTemplate.opsForList().range(redisKey, 0, -1);
+
+        ObjectMapper mapper = new ObjectMapper();
+        List<Map<String, String>> result = new ArrayList<>();
+
+        if (entries != null) {
+            for (String json : entries) {
+                Map<String, String> userInfo = mapper.readValue(json, new TypeReference<>() {});
+                result.add(userInfo);
+            }
+        }
+
+        return ResponseEntity.ok(result);
     }
 }

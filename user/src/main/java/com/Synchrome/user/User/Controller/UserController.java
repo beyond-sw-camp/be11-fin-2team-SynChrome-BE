@@ -3,9 +3,11 @@ package com.Synchrome.user.User.Controller;
 import com.Synchrome.user.Common.auth.JwtTokenProvider;
 import com.Synchrome.user.User.Domain.User;
 import com.Synchrome.user.User.Dto.*;
+import com.Synchrome.user.User.Repository.UserRepository;
 import com.Synchrome.user.User.Service.UserService;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.annotations.processing.Find;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +24,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    private final UserRepository userRepository;
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -30,7 +34,8 @@ public class UserController {
     @Value("${jwt.secretKeyRT}")
     private String secretKeyRT;
 
-    public UserController(UserService userService, JwtTokenProvider jwtTokenProvider, RedisTemplate<String, Object> redisTemplate) {
+    public UserController(UserRepository userRepository, UserService userService, JwtTokenProvider jwtTokenProvider, RedisTemplate<String, Object> redisTemplate) {
+        this.userRepository = userRepository;
         this.userService = userService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.redisTemplate = redisTemplate;
@@ -41,16 +46,20 @@ public class UserController {
         AccessTokendto accessTokendto = userService.getAccessToken(dto.getCode());
         GoogleProfileDto googleProfileDto = userService.getGoogleProfile(accessTokendto.getAccess_token());
         User originalUser = userService.getUserByEmail(googleProfileDto.getEmail());
+        String basicProfile = "https://stomachforce.s3.ap-northeast-2.amazonaws.com/basicProfile.jpg";
         if(originalUser == null){
-            UserSaveReqDto response = UserSaveReqDto.builder().email(googleProfileDto.getEmail()).name(googleProfileDto.getName()).build();
+            UserSaveReqDto response = UserSaveReqDto.builder().profile(basicProfile).email(googleProfileDto.getEmail()).name(googleProfileDto.getName()).build();
             originalUser = userService.save(response);
         }
-        String jwtToken = jwtTokenProvider.createToken(originalUser.getId());
+        String jwtToken = jwtTokenProvider.createToken(originalUser.getId(), originalUser.getName());
         String jwtRefreshToken = jwtTokenProvider.createRefreshToken(originalUser.getId());
         Map<String, Object> loginInfo = new HashMap<>();
         loginInfo.put("id",originalUser.getId());
         loginInfo.put("token",jwtToken);
         loginInfo.put("refreshToken",jwtRefreshToken);
+        loginInfo.put("name", originalUser.getName());
+        loginInfo.put("profile", originalUser.getProfile());
+        loginInfo.put("email", originalUser.getEmail());
         userService.userInfoCaching(originalUser);
         return new ResponseEntity<>(loginInfo,HttpStatus.OK);
     }
@@ -93,4 +102,18 @@ public class UserController {
         List<MyPayListDto> response = userService.payList(findUserDto.getId());
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/user/{id}/name")
+    public ResponseEntity<String> getUserName(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("사용자 없음"));
+        return ResponseEntity.ok(user.getName());
+    }
+
+    @PostMapping("/updateProfile")
+    public ResponseEntity<?> updateProfile(UpdateProfileDto updateProfileDto) throws IOException {
+        Long response = userService.newProfile(updateProfileDto);
+        return ResponseEntity.ok(response);
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.Synchrome.user.User.Dto;
+package com.Synchrome.collabcontent.livechat.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,10 +7,8 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-public class UserSaveReqDto {
-    private String name;
-    private String email;
-    private String profile;
+@Data
+public class SessionIdResDto {
+    String sessionId;
 }

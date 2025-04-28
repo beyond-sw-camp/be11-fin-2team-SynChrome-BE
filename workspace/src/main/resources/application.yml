@@ -9,17 +9,31 @@ spring:
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     database: mysql
     database-platform: org.hibernate.dialect.MariaDBDialect
     generate-ddl: true
     show_sql: true
+  servlet:
+    multipart: # ✅ 이 부분 추가!
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
   application:
     name: workspace-service
   jackson:
     date-format: yyyy-MM-dd HH:mm
     time-zone: Asia/Seoul
-
+  kafka:
+    bootstrap-servers: localhost:9092  # ✅ 카프카 서버 주소
+    consumer:
+      group-id: workspace-group             # ✅ 컨슈머 그룹 ID
+      auto-offset-reset: latest        # earliest | latest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
 eureka:
   client:

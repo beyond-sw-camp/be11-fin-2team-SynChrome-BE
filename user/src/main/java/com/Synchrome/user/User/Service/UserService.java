@@ -1,5 +1,6 @@
 package com.Synchrome.user.User.Service;
 
+import com.Synchrome.user.Common.config.S3Uploader;
 import com.Synchrome.user.User.Domain.Enum.Paystatus;
 import com.Synchrome.user.User.Domain.Pay;
 import com.Synchrome.user.User.Domain.User;
@@ -24,7 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +43,7 @@ public class UserService {
     private final ObjectMapper objectMapper = new ObjectMapper().configure(JsonGenerator.Feature.ESCAPE_NON_ASCII, false);
     private final IamportClient iamportClient;
     private final PaymentRepository paymentRepository;
+    private final S3Uploader s3Uploader;
 
     @Value("${oauth.google.client-id}")
     private String googleClientId;
@@ -48,15 +52,16 @@ public class UserService {
     @Value("${oauth.google.redirect-uri}")
     private String googleRedirectUri;
 
-    public UserService(UserRepository userRepository, @Qualifier("userInfoDB") RedisTemplate<String, Object> redisTemplate, IamportClient iamportClient, PaymentRepository paymentRepository) {
+    public UserService(UserRepository userRepository, @Qualifier("userInfoDB") RedisTemplate<String, Object> redisTemplate, IamportClient iamportClient, PaymentRepository paymentRepository, S3Uploader s3Uploader) {
         this.userRepository = userRepository;
         this.redisTemplate = redisTemplate;
         this.iamportClient = iamportClient;
         this.paymentRepository = paymentRepository;
+        this.s3Uploader = s3Uploader;
     }
 
     public User save(UserSaveReqDto userSaveReqDto){
-        User user = User.builder().name(userSaveReqDto.getName()).email(userSaveReqDto.getEmail()).build();
+        User user = User.builder().profile(userSaveReqDto.getProfile()).name(userSaveReqDto.getName()).email(userSaveReqDto.getEmail()).build();
         userRepository.save(user);
         return user;
     }
@@ -95,7 +100,7 @@ public class UserService {
 
     public void userInfoCaching(User loginuser){
         String redisKey = String.valueOf(loginuser.getId());
-        UserInfoDto userInfoDto = UserInfoDto.builder().id(loginuser.getId()).name(loginuser.getName()).email(loginuser.getEmail()).subscribe(loginuser.getSubscribe()).build();
+        UserInfoDto userInfoDto = UserInfoDto.builder().profile(loginuser.getProfile()).id(loginuser.getId()).name(loginuser.getName()).email(loginuser.getEmail()).subscribe(loginuser.getSubscribe()).build();
         try {
             String userInfoJson = objectMapper.writeValueAsString(userInfoDto);
             redisTemplate.opsForValue().set(redisKey, userInfoJson);
@@ -165,6 +170,8 @@ public class UserService {
             Pay pay = Pay.builder().user(user).amount(BigDecimal.valueOf(fee)).impUid(actualImpUid).build();
             paymentRepository.save(pay);
             user.subscribe();
+            deleteUserInfo(user.getId());
+            userInfoCaching(user);
 
         } catch (Exception e) {
             throw new RuntimeException("결제중 오류", e);
@@ -206,6 +213,10 @@ public class UserService {
             // 결제 상태를 CANCEL !
             pay.cancelPaymentStatus();
             user.cancelSubscribe();
+            String redisKey = String.valueOf(user.getId());
+            redisTemplate.delete(redisKey);
+            userInfoCaching(user);
+
         } else {
             log.error("결제 취소 실패: {}", cancelResponse.getMessage());
             throw new Exception("결제 취소 실패: " + cancelResponse.getMessage());
@@ -231,6 +242,39 @@ public class UserService {
                         .updatedTime(pay.getUpdatedTime())
                         .build())
                 .toList();
+    }
+
+    public Long newProfile(UpdateProfileDto dto) throws IOException {
+        User user = userRepository.findById(dto.getUserId()).orElseThrow(()-> new EntityNotFoundException("없는 유저"));
+        MultipartFile profileImage = dto.getNewProfile();
+
+        if (profileImage != null && !profileImage.isEmpty()) {
+            // ✅ S3에 파일 업로드
+            String profileUrl = s3Uploader.uploadFile(profileImage);
+
+            // ✅ 업로드한 URL로 user의 profile 업데이트
+            user.updateMyProfile(profileUrl);
+        }
+        String redisKey = String.valueOf(user.getId());
+        redisTemplate.delete(redisKey);
+
+        // ✅ Redis에 새로운 유저 정보 다시 저장
+        UserInfoDto userInfoDto = UserInfoDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .profile(user.getProfile())
+                .subscribe(user.getSubscribe())
+                .build();
+
+        try {
+            String userInfoJson = objectMapper.writeValueAsString(userInfoDto);
+            redisTemplate.opsForValue().set(redisKey, userInfoJson);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Redis 저장 중 오류 발생", e);
+        }
+
+        return user.getId();
     }
 
 }

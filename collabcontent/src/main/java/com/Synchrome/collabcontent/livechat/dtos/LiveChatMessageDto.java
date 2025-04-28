@@ -5,11 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class SessionCreateDto {
-    private Long channelId;
-    private String sessionId;
+public class LiveChatMessageDto {
+    private Long roomId;
+    private String type;    // "LIVE_CHAT_STARTED"
+    private String content;
 }

@@ -7,5 +7,5 @@ import java.util.List;
 @Data
 public class CanvasSaveReqDto {
     private Long canvasId;
-    private List<CanvasBlockDto> blocks;
+    private String ydocState;
 }

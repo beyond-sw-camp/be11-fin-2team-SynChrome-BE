@@ -1,5 +1,6 @@
 package com.Synchrome.collabcontent.canvas.controller;
 
+import com.Synchrome.collabcontent.canvas.domain.Canvas;
 import com.Synchrome.collabcontent.canvas.dto.CanvasCreateReqDto;
 import com.Synchrome.collabcontent.canvas.dto.CanvasListResDto;
 import com.Synchrome.collabcontent.canvas.dto.CanvasSaveReqDto;
@@ -27,15 +28,15 @@ public class CanvasController {
     }
 
     @PostMapping("/{canvasId}/save")
-    public ResponseEntity<?> saveJson(@RequestBody CanvasSaveReqDto request) {
-        canvasService.saveCanvasBlocks(request);
+    public ResponseEntity<?> saveJson(@RequestBody CanvasSaveReqDto canvasSaveReqDto) {
+        canvasService.saveCanvas(canvasSaveReqDto);
         return new ResponseEntity<>("ok", HttpStatus.OK);
     }
 
     @GetMapping("/{canvasId}")
     public ResponseEntity<?> loadCanvas(@PathVariable Long canvasId) {
-        Map<String, Object> map = canvasService.loadCanvasContent(canvasId);
-        return new ResponseEntity<>(map, HttpStatus.OK);
+        Canvas canvas = canvasService.loadCanvasContent(canvasId);
+        return new ResponseEntity<>(canvas, HttpStatus.OK);
     }
 
     @GetMapping("/list")

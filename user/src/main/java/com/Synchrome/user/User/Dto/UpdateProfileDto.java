@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-public class UserSaveReqDto {
-    private String name;
-    private String email;
-    private String profile;
+@Data
+public class UpdateProfileDto {
+    private Long userId;
+    private MultipartFile newProfile;
 }

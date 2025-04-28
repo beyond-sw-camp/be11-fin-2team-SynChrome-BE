@@ -1,13 +1,14 @@
 package com.Synchrome.collabcontent.canvas.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -21,4 +22,17 @@ public class Canvas {
 
     private String title;
 
+    @Lob
+    private String ydocState;
+
+
+    @CreationTimestamp
+    private LocalDateTime createdAt; // 생성일자
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt; // 수정일자
+
+    public void updateYdocState(String ydocState){
+        this.ydocState = ydocState;
+    }
 }
