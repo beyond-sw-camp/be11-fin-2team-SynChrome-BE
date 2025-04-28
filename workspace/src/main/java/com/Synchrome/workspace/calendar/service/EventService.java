@@ -1,17 +1,12 @@
 package com.Synchrome.workspace.calendar.service;
 
-import com.Synchrome.workspace.calendar.domain.Calendar;
-import com.Synchrome.workspace.calendar.domain.ColorCategory;
+import com.Synchrome.workspace.calendar.domain.*;
 import com.Synchrome.workspace.calendar.domain.Enum.RepeatType;
-import com.Synchrome.workspace.calendar.domain.Event;
-import com.Synchrome.workspace.calendar.domain.EventException;
 import com.Synchrome.workspace.calendar.dto.ColorCategoryDto;
+import com.Synchrome.workspace.calendar.dto.ColorWorkspaceDto;
 import com.Synchrome.workspace.calendar.dto.EventDto;
 import com.Synchrome.workspace.calendar.dto.EventExceptionRequestDto;
-import com.Synchrome.workspace.calendar.repository.CalendarRepository;
-import com.Synchrome.workspace.calendar.repository.ColorCategoryRepository;
-import com.Synchrome.workspace.calendar.repository.EventExceptionRepository;
-import com.Synchrome.workspace.calendar.repository.EventRepository;
+import com.Synchrome.workspace.calendar.repository.*;
 import com.Synchrome.workspace.space.domain.WorkSpace;
 import com.Synchrome.workspace.space.repository.WorkSpaceRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -37,13 +33,15 @@ public class EventService {
     private final EventExceptionRepository eventExceptionRepository;
     private final ColorCategoryRepository colorCategoryRepository;
     private final WorkSpaceRepository workSpaceRepository;
+    private final ColorWorkspaceRepository colorWorkspaceRepository;
 
-    public EventService(EventRepository eventRepository, CalendarRepository calendarRepository, EventExceptionRepository eventExceptionRepository, ColorCategoryRepository colorCategoryRepository, WorkSpaceRepository workSpaceRepository) {
+    public EventService(EventRepository eventRepository, CalendarRepository calendarRepository, EventExceptionRepository eventExceptionRepository, ColorCategoryRepository colorCategoryRepository, WorkSpaceRepository workSpaceRepository, ColorWorkspaceRepository colorWorkspaceRepository) {
         this.eventRepository = eventRepository;
         this.calendarRepository = calendarRepository;
         this.eventExceptionRepository = eventExceptionRepository;
         this.colorCategoryRepository = colorCategoryRepository;
         this.workSpaceRepository = workSpaceRepository;
+        this.colorWorkspaceRepository = colorWorkspaceRepository;
     }
 
     //        일정추가
@@ -438,9 +436,40 @@ public class EventService {
         colorCategoryRepository.delete(category);
     }
 
+//    //워크스페이스라벨 자동생성 메서드
+//    public void initColorWorkspaces(Long workspaceId, List<Long> memberUserIds) {
+//        WorkSpace workspace = workSpaceRepository.getReferenceById(workspaceId);
+//
+//        for (Long userId : memberUserIds) {
+//            boolean exists = colorWorkspaceRepository
+//                    .findByUserIdAndWorkspaceId(userId, workspaceId)
+//                    .isPresent();
+//
+//            if (!exists) {
+//                String color = generateDefaultColor(userId, workspaceId);
+//                ColorWorkspace cw = ColorWorkspace.create(userId, workspace, color);
+//                colorWorkspaceRepository.save(cw);
+//            }
+//        }
+//    }
 
+    public List<ColorWorkspaceDto> getAllByUserId(Long userId) {
+        return colorWorkspaceRepository.findByUserIdWithWorkspace(userId)
+                .stream()
+                .map(cw -> {
+                    ColorWorkspaceDto dto = new ColorWorkspaceDto();
+                    dto.setWorkspaceId(cw.getWorkspace().getId());
+                    dto.setWorkspaceName(cw.getWorkspace().getTitle());
+                    dto.setColor(cw.getColor());
+                    return dto;
+                }).collect(Collectors.toList());
+    }
 
-
-
+    public void updateColor(Long userId, Long workspaceId, String color) {
+        ColorWorkspace cw = colorWorkspaceRepository
+                .findByUserIdAndWorkspaceId(userId, workspaceId)
+                .orElseThrow(() -> new IllegalArgumentException("컬러 설정이 존재하지 않습니다."));
+        cw.changeColor(color);
+    }
 
 }

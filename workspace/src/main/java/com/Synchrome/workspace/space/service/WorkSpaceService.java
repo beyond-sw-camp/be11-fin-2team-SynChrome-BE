@@ -1,5 +1,7 @@
 package com.Synchrome.workspace.space.service;
 
+import com.Synchrome.workspace.calendar.domain.ColorWorkspace;
+import com.Synchrome.workspace.calendar.repository.ColorWorkspaceRepository;
 import com.Synchrome.workspace.common.InviteCodeGenerator;
 import com.Synchrome.workspace.common.S3Uploader;
 import com.Synchrome.workspace.space.domain.*;
@@ -36,11 +38,12 @@ public class WorkSpaceService {
     private final ChannelParticipantRepository channelParticipantRepository;
     private final S3Uploader s3Uploader;
     private final WorkSpaceFeign workSpaceFeign;
+    private final ColorWorkspaceRepository colorWorkspaceRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public WorkSpaceService(RedisTemplate<String, String> redisTemplate, RedisTemplate<String, Object> userInfoRedisTemplate, WorkSpaceRepository workSpaceRepository, SectionRepository sectionRepository, ChannelRepository channelRepository, WorkSpaceParticipantRepository workSpaceParticipantRepository, ChannelParticipantRepository channelParticipantRepository, S3Uploader s3Uploader, WorkSpaceFeign workSpaceFeign) {
+    public WorkSpaceService(RedisTemplate<String, String> redisTemplate, RedisTemplate<String, Object> userInfoRedisTemplate, WorkSpaceRepository workSpaceRepository, SectionRepository sectionRepository, ChannelRepository channelRepository, WorkSpaceParticipantRepository workSpaceParticipantRepository, ChannelParticipantRepository channelParticipantRepository, S3Uploader s3Uploader, WorkSpaceFeign workSpaceFeign, ColorWorkspaceRepository colorWorkspaceRepository) {
         this.redisTemplate = redisTemplate;
         this.userInfoRedisTemplate = userInfoRedisTemplate;
         this.workSpaceRepository = workSpaceRepository;
@@ -50,6 +53,7 @@ public class WorkSpaceService {
         this.channelParticipantRepository = channelParticipantRepository;
         this.s3Uploader = s3Uploader;
         this.workSpaceFeign = workSpaceFeign;
+        this.colorWorkspaceRepository = colorWorkspaceRepository;
     }
 
     public Long saveWorkSpace(WorkSpaceCreateDto dto) throws IOException {
@@ -490,6 +494,11 @@ public class WorkSpaceService {
                 .toList();
 
         channelParticipantRepository.saveAll(newParticipants);
+    }
+
+    private String generateDefaultColor(Long userId, Long workspaceId) {
+        String[] colors = {"#3498db", "#e67e22", "#2ecc71", "#9b59b6", "#1abc9c"};
+        return colors[Math.abs(Objects.hash(userId, workspaceId)) % colors.length];
     }
 
 }
