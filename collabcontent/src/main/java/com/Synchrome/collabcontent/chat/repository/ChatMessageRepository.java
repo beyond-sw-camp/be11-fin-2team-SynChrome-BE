@@ -13,9 +13,9 @@ import java.util.List;
 
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
-    List<ChatMessage> findByChatRoomIdAndParentIdIsNullOrderByIdDesc(Long roomId, Pageable pageable);
+    List<ChatMessage> findByChatRoomIdAndParentIdIsNullOrderByCreatedTimeDesc(Long roomId, Pageable pageable);
 
-    List<ChatMessage> findByChatRoomIdAndIdLessThanAndParentIdIsNullOrderByIdDesc(Long roomId, Long beforeId, Pageable pageable);
+    List<ChatMessage> findByChatRoomIdAndCreatedTimeLessThanAndParentIdIsNullOrderByCreatedTimeDesc(Long roomId, LocalDateTime beforeTime, Pageable pageable);
 
     List<ChatMessage> findByParentIdOrderByIdDesc(Long parentId, Pageable pageable);
 

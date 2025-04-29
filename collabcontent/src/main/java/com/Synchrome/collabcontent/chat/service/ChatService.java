@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -130,10 +131,11 @@ public class ChatService {
 
         if (beforeId == null) {
             // 최신 메시지부터
-            messages = chatMessageRepository.findByChatRoomIdAndParentIdIsNullOrderByIdDesc(roomId, PageRequest.of(0, limit));
+            messages = chatMessageRepository.findByChatRoomIdAndParentIdIsNullOrderByCreatedTimeDesc(roomId, PageRequest.of(0, limit));
         } else {
             // 특정 메시지보다 이전 메시지
-            messages = chatMessageRepository.findByChatRoomIdAndIdLessThanAndParentIdIsNullOrderByIdDesc(roomId, beforeId, PageRequest.of(0, limit));
+            LocalDateTime beforeTime = chatMessageRepository.findById(beforeId).get().getCreatedTime();
+            messages = chatMessageRepository.findByChatRoomIdAndCreatedTimeLessThanAndParentIdIsNullOrderByCreatedTimeDesc(roomId, beforeTime, PageRequest.of(0, limit));
         }
         System.out.println(messages);
         return messages.stream()
