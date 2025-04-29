@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/calendar")
+@RequestMapping("/calendar")
 public class CalendarController {
     private final CalendarService calendarService;
     private final EventService eventService;
@@ -24,13 +24,10 @@ public class CalendarController {
         this.eventService = eventService;
     }
 //      캘린더 생성
-    @PostMapping("/create/{workspaceId}")
-    public ResponseEntity<Void> createCalendar(
-            @PathVariable Long workspaceId,
-            @RequestHeader("X-User-Id") Long userId //Gateway에서 JWT 인증 후 현재 서버로 넘겨주는 방식
-    ) {
-        calendarService.createCalendar(workspaceId, userId);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @PostMapping("/create/user")
+    public ResponseEntity<Long> createCalendar(@RequestHeader("X-User-Id") Long userId) {
+        Long calendarId = calendarService.createCalendar(userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(calendarId);
     }
 
 //    일정추가

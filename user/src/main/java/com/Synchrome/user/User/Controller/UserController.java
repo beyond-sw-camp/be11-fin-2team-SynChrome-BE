@@ -5,6 +5,7 @@ import com.Synchrome.user.User.Domain.User;
 import com.Synchrome.user.User.Dto.*;
 import com.Synchrome.user.User.Repository.UserRepository;
 import com.Synchrome.user.User.Service.UserService;
+import com.Synchrome.user.User.feign.WorkspaceFeignClient;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,6 +28,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final WorkspaceFeignClient workspaceFeignClient;
 
     @Qualifier("rtdb")
     private final RedisTemplate<String,Object> redisTemplate;
@@ -34,10 +36,11 @@ public class UserController {
     @Value("${jwt.secretKeyRT}")
     private String secretKeyRT;
 
-    public UserController(UserRepository userRepository, UserService userService, JwtTokenProvider jwtTokenProvider, RedisTemplate<String, Object> redisTemplate) {
+    public UserController(UserRepository userRepository, UserService userService, JwtTokenProvider jwtTokenProvider, WorkspaceFeignClient workspaceFeignClient, RedisTemplate<String, Object> redisTemplate) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.workspaceFeignClient = workspaceFeignClient;
         this.redisTemplate = redisTemplate;
     }
 
@@ -50,6 +53,8 @@ public class UserController {
         if(originalUser == null){
             UserSaveReqDto response = UserSaveReqDto.builder().profile(basicProfile).email(googleProfileDto.getEmail()).name(googleProfileDto.getName()).build();
             originalUser = userService.save(response);
+            String jwtToken = jwtTokenProvider.createToken(originalUser.getId(), originalUser.getName());
+            workspaceFeignClient.createCalendarForUser(originalUser.getId(), "Bearer " + jwtToken);
         }
         String jwtToken = jwtTokenProvider.createToken(originalUser.getId(), originalUser.getName());
         String jwtRefreshToken = jwtTokenProvider.createRefreshToken(originalUser.getId());
@@ -114,6 +119,15 @@ public class UserController {
     public ResponseEntity<?> updateProfile(UpdateProfileDto updateProfileDto) throws IOException {
         Long response = userService.newProfile(updateProfileDto);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/findInviteUsers")
+    public ResponseEntity<?> findInviteUser(@RequestBody FindInviteUserDto findInviteUserDto){
+        List<Long> userIds = userService.InviteUsers(findInviteUserDto);
+        InviteUserResDto response = InviteUserResDto.builder()
+                .userId(userIds)
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
 }

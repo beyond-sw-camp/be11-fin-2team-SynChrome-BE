@@ -20,23 +20,21 @@ public class CalendarService {
         this.workSpaceRepository = workSpaceRepository;
     }
 //    캘린더 생성
-    public void createCalendar(Long workspaceId, Long userId) {
-
-
+    public Long createCalendar(Long userId) {
         // 중복 방지
-        boolean exists = calendarRepository.existsByWorkSpaceIdAndUserId(workspaceId, userId);
-        if (exists) {
+        // 중복 방지
+        boolean exists = calendarRepository.existsByUserId(userId);  // ✅ 수정
+        if (calendarRepository.existsByUserId(userId)) {
             throw new IllegalStateException("이미 존재하는 유저 캘린더입니다.");
-        }else if(!exists) {
-            WorkSpace workSpace = workSpaceRepository.findById(workspaceId)
-                    .orElseThrow(() -> new EntityNotFoundException("워크스페이스를 찾을 수 없습니다."));
-            Calendar calendar = Calendar.builder()
-                    .name("캘린더")
-                    .workSpace(workSpace)
-                    .userId(userId)
-                    .build();
+        }
 
-            calendarRepository.save(calendar);
+        // ✅ workSpace 없이 Calendar만 생성
+        Calendar calendar = Calendar.builder()
+                .name("기본 캘린더")  // 기본 이름
+                .userId(userId)
+                .build();
+
+        Calendar savedCalendar = calendarRepository.save(calendar);
+        return savedCalendar.getId();
         }
     }
-}

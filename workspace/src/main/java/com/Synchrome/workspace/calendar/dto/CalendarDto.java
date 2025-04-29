@@ -20,7 +20,6 @@ public class CalendarDto {
                 .id(calendar.getId())
                 .name(calendar.getName())
                 .userId(calendar.getUserId())
-                .workspaceId(calendar.getWorkSpace().getId())
                 .build();
     }
 }

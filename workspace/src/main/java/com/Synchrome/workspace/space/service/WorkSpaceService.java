@@ -1,6 +1,8 @@
 package com.Synchrome.workspace.space.service;
 
+import com.Synchrome.workspace.calendar.domain.Calendar;
 import com.Synchrome.workspace.calendar.domain.ColorWorkspace;
+import com.Synchrome.workspace.calendar.repository.CalendarRepository;
 import com.Synchrome.workspace.calendar.repository.ColorWorkspaceRepository;
 import com.Synchrome.workspace.common.InviteCodeGenerator;
 import com.Synchrome.workspace.common.S3Uploader;
@@ -39,11 +41,12 @@ public class WorkSpaceService {
     private final S3Uploader s3Uploader;
     private final WorkSpaceFeign workSpaceFeign;
     private final ColorWorkspaceRepository colorWorkspaceRepository;
+    private final CalendarRepository calendarRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public WorkSpaceService(RedisTemplate<String, String> redisTemplate, RedisTemplate<String, Object> userInfoRedisTemplate, WorkSpaceRepository workSpaceRepository, SectionRepository sectionRepository, ChannelRepository channelRepository, WorkSpaceParticipantRepository workSpaceParticipantRepository, ChannelParticipantRepository channelParticipantRepository, S3Uploader s3Uploader, WorkSpaceFeign workSpaceFeign, ColorWorkspaceRepository colorWorkspaceRepository) {
+    public WorkSpaceService(RedisTemplate<String, String> redisTemplate, RedisTemplate<String, Object> userInfoRedisTemplate, WorkSpaceRepository workSpaceRepository, SectionRepository sectionRepository, ChannelRepository channelRepository, WorkSpaceParticipantRepository workSpaceParticipantRepository, ChannelParticipantRepository channelParticipantRepository, S3Uploader s3Uploader, WorkSpaceFeign workSpaceFeign, ColorWorkspaceRepository colorWorkspaceRepository, CalendarRepository calendarRepository) {
         this.redisTemplate = redisTemplate;
         this.userInfoRedisTemplate = userInfoRedisTemplate;
         this.workSpaceRepository = workSpaceRepository;
@@ -54,6 +57,7 @@ public class WorkSpaceService {
         this.s3Uploader = s3Uploader;
         this.workSpaceFeign = workSpaceFeign;
         this.colorWorkspaceRepository = colorWorkspaceRepository;
+        this.calendarRepository = calendarRepository;
     }
 
     public Long saveWorkSpace(WorkSpaceCreateDto dto) throws IOException {
@@ -113,6 +117,17 @@ public class WorkSpaceService {
                 .build();
 
         workSpaceParticipantRepository.save(participant);
+
+        String[] colors = {"#4CAF50", "#2196F3", "#FF5722", "#9C27B0"};
+        String randomColor = colors[new Random().nextInt(colors.length)];
+
+        ColorWorkspace colorWorkspace = ColorWorkspace.builder()
+                .workspace(saveWorkSpace)
+                .userId(dto.getUserId())
+                .color(randomColor) // 기본 색깔 (원하면 다른 로직으로 색 선택해도 됨)
+                .build();
+
+        colorWorkspaceRepository.save(colorWorkspace);
         // ✅ Redis에서 유저 정보 꺼내기
         String redisKey = String.valueOf(dto.getUserId());
         String userInfoJson = (String) userInfoRedisTemplate.opsForValue().get(redisKey);
@@ -175,6 +190,16 @@ public class WorkSpaceService {
                 channel.delete();
             }
             section.delete();
+        }
+//        워크스페이스 라벨 삭제(소프트)
+        List<ColorWorkspace> colorWorkspaces = colorWorkspaceRepository.findByWorkspaceId(workSpaceId);
+        for (ColorWorkspace colorWorkspace : colorWorkspaces) {
+            colorWorkspace.delete();
+        }
+//        캘린더 삭제(소프트)
+        List<Calendar> calendars = calendarRepository.findByUserIdAndDel(userId, Del.N);
+        for (Calendar calendar : calendars) {
+            calendar.delete();
         }
 
         workSpace.delete();
@@ -246,16 +271,49 @@ public class WorkSpaceService {
         return section.getId();
     }
 
-    public Long createChannel(ChannelCreateDto dto){
-        Section section = sectionRepository.findById(dto.getSectionId()).orElseThrow(()->new EntityNotFoundException("없는 섹션"));
-        Channel myChannel = Channel.builder().title(dto.getTitle()).userId(dto.getUserId()).section(section).build();
+    public Long createChannel(ChannelCreateDto dto) {
+        Section section = sectionRepository.findById(dto.getSectionId())
+                .orElseThrow(() -> new EntityNotFoundException("없는 섹션"));
+
+        Channel myChannel = Channel.builder()
+                .title(dto.getTitle())
+                .userId(dto.getUserId())
+                .section(section)
+                .owner(dto.getOwner())
+                .build();
+
         Channel saveChannel = channelRepository.save(myChannel);
-        ChannelParticipant channelParticipant = ChannelParticipant.builder().userId(dto.getUserId()).channel(saveChannel).build();
-        channelParticipantRepository.save(channelParticipant);
+
+        // ✅ Owner에 따라 참여자 등록 방식 분기
+        if (dto.getOwner() == Owner.C) {
+            // 공통 채널이면 워크스페이스 모든 참여자 조회
+            List<WorkSpaceParticipant> workspaceParticipants = workSpaceParticipantRepository
+                    .findByWorkSpaceIdAndDel(section.getWorkSpace().getId(), Del.N);
+
+            List<ChannelParticipant> channelParticipants = workspaceParticipants.stream()
+                    .map(participant -> ChannelParticipant.builder()
+                            .userId(participant.getUserId())
+                            .channel(saveChannel)
+                            .build())
+                    .toList();
+
+            channelParticipantRepository.saveAll(channelParticipants);
+        } else {
+            // 개인 채널이면 채널 만든 사람만 등록
+            ChannelParticipant channelParticipant = ChannelParticipant.builder()
+                    .userId(dto.getUserId())
+                    .channel(saveChannel)
+                    .build();
+            channelParticipantRepository.save(channelParticipant);
+        }
+
+        // ✅ 그룹 채팅방 생성 요청 (통일)
         CreateGroupRoomReqDto reqDto = new CreateGroupRoomReqDto(dto.getUserId(), dto.getTitle());
         workSpaceFeign.createGroupChatRoom(reqDto);
+
         return saveChannel.getId();
     }
+
 
     public Long deleteChannel(ChannelDeleteDto dto){
         Channel channel = channelRepository.findById(dto.getChannelId())
@@ -341,6 +399,7 @@ public class WorkSpaceService {
                             .workspaceId(selectedWorkSpace.getId())
                             .workspaceTitle(selectedWorkSpace.getTitle())
                             .sectionId(section.getId())
+                            .sectionOwner(Owner.U)
                             .title(section.getTitle())
                             .channels(myChannels)
                             .build();
@@ -386,6 +445,7 @@ public class WorkSpaceService {
                     .workspaceId(selectedWorkSpace.getId())
                     .workspaceTitle(selectedWorkSpace.getTitle())
                     .sectionId(commonSection != null ? commonSection.getId() : null) // ✅ 여기!
+                    .sectionOwner(Owner.C)
                     .title("공통")
                     .channels(allSharedChannels)
                     .build();
