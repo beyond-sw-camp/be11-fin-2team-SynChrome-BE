@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CalendarRepository extends JpaRepository<Calendar, Long> {
 
-    boolean existsByWorkSpaceIdAndUserId(Long workspaceId, Long userId);
+    boolean existsByUserId(Long userId);
 }

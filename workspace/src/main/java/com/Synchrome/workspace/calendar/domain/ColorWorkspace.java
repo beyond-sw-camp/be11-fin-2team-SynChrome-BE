@@ -1,5 +1,6 @@
 package com.Synchrome.workspace.calendar.domain;
 
+import com.Synchrome.workspace.space.domain.ENUM.Del;
 import com.Synchrome.workspace.space.domain.WorkSpace;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,6 +22,10 @@ public class ColorWorkspace {
     @Column(nullable = false)
     private String color;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "del", nullable = false)
+    private Del del = Del.N;  // 기본값 'N' (삭제 안 됨)
+
     protected ColorWorkspace() {} // JPA
 
     private ColorWorkspace(Long userId, WorkSpace workspace, String color) {
@@ -35,5 +40,9 @@ public class ColorWorkspace {
 
     public void changeColor(String color) {
         this.color = color;
+    }
+
+    public void delete() {
+        this.del = del;
     }
 }

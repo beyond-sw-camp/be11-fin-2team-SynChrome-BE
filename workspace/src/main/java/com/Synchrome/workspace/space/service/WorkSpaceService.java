@@ -113,6 +113,17 @@ public class WorkSpaceService {
                 .build();
 
         workSpaceParticipantRepository.save(participant);
+
+        String[] colors = {"#4CAF50", "#2196F3", "#FF5722", "#9C27B0"};
+        String randomColor = colors[new Random().nextInt(colors.length)];
+
+        ColorWorkspace colorWorkspace = ColorWorkspace.builder()
+                .workspace(saveWorkSpace)
+                .userId(dto.getUserId())
+                .color(randomColor) // 기본 색깔 (원하면 다른 로직으로 색 선택해도 됨)
+                .build();
+
+        colorWorkspaceRepository.save(colorWorkspace);
         // ✅ Redis에서 유저 정보 꺼내기
         String redisKey = String.valueOf(dto.getUserId());
         String userInfoJson = (String) userInfoRedisTemplate.opsForValue().get(redisKey);
@@ -175,6 +186,11 @@ public class WorkSpaceService {
                 channel.delete();
             }
             section.delete();
+        }
+//        워크스페이스 라벨 삭제(소프트)
+        List<ColorWorkspace> colorWorkspaces = colorWorkspaceRepository.findByWorkspaceId(workSpaceId);
+        for (ColorWorkspace colorWorkspace : colorWorkspaces) {
+            colorWorkspace.delete();
         }
 
         workSpace.delete();
