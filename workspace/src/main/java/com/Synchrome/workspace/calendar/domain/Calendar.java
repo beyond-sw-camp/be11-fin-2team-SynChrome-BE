@@ -24,6 +24,7 @@ public class Calendar {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "del",nullable = false)
+    @Builder.Default
     private Del del = Del.N;
 
     @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL)
