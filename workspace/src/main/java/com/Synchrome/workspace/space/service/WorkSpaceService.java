@@ -1,6 +1,8 @@
 package com.Synchrome.workspace.space.service;
 
+import com.Synchrome.workspace.calendar.domain.Calendar;
 import com.Synchrome.workspace.calendar.domain.ColorWorkspace;
+import com.Synchrome.workspace.calendar.repository.CalendarRepository;
 import com.Synchrome.workspace.calendar.repository.ColorWorkspaceRepository;
 import com.Synchrome.workspace.common.InviteCodeGenerator;
 import com.Synchrome.workspace.common.S3Uploader;
@@ -39,11 +41,12 @@ public class WorkSpaceService {
     private final S3Uploader s3Uploader;
     private final WorkSpaceFeign workSpaceFeign;
     private final ColorWorkspaceRepository colorWorkspaceRepository;
+    private final CalendarRepository calendarRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public WorkSpaceService(RedisTemplate<String, String> redisTemplate, RedisTemplate<String, Object> userInfoRedisTemplate, WorkSpaceRepository workSpaceRepository, SectionRepository sectionRepository, ChannelRepository channelRepository, WorkSpaceParticipantRepository workSpaceParticipantRepository, ChannelParticipantRepository channelParticipantRepository, S3Uploader s3Uploader, WorkSpaceFeign workSpaceFeign, ColorWorkspaceRepository colorWorkspaceRepository) {
+    public WorkSpaceService(RedisTemplate<String, String> redisTemplate, RedisTemplate<String, Object> userInfoRedisTemplate, WorkSpaceRepository workSpaceRepository, SectionRepository sectionRepository, ChannelRepository channelRepository, WorkSpaceParticipantRepository workSpaceParticipantRepository, ChannelParticipantRepository channelParticipantRepository, S3Uploader s3Uploader, WorkSpaceFeign workSpaceFeign, ColorWorkspaceRepository colorWorkspaceRepository, CalendarRepository calendarRepository) {
         this.redisTemplate = redisTemplate;
         this.userInfoRedisTemplate = userInfoRedisTemplate;
         this.workSpaceRepository = workSpaceRepository;
@@ -54,6 +57,7 @@ public class WorkSpaceService {
         this.s3Uploader = s3Uploader;
         this.workSpaceFeign = workSpaceFeign;
         this.colorWorkspaceRepository = colorWorkspaceRepository;
+        this.calendarRepository = calendarRepository;
     }
 
     public Long saveWorkSpace(WorkSpaceCreateDto dto) throws IOException {
@@ -191,6 +195,11 @@ public class WorkSpaceService {
         List<ColorWorkspace> colorWorkspaces = colorWorkspaceRepository.findByWorkspaceId(workSpaceId);
         for (ColorWorkspace colorWorkspace : colorWorkspaces) {
             colorWorkspace.delete();
+        }
+//        캘린더 삭제(소프트)
+        List<Calendar> calendars = calendarRepository.findByUserIdAndDel(userId, Del.N);
+        for (Calendar calendar : calendars) {
+            calendar.delete();
         }
 
         workSpace.delete();

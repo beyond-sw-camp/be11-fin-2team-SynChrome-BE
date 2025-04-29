@@ -43,6 +43,6 @@ public class ColorWorkspace {
     }
 
     public void delete() {
-        this.del = del;
+        this.del = Del.Y;
     }
 }
