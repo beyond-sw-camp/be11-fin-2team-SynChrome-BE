@@ -21,10 +21,6 @@ public class Calendar {
     private String name;
     private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workspace_id", nullable = false)
-    private WorkSpace workSpace;
-
     @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Event> event = new ArrayList<>();

@@ -13,4 +13,5 @@ public interface ColorWorkspaceRepository extends JpaRepository<ColorWorkspace, 
     @Query("SELECT cw FROM ColorWorkspace cw JOIN FETCH cw.workspace WHERE cw.userId = :userId")
     List<ColorWorkspace> findByUserIdWithWorkspace(@Param("userId") Long userId);
     List<ColorWorkspace> findByUserId(Long userId);
+    List<ColorWorkspace> findByWorkspaceId(Long workspaceId);
 }
