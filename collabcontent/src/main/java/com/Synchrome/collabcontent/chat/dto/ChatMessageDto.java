@@ -21,6 +21,7 @@ public class ChatMessageDto {
     private LocalDateTime createdTime;
     private Long parentId;
     private Long workspaceId;
+    private String type;
 
 
     public static ChatMessageDto fromEntity(ChatMessage entity) {
