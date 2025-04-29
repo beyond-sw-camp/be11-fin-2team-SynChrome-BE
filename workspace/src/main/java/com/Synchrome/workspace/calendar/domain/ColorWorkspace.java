@@ -24,6 +24,7 @@ public class ColorWorkspace {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "del", nullable = false)
+    @Builder.Default
     private Del del = Del.N;  // 기본값 'N' (삭제 안 됨)
 
     protected ColorWorkspace() {} // JPA
