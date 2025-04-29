@@ -29,10 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -276,5 +273,26 @@ public class UserService {
 
         return user.getId();
     }
+
+    public List<Long> InviteUsers(FindInviteUserDto dto) {
+        List<String> usersEmail = dto.getEmail();
+
+        if (usersEmail == null || usersEmail.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> userIds = new ArrayList<>();
+
+        for (String email : usersEmail) {
+            Optional<User> userOptional = userRepository.findByEmail(email);
+
+            userOptional.ifPresent(user -> {
+                userIds.add(user.getId());
+            });
+        }
+
+        return userIds;
+    }
+
 
 }

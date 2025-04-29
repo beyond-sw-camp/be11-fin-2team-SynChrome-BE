@@ -262,16 +262,49 @@ public class WorkSpaceService {
         return section.getId();
     }
 
-    public Long createChannel(ChannelCreateDto dto){
-        Section section = sectionRepository.findById(dto.getSectionId()).orElseThrow(()->new EntityNotFoundException("없는 섹션"));
-        Channel myChannel = Channel.builder().title(dto.getTitle()).userId(dto.getUserId()).section(section).build();
+    public Long createChannel(ChannelCreateDto dto) {
+        Section section = sectionRepository.findById(dto.getSectionId())
+                .orElseThrow(() -> new EntityNotFoundException("없는 섹션"));
+
+        Channel myChannel = Channel.builder()
+                .title(dto.getTitle())
+                .userId(dto.getUserId())
+                .section(section)
+                .owner(dto.getOwner())
+                .build();
+
         Channel saveChannel = channelRepository.save(myChannel);
-        ChannelParticipant channelParticipant = ChannelParticipant.builder().userId(dto.getUserId()).channel(saveChannel).build();
-        channelParticipantRepository.save(channelParticipant);
+
+        // ✅ Owner에 따라 참여자 등록 방식 분기
+        if (dto.getOwner() == Owner.C) {
+            // 공통 채널이면 워크스페이스 모든 참여자 조회
+            List<WorkSpaceParticipant> workspaceParticipants = workSpaceParticipantRepository
+                    .findByWorkSpaceIdAndDel(section.getWorkSpace().getId(), Del.N);
+
+            List<ChannelParticipant> channelParticipants = workspaceParticipants.stream()
+                    .map(participant -> ChannelParticipant.builder()
+                            .userId(participant.getUserId())
+                            .channel(saveChannel)
+                            .build())
+                    .toList();
+
+            channelParticipantRepository.saveAll(channelParticipants);
+        } else {
+            // 개인 채널이면 채널 만든 사람만 등록
+            ChannelParticipant channelParticipant = ChannelParticipant.builder()
+                    .userId(dto.getUserId())
+                    .channel(saveChannel)
+                    .build();
+            channelParticipantRepository.save(channelParticipant);
+        }
+
+        // ✅ 그룹 채팅방 생성 요청 (통일)
         CreateGroupRoomReqDto reqDto = new CreateGroupRoomReqDto(dto.getUserId(), dto.getTitle());
         workSpaceFeign.createGroupChatRoom(reqDto);
+
         return saveChannel.getId();
     }
+
 
     public Long deleteChannel(ChannelDeleteDto dto){
         Channel channel = channelRepository.findById(dto.getChannelId())
@@ -357,6 +390,7 @@ public class WorkSpaceService {
                             .workspaceId(selectedWorkSpace.getId())
                             .workspaceTitle(selectedWorkSpace.getTitle())
                             .sectionId(section.getId())
+                            .sectionOwner(Owner.U)
                             .title(section.getTitle())
                             .channels(myChannels)
                             .build();
@@ -402,6 +436,7 @@ public class WorkSpaceService {
                     .workspaceId(selectedWorkSpace.getId())
                     .workspaceTitle(selectedWorkSpace.getTitle())
                     .sectionId(commonSection != null ? commonSection.getId() : null) // ✅ 여기!
+                    .sectionOwner(Owner.C)
                     .title("공통")
                     .channels(allSharedChannels)
                     .build();
