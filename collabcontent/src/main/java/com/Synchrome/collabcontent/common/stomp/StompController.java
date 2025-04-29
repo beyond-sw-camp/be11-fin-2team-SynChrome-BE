@@ -39,7 +39,7 @@ public class StompController {
 
     @MessageMapping("/chat/{roomId}")
     public void sendMessage(@DestinationVariable Long roomId, ChatMessageDto chatMessageReqDto) throws JsonProcessingException {
-        if(chatMessageReqDto.getType().equals("typing")){
+        if(chatMessageReqDto.getType().equals("typing") || chatMessageReqDto.getType().equals("stopTyping")){
             chatMessageReqDto.setRoomId(roomId);
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new JavaTimeModule()); // ✅ 이 줄 추가
