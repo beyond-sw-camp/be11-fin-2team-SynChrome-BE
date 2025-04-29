@@ -40,7 +40,11 @@ public class Channel extends BaseTimeEntity {
     }
 
     public void update(Section section,String title){
-        this.title = title;
-        this.section = section;
+        if (title != null) {
+            this.title = title;
+        }
+        if (section != null) {
+            this.section = section;
+        }
     }
 }

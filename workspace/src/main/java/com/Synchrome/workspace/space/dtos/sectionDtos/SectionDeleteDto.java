@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class SectionDeleteDto {
     private Long userId;
-    private Long SectionId;
+    private Long sectionId;
 }
