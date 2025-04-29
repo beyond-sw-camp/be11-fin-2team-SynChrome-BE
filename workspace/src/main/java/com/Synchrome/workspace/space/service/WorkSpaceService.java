@@ -26,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
+import java.nio.file.AccessDeniedException;
 import java.util.*;
 
 @Service
@@ -228,8 +229,20 @@ public class WorkSpaceService {
                 .toList();
     }
 
-    public Long updateMyWorkSpace(WorkSpaceUpdateDto dto){
-        WorkSpace tgWorkSpace = workSpaceRepository.findById(dto.getWorkSpaceId()).orElseThrow(()->new EntityNotFoundException("없는 워크스페이스"));
+    public Long updateMyWorkSpace(WorkSpaceUpdateDto dto) throws IOException {
+        WorkSpace tgWorkSpace = workSpaceRepository.findById(dto.getWorkSpaceId())
+                .orElseThrow(() -> new EntityNotFoundException("없는 워크스페이스"));
+
+        if (!tgWorkSpace.getUserId().equals(dto.getUserId())) {
+            return -1L;
+        }
+
+        MultipartFile logoFile = dto.getLogo();
+        if (logoFile != null && !logoFile.isEmpty()) {
+            String logoUrl = s3Uploader.uploadFile(logoFile);
+            tgWorkSpace.updateLogo(logoUrl);
+        }
+
         tgWorkSpace.update(dto);
         return tgWorkSpace.getId();
     }
@@ -266,7 +279,8 @@ public class WorkSpaceService {
     }
 
     public Long updateSection(SectionupdateDto dto){
-        Section section = sectionRepository.findById(dto.getSectionId()).orElseThrow(()-> new EntityNotFoundException("없는 섹션"));
+        Section section = sectionRepository.findById(dto.getSectionId())
+                .orElseThrow(() -> new EntityNotFoundException("없는 섹션"));
         section.update(dto.getTitle());
         return section.getId();
     }
@@ -362,9 +376,21 @@ public class WorkSpaceService {
     }
 
     public Long updateChannel(ChannelUpdateDto dto){
-        Channel channel = channelRepository.findById(dto.getChannelId()).orElseThrow(()->new EntityNotFoundException("없는 채널"));
-        Section section = sectionRepository.findById(dto.getSectionId()).orElseThrow(()->new EntityNotFoundException("없는 섹션"));
-        channel.update(section,dto.getTitle());
+        Channel channel = channelRepository.findById(dto.getChannelId())
+                .orElseThrow(() -> new EntityNotFoundException("없는 채널"));
+
+        if (!channel.getUserId().equals(dto.getUserId())) {
+            return -1L;
+        }
+
+        Section section = null;
+        if (dto.getSectionId() != null) {
+            section = sectionRepository.findById(dto.getSectionId())
+                    .orElseThrow(() -> new EntityNotFoundException("없는 섹션"));
+        }
+
+        channel.update(section, dto.getTitle());
+
         return channel.getId();
     }
 

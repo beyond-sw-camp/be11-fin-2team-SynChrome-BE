@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -66,8 +67,11 @@ public class WorkSpaceController {
     }
 
     @PostMapping("/updateMyWorkSpace")
-    public ResponseEntity<?> updateWorkSpace(@Valid WorkSpaceUpdateDto workSpaceUpdateDto){
+    public ResponseEntity<?> updateWorkSpace(@Valid WorkSpaceUpdateDto workSpaceUpdateDto) throws IOException {
         Long response = workSpaceService.updateMyWorkSpace(workSpaceUpdateDto);
+        if (response == -1L) {
+            return ResponseEntity.status(HttpStatus.OK).body("수정 권한이 없습니다.");
+        }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -123,6 +127,10 @@ public class WorkSpaceController {
     @PostMapping("/updateMyChannel")
     public ResponseEntity<?> updateMyChannel(@RequestBody ChannelUpdateDto channelUpdateDto){
         Long response = workSpaceService.updateChannel(channelUpdateDto);
+
+        if (response == -1L) {
+            return ResponseEntity.ok("수정 권한이 없습니다.");
+        }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -174,4 +182,5 @@ public class WorkSpaceController {
 
         return ResponseEntity.ok(result);
     }
+
 }

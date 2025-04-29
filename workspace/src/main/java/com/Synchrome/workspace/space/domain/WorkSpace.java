@@ -41,8 +41,16 @@ public class WorkSpace extends BaseTimeEntity {
         this.del = Del.Y;
     }
 
+    public void updateLogo(String logoUrl){
+        this.logo = logoUrl;
+    }
+
     public void update(WorkSpaceUpdateDto dto){
-        this.title = dto.getTitle();
-        this.userId = dto.getUserId();
+        if (dto.getTitle() != null) {
+            this.title = dto.getTitle();
+        }
+        if (dto.getChangeMasterId() != null) {
+            this.userId = dto.getChangeMasterId();
+        }
     }
 }
