@@ -130,4 +130,10 @@ public class UserController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    @PostMapping("/findParticipants")
+    public ResponseEntity<?> findParticipants(@RequestBody FindParticipantsDto dto){
+        List<UserInfoDto> response = userService.getUserInfosByIds(dto.getUserIds());
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
 }

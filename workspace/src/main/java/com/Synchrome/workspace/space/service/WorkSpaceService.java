@@ -587,4 +587,33 @@ public class WorkSpaceService {
         return colors[Math.abs(Objects.hash(userId, workspaceId)) % colors.length];
     }
 
+    public List<WorkSpaceParticipantDto> getWorkspaceParticipantsFromRedis(Long workspaceId) {
+        String workspaceRedisKey = "workspace:participants:" + workspaceId;
+        List<String> participantsJsonList = redisTemplate.opsForList().range(workspaceRedisKey, 0, -1);
+
+        if (participantsJsonList == null) {
+            return Collections.emptyList();
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<WorkSpaceParticipantDto> participants = new ArrayList<>();
+
+        for (String json : participantsJsonList) {
+            try {
+                WorkSpaceParticipantDto dto = objectMapper.readValue(json, WorkSpaceParticipantDto.class);
+                participants.add(dto);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace(); // 오류 로깅
+            }
+        }
+
+        return participants;
+    }
+
+    public List<Long> getUserIdsByChannelId(Long channelId) {
+        return channelParticipantRepository.findByChannelIdAndDel(channelId, Del.N).stream()
+                .map(ChannelParticipant::getUserId)
+                .toList();
+    }
+
 }
