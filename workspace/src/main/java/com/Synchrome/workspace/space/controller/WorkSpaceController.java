@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import jakarta.ws.rs.Path;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -183,4 +184,15 @@ public class WorkSpaceController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/workspaceParticipants/{workspaceId}")
+    public ResponseEntity<?> getWorkspaceParticipants(@PathVariable Long workspaceId){
+        List<WorkSpaceParticipantDto> participants = workSpaceService.getWorkspaceParticipantsFromRedis(workspaceId);
+        return ResponseEntity.ok(participants);
+    }
+
+    @GetMapping("/channelParticipants/{channelId}")
+    public ResponseEntity<?> getChannelParticipants(@PathVariable Long channelId){
+        List<Long> response = workSpaceService.getUserIdsByChannelId(channelId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
