@@ -4,9 +4,11 @@ package com.Synchrome.collabcontent.common.stomp;
 import com.Synchrome.collabcontent.canvas.dto.CanvasUpdateReqDto;
 import com.Synchrome.collabcontent.canvas.service.CanvasService;
 import com.Synchrome.collabcontent.chat.domain.ChatMessage;
+import com.Synchrome.collabcontent.chat.domain.Emotion;
 import com.Synchrome.collabcontent.chat.dto.ChatMessageDto;
 import com.Synchrome.collabcontent.chat.dto.NotificationDto;
 import com.Synchrome.collabcontent.chat.service.ChatService;
+import com.Synchrome.collabcontent.chat.service.EmotionService;
 import com.Synchrome.collabcontent.chat.service.NotificationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,13 +30,15 @@ public class StompController {
     private final KafkaTemplate kafkaTemplate;
     private final CanvasService canvasService;
     private final NotificationService notificationService;
+    private final EmotionService emotionService;
 
-    public StompController(SimpMessageSendingOperations messageTemplate, ChatService chatService, KafkaTemplate kafkaTemplate, CanvasService canvasService, NotificationService notificationService) {
+    public StompController(SimpMessageSendingOperations messageTemplate, ChatService chatService, KafkaTemplate kafkaTemplate, CanvasService canvasService, NotificationService notificationService, EmotionService emotionService) {
         this.messageTemplate = messageTemplate;
         this.chatService = chatService;
         this.kafkaTemplate = kafkaTemplate;
         this.canvasService = canvasService;
         this.notificationService = notificationService;
+        this.emotionService = emotionService;
     }
 
     @MessageMapping("/chat/{roomId}")
@@ -47,6 +51,28 @@ public class StompController {
             System.out.println("✅ 카프카 프로듀서 실행");
             kafkaTemplate.send("chat", message);
         }
+        else if (chatMessageReqDto.getType().equals("emotion")) {
+            Long messageId = chatMessageReqDto.getParentId();
+            String emoji = chatMessageReqDto.getMessage();
+            Long userId = chatMessageReqDto.getUserId();
+
+            // ✅ roomId도 함께 전달
+            emotionService.toggleAndSave(roomId, messageId, emoji, userId);
+
+            // ✅ Redis count 조회도 roomId 포함
+            Long count = emotionService.getEmotionCount(roomId, messageId, emoji);
+
+            chatMessageReqDto.setEmotionSize(count);
+            chatMessageReqDto.setRoomId(roomId);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            String emotionMessage = objectMapper.writeValueAsString(chatMessageReqDto);
+
+            kafkaTemplate.send("chat", emotionMessage);
+        }
+
+
         else if(chatMessageReqDto.getType().equals("message")){
             ChatMessage chatMessage = chatService.saveMessage(roomId, chatMessageReqDto);
             chatMessageReqDto.setId(chatMessage.getId());
