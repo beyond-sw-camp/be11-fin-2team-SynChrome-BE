@@ -22,6 +22,7 @@ public class ChatMessageDto {
     private Long parentId;
     private Long workspaceId;
     private String type;
+    private Long emotionSize;
 
 
     public static ChatMessageDto fromEntity(ChatMessage entity) {
