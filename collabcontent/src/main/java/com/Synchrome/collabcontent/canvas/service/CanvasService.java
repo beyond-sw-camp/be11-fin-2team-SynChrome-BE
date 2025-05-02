@@ -5,7 +5,6 @@ import com.Synchrome.collabcontent.canvas.dto.CanvasCreateReqDto;
 import com.Synchrome.collabcontent.canvas.dto.CanvasListResDto;
 import com.Synchrome.collabcontent.canvas.dto.CanvasSaveReqDto;
 import com.Synchrome.collabcontent.canvas.repository.CanvasRepository;
-import com.Synchrome.collabcontent.common.redis.YDocManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,12 +15,10 @@ import java.util.*;
 @Transactional
 public class CanvasService {
     private final CanvasRepository canvasRepository;
-    private final YDocManager yDocManager;
     private final ObjectMapper objectMapper;
 
-    public CanvasService(CanvasRepository canvasRepository, YDocManager yDocManager, ObjectMapper objectMapper) {
+    public CanvasService(CanvasRepository canvasRepository, ObjectMapper objectMapper) {
         this.canvasRepository = canvasRepository;
-        this.yDocManager = yDocManager;
         this.objectMapper = objectMapper;
     }
 
