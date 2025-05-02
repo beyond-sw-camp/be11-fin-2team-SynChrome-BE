@@ -1,6 +1,7 @@
 package com.Synchrome.user.User.Service;
 
 import com.Synchrome.user.Common.config.S3Uploader;
+import com.Synchrome.user.User.Domain.Enum.Del;
 import com.Synchrome.user.User.Domain.Enum.Paystatus;
 import com.Synchrome.user.User.Domain.Pay;
 import com.Synchrome.user.User.Domain.User;
@@ -24,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -292,6 +294,17 @@ public class UserService {
         }
 
         return userIds;
+    }
+
+    public List<UserInfoDto> getUserInfosByIds(@RequestBody List<Long> userIds) {
+        return userRepository.findByIdInAndDel(userIds, Del.N).stream()
+                .map(user -> UserInfoDto.builder()
+                        .id(user.getId())
+                        .name(user.getName())
+                        .email(user.getEmail())
+                        .profile(user.getProfile())
+                        .build())
+                .toList();
     }
 
 
