@@ -184,4 +184,9 @@ public class ChatService {
                 .collect(Collectors.toList());
     }
 
+    public ChatMessage modifyMessage(ChatMessageDto chatMessageDto){
+        ChatMessage chatMessage = chatMessageRepository.findById(chatMessageDto.getId()).orElseThrow(()->new IllegalArgumentException("없는 메세지 입니다"));
+        chatMessage.modifyContent(chatMessageDto.getMessage());
+        return chatMessage;
+    }
 }
