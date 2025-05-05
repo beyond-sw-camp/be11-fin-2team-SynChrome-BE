@@ -24,6 +24,7 @@ public class ChatMessageDto {
     private Long workspaceId;
     private String type;
     private Long emotionSize;
+    private Long totalThreadCount;
 
 
     public static ChatMessageDto fromEntity(ChatMessage entity) {
