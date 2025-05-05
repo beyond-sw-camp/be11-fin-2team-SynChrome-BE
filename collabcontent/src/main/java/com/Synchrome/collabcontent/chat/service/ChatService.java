@@ -13,6 +13,7 @@ import com.Synchrome.collabcontent.chat.repository.ChatMessageRepository;
 import com.Synchrome.collabcontent.chat.repository.ChatParticipantRepository;
 import com.Synchrome.collabcontent.chat.repository.ChatRoomRepository;
 import com.Synchrome.collabcontent.chat.repository.ReadStatusRepository;
+import com.Synchrome.collabcontent.common.domain.DelYN;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -122,7 +123,11 @@ public class ChatService {
                 .content(dto.getMessage())
                 .parentId(dto.getParentId()) // null 허용
                 .build();
-
+        if (dto.getParentId() != null) {
+            chatMessageRepository.findById(dto.getParentId())
+                    .orElseThrow(()->new IllegalArgumentException("없는 메시지 입니다"))
+                    .addThreadCount();
+        }
         return chatMessageRepository.save(chatMessage);
     }
 
@@ -131,11 +136,11 @@ public class ChatService {
 
         if (beforeId == null) {
             // 최신 메시지부터
-            messages = chatMessageRepository.findByChatRoomIdAndParentIdIsNullOrderByCreatedTimeDesc(roomId, PageRequest.of(0, limit));
+            messages = chatMessageRepository.findByChatRoomIdAndParentIdIsNullAndDelYNOrderByCreatedTimeDesc(roomId,  DelYN.N, PageRequest.of(0, limit));
         } else {
             // 특정 메시지보다 이전 메시지
             LocalDateTime beforeTime = chatMessageRepository.findById(beforeId).get().getCreatedTime();
-            messages = chatMessageRepository.findByChatRoomIdAndCreatedTimeLessThanAndParentIdIsNullOrderByCreatedTimeDesc(roomId, beforeTime, PageRequest.of(0, limit));
+            messages = chatMessageRepository.findByChatRoomIdAndCreatedTimeLessThanAndParentIdIsNullAndDelYNOrderByCreatedTimeDesc(roomId, beforeTime, DelYN.N, PageRequest.of(0, limit));
         }
         System.out.println(messages);
         return messages.stream()
@@ -146,6 +151,7 @@ public class ChatService {
                         .message(m.getContent())
                         .createdTime(m.getCreatedTime())
                         .parentId(m.getParentId())
+                        .totalThreadCount(m.getTotalThreadCount())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -188,5 +194,10 @@ public class ChatService {
         ChatMessage chatMessage = chatMessageRepository.findById(chatMessageDto.getId()).orElseThrow(()->new IllegalArgumentException("없는 메세지 입니다"));
         chatMessage.modifyContent(chatMessageDto.getMessage());
         return chatMessage;
+    }
+
+    public void deleteMessage(ChatMessageDto chatMessageDto){
+        ChatMessage chatMessage = chatMessageRepository.findById(chatMessageDto.getId()).orElseThrow(()->new IllegalArgumentException("없는 메세지 입니다"));
+        chatMessage.deleteMessage(DelYN.Y);
     }
 }

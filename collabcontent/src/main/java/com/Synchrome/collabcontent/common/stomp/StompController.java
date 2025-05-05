@@ -83,6 +83,16 @@ public class StompController {
             kafkaTemplate.send("chat", message);
         }
 
+        else if(chatMessageReqDto.getType().equals("delete")){
+            chatMessageReqDto.setRoomId(roomId);
+            chatService.deleteMessage(chatMessageReqDto);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            String message = objectMapper.writeValueAsString(chatMessageReqDto);
+            System.out.println("✅ 카프카 프로듀서 실행");
+            kafkaTemplate.send("chat", message);
+        }
+
         else if(chatMessageReqDto.getType().equals("message")){
             ChatMessage chatMessage = chatService.saveMessage(roomId, chatMessageReqDto);
             chatMessageReqDto.setId(chatMessage.getId());

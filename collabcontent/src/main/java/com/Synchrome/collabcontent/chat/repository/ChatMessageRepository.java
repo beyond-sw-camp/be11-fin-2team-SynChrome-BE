@@ -2,6 +2,7 @@ package com.Synchrome.collabcontent.chat.repository;
 
 import com.Synchrome.collabcontent.chat.domain.ChatMessage;
 import com.Synchrome.collabcontent.chat.domain.ChatRoom;
+import com.Synchrome.collabcontent.common.domain.DelYN;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,9 +14,9 @@ import java.util.List;
 
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
-    List<ChatMessage> findByChatRoomIdAndParentIdIsNullOrderByCreatedTimeDesc(Long roomId, Pageable pageable);
+    List<ChatMessage> findByChatRoomIdAndCreatedTimeLessThanAndParentIdIsNullAndDelYNOrderByCreatedTimeDesc(Long roomId, LocalDateTime beforeTime, DelYN delYN, Pageable pageable);
 
-    List<ChatMessage> findByChatRoomIdAndCreatedTimeLessThanAndParentIdIsNullOrderByCreatedTimeDesc(Long roomId, LocalDateTime beforeTime, Pageable pageable);
+    List<ChatMessage> findByChatRoomIdAndParentIdIsNullAndDelYNOrderByCreatedTimeDesc(Long roomId, DelYN delYN, Pageable pageable);
 
     List<ChatMessage> findByParentIdOrderByIdDesc(Long parentId, Pageable pageable);
 
