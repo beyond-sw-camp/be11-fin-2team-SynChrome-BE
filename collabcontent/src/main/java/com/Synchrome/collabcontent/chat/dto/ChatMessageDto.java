@@ -19,6 +19,7 @@ public class ChatMessageDto {
     private Long roomId;
     private String message;
     private LocalDateTime createdTime;
+    private LocalDateTime updatedTime;
     private Long parentId;
     private Long workspaceId;
     private String type;
@@ -32,6 +33,7 @@ public class ChatMessageDto {
                 .roomId(entity.getChatRoom().getId())
                 .message(entity.getContent())
                 .createdTime(entity.getCreatedTime())
+                .updatedTime(entity.getUpdatedTime())
                 .parentId(entity.getParentId())
                 .workspaceId(entity.getWorkspaceId())
                 .build();

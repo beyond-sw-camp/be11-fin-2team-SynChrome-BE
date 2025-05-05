@@ -35,4 +35,7 @@ public class ChatMessage extends BaseTimeEntity {
 
     private Long workspaceId;
 
+    public void modifyContent(String content){
+        this.content = content;
+    }
 }
