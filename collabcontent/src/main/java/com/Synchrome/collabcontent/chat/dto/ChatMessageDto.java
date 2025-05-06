@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,6 +19,7 @@ public class ChatMessageDto {
     private Long userId;
     private Long roomId;
     private String message;
+    private List<Long> mentionedUserIds;
     private LocalDateTime createdTime;
     private LocalDateTime updatedTime;
     private Long parentId;
