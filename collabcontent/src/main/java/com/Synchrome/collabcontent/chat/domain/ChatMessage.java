@@ -36,6 +36,9 @@ public class ChatMessage extends BaseTimeEntity {
 
     private Long workspaceId;
 
+    private Long replyTo;
+    private String replyPreview;
+
     @Builder.Default
     private Long totalThreadCount = 0L;
 
@@ -54,5 +57,9 @@ public class ChatMessage extends BaseTimeEntity {
 
     public void addThreadCount(){
         this.totalThreadCount++;
+    }
+
+    public void decreaseThreadCount(){
+        this.totalThreadCount--;
     }
 }

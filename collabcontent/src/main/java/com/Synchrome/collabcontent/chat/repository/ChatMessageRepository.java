@@ -18,9 +18,9 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
 
     List<ChatMessage> findByChatRoomIdAndParentIdIsNullAndDelYNOrderByCreatedTimeDesc(Long roomId, DelYN delYN, Pageable pageable);
 
-    List<ChatMessage> findByParentIdOrderByIdDesc(Long parentId, Pageable pageable);
+    List<ChatMessage> findByParentIdAndDelYNOrderByIdDesc(Long parentId, DelYN delYN, Pageable pageable);
 
-    List<ChatMessage> findByParentIdAndIdLessThanOrderByIdDesc(Long parentId, Long beforeId, Pageable pageable);
+    List<ChatMessage> findByParentIdAndDelYNAndIdLessThanOrderByIdDesc(Long parentId, Long beforeId,  DelYN delYN, Pageable pageable);
 
     boolean existsByChatRoomIdAndIdGreaterThan(Long chatRoomId, Long id);
     boolean existsByChatRoomId(Long chatRoomId);

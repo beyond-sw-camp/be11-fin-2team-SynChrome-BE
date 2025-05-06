@@ -25,6 +25,8 @@ public class ChatMessageDto {
     private String type;
     private Long emotionSize;
     private Long totalThreadCount;
+    private Long replyTo;
+    private String replyPreview;
 
 
     public static ChatMessageDto fromEntity(ChatMessage entity) {
