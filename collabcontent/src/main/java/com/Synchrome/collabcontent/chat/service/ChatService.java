@@ -14,12 +14,14 @@ import com.Synchrome.collabcontent.chat.repository.ChatParticipantRepository;
 import com.Synchrome.collabcontent.chat.repository.ChatRoomRepository;
 import com.Synchrome.collabcontent.chat.repository.ReadStatusRepository;
 import com.Synchrome.collabcontent.common.domain.DelYN;
+import com.Synchrome.collabcontent.opensearch.service.OpenSearchService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,11 +33,13 @@ public class ChatService {
     private final ChatParticipantRepository chatParticipantRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final ReadStatusRepository readStatusRepository;
-    public ChatService(ChatRoomRepository chatRoomRepository, ChatParticipantRepository chatParticipantRepository, ChatMessageRepository chatMessageRepository, ReadStatusRepository readStatusRepository) {
+    private final OpenSearchService openSearchService;
+    public ChatService(ChatRoomRepository chatRoomRepository, ChatParticipantRepository chatParticipantRepository, ChatMessageRepository chatMessageRepository, ReadStatusRepository readStatusRepository, OpenSearchService openSearchService) {
         this.chatRoomRepository = chatRoomRepository;
         this.chatParticipantRepository = chatParticipantRepository;
         this.chatMessageRepository = chatMessageRepository;
         this.readStatusRepository = readStatusRepository;
+        this.openSearchService = openSearchService;
     }
 
     public List<MyChatListResDto> getMyChatRooms(Long userId) {
@@ -130,8 +134,17 @@ public class ChatService {
                     .orElseThrow(()->new IllegalArgumentException("없는 메시지 입니다"))
                     .addThreadCount();
         }
-        return chatMessageRepository.save(chatMessage);
-    }
+        ChatMessage saved = chatMessageRepository.save(chatMessage);
+
+            // ✅ OpenSearch에도 인덱싱
+                    try {
+                        openSearchService.indexChatMessage(saved);
+                    } catch (IOException e) {
+                        System.out.println("OpenSearch 인덱싱 실패: " + e.getMessage());
+                    }
+
+                    return saved;
+                }
 
     public List<ChatMessageDto> getChatMessages(Long roomId, int limit, Long beforeId) {
         List<ChatMessage> messages;
