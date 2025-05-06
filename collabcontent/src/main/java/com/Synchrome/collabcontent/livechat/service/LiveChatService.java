@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -60,4 +61,17 @@ public class LiveChatService {
                         .build());
     }
 
+    public Long deleteParticipant(ParticipantDeleteDto dto) {
+        Participants participant = participantsRepository
+                .findByUserIdAndLiveChat_SessionId(dto.getUserId(), dto.getSessionId())
+                .orElseThrow(() -> new EntityNotFoundException("해당 세션에 참가하지 않은 사용자입니다."));
+
+        participant.deleteParticipant();
+        return participant.getUserId();
+    }
+
+    public boolean isUserJoined(String sessionId, Long userId) {
+        Optional<Participants> participantOpt = participantsRepository.findByUserIdAndLiveChat_SessionId(userId, sessionId);
+        return participantOpt.isPresent() && participantOpt.get().getIsEnded() == IsEnded.N;
+    }
 }

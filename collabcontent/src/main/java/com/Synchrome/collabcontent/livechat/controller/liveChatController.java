@@ -8,6 +8,7 @@ import com.Synchrome.collabcontent.livechat.dtos.*;
 import com.Synchrome.collabcontent.livechat.service.LiveChatService;
 import io.openvidu.java.client.*;
 import jakarta.annotation.PostConstruct;
+import jakarta.ws.rs.Path;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,6 +80,18 @@ public class liveChatController {
     @PostMapping("/getSessionId")
     public ResponseEntity<?> findSessionId(@RequestBody FindSessionIdDto dto){
         SessionIdResDto response = liveChatService.findSession(dto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("deleteParticipant")
+    public ResponseEntity<?> deleteParticipant(@RequestBody ParticipantDeleteDto dto){
+        Long response = liveChatService.deleteParticipant(dto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("isJoined/{sessionId}/{userId}")
+    public ResponseEntity<?> isJoined(@PathVariable String sessionId,@PathVariable Long userId){
+        boolean response = liveChatService.isUserJoined(sessionId,userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
