@@ -4,6 +4,7 @@ package com.Synchrome.collabcontent.common.stomp;
 import com.Synchrome.collabcontent.canvas.dto.CanvasUpdateReqDto;
 import com.Synchrome.collabcontent.canvas.service.CanvasService;
 import com.Synchrome.collabcontent.chat.domain.ChatMessage;
+import com.Synchrome.collabcontent.chat.domain.ENUM.NotificationType;
 import com.Synchrome.collabcontent.chat.domain.Emotion;
 import com.Synchrome.collabcontent.chat.dto.ChatMessageDto;
 import com.Synchrome.collabcontent.chat.dto.NotificationDto;
@@ -93,7 +94,7 @@ public class StompController {
             kafkaTemplate.send("chat", message);
         }
 
-        else if(chatMessageReqDto.getType().equals("message")){
+        else if(chatMessageReqDto.getType().equals("message")) {
             ChatMessage chatMessage = chatService.saveMessage(roomId, chatMessageReqDto);
             chatMessageReqDto.setId(chatMessage.getId());
             chatMessageReqDto.setCreatedTime(chatMessage.getCreatedTime());
@@ -104,26 +105,29 @@ public class StompController {
             System.out.println("✅ 카프카 프로듀서 실행");
             kafkaTemplate.send("chat", message);
 
-            Pattern pattern = Pattern.compile("@(\\w+)");
-            Matcher matcher = pattern.matcher(chatMessageReqDto.getMessage());
-            while (matcher.find()){
-                String mentionedUserId = matcher.group(1);
-                // ✅ DB에 저장
-                notificationService.saveNotification(
-                        Long.valueOf(mentionedUserId),
-                        chatMessageReqDto.getUserId(),
-                        roomId,
-                        chatMessageReqDto.getMessage(),
-                        chatMessage.getId()
-                );
-                NotificationDto notification = new NotificationDto();
-                notification.setUserId(Long.valueOf(mentionedUserId));
-                notification.setRoomId(roomId);
-                notification.setFromUserId(chatMessageReqDto.getUserId());
-                notification.setMessage(chatMessageReqDto.getMessage());
+            if (chatMessageReqDto.getMentionedUserIds() != null) {
+                for (Long mentionedUserId : chatMessageReqDto.getMentionedUserIds()) {
+                    // DB 저장
+                    notificationService.saveNotification(
+                            mentionedUserId,
+                            chatMessageReqDto.getUserId(),
+                            roomId,
+                            chatMessageReqDto.getMessage(),
+                            chatMessage.getId(),
+                            NotificationType.MENTION // ✅
+                    );
 
-                String notificationJson = objectMapper.writeValueAsString(notification);
-                kafkaTemplate.send("notification", notificationJson);
+                    // WebSocket 알림 전송
+                    NotificationDto notification = new NotificationDto();
+                    notification.setUserId(mentionedUserId);
+                    notification.setRoomId(roomId);
+                    notification.setFromUserId(chatMessageReqDto.getUserId());
+                    notification.setMessage(chatMessageReqDto.getMessage());
+                    notification.setType(NotificationType.MENTION);
+
+                    String notificationJson = objectMapper.writeValueAsString(notification);
+                    kafkaTemplate.send("notification", notificationJson);
+                }
             }
         }
     }

@@ -1,11 +1,9 @@
 package com.Synchrome.collabcontent.chat.domain;
 
 
+import com.Synchrome.collabcontent.chat.domain.ENUM.NotificationType;
 import com.Synchrome.collabcontent.common.domain.BaseTimeEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,5 +26,13 @@ public class Notification {
     private String message;
     private LocalDateTime timestamp;
     private Long chatMessageId;
+    @Enumerated(EnumType.STRING)
+    private NotificationType type;
+    @Column(name = "is_read", nullable = false)
+    private boolean read = false;
+
+    public void markAsRead() {
+        this.read = true;
+    }
 
 }

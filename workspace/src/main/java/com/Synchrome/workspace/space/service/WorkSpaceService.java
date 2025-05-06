@@ -509,6 +509,7 @@ public class WorkSpaceService {
                 .toList();
 
         workSpaceParticipantRepository.saveAll(newParticipants);
+
     }
 
 
