@@ -122,6 +122,8 @@ public class ChatService {
                 .userId(dto.getUserId())
                 .content(dto.getMessage())
                 .parentId(dto.getParentId()) // null 허용
+                .replyTo(dto.getReplyTo())
+                .replyPreview(dto.getReplyPreview())
                 .build();
         if (dto.getParentId() != null) {
             chatMessageRepository.findById(dto.getParentId())
@@ -152,6 +154,8 @@ public class ChatService {
                         .createdTime(m.getCreatedTime())
                         .parentId(m.getParentId())
                         .totalThreadCount(m.getTotalThreadCount())
+                        .replyTo(m.getReplyTo())
+                        .replyPreview(m.getReplyPreview())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -172,10 +176,10 @@ public class ChatService {
 
         if (beforeId == null) {
             // 최신 메시지부터
-            messages = chatMessageRepository.findByParentIdOrderByIdDesc(parentId, pageable);
+            messages = chatMessageRepository.findByParentIdAndDelYNOrderByIdDesc(parentId, DelYN.N, pageable);
         } else {
             // 특정 메시지 ID보다 이전
-            messages = chatMessageRepository.findByParentIdAndIdLessThanOrderByIdDesc(parentId, beforeId, pageable);
+            messages = chatMessageRepository.findByParentIdAndDelYNAndIdLessThanOrderByIdDesc(parentId, beforeId, DelYN.N, pageable);
         }
 
         return messages.stream()
@@ -186,6 +190,8 @@ public class ChatService {
                         .message(m.getContent())
                         .createdTime(m.getCreatedTime())
                         .parentId(m.getParentId())
+                        .replyTo(m.getReplyTo())
+                        .replyPreview(m.getReplyPreview())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -198,6 +204,11 @@ public class ChatService {
 
     public void deleteMessage(ChatMessageDto chatMessageDto){
         ChatMessage chatMessage = chatMessageRepository.findById(chatMessageDto.getId()).orElseThrow(()->new IllegalArgumentException("없는 메세지 입니다"));
+        if (chatMessageDto.getParentId() != null) {
+            chatMessageRepository.findById(chatMessageDto.getParentId())
+                    .orElseThrow(()->new IllegalArgumentException("없는 메시지 입니다"))
+                    .decreaseThreadCount();
+        }
         chatMessage.deleteMessage(DelYN.Y);
     }
 }
