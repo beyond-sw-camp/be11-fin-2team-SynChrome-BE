@@ -1,5 +1,6 @@
 package com.Synchrome.collabcontent.canvas.domain;
 
+import com.Synchrome.collabcontent.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Getter
-public class Canvas {
+public class Canvas extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,12 +26,9 @@ public class Canvas {
     @Lob
     private String ydocState;
 
-
-    @CreationTimestamp
-    private LocalDateTime createdAt; // 생성일자
-
-    @UpdateTimestamp
-    private LocalDateTime updatedAt; // 수정일자
+    private Long userId;
+    private Long channelId;
+    private Long workspaceId;
 
     public void updateYdocState(String ydocState){
         this.ydocState = ydocState;
