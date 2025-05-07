@@ -145,6 +145,27 @@
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EB%A1%9C%EA%B7%B8%EC%9D%B8%20%EB%B0%8F%20%EC%9B%8C%ED%81%AC%EC%8A%A4%ED%8E%98%EC%9D%B4%EC%8A%A4%20%EC%83%9D%EC%84%B1.gif?raw=true" width="600">
 </details>
 
+<details>
+  <summary>▶️ 섹션 및 채널 생성</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%84%B9%EC%85%98%20%EB%B0%8F%20%EC%B1%84%EB%84%90%20%EC%83%9D%EC%84%B1.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 채팅 기능</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%B1%84%ED%8C%85%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 화상회의 및 알림</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%ED%99%94%EC%83%81%ED%9A%8C%EC%9D%98%20%EB%B0%8F%20%EC%95%8C%EB%A6%BC.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 구독 및 구독취소 기능 구현</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EA%B5%AC%EB%8F%85%20%EB%B0%8F%20%EA%B5%AC%EB%8F%85%EC%B7%A8%EC%86%8C%20%EA%B8%B0%EB%8A%A5%20%EA%B5%AC%ED%98%84.gif?raw=true" width="600">
+</details>
+
+
 ---
 
 ## 📑 배포 후 통합 테스트 결과서 (시스템 통합)
