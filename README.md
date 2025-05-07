@@ -140,6 +140,10 @@
 ## 📑 UI/UX 단위 테스트 결과서 (프론트엔드 설계 및 구축)
 - 사용성 테스트, 인터페이스 반응
 👉 [📎 문서 보기](./docs/UIUX_단위_테스트_결과서.pdf)
+<details>
+  <summary>▶️ 로그인 및 워크스페이스 생성</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EB%A1%9C%EA%B7%B8%EC%9D%B8%20%EB%B0%8F%20%EC%9B%8C%ED%81%AC%EC%8A%A4%ED%8E%98%EC%9D%B4%EC%8A%A4%20%EC%83%9D%EC%84%B1.gif?raw=true" width="600">
+</details>
 
 ---
 
