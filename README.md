@@ -165,6 +165,22 @@
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EA%B5%AC%EB%8F%85%20%EB%B0%8F%20%EA%B5%AC%EB%8F%85%EC%B7%A8%EC%86%8C%20%EA%B8%B0%EB%8A%A5%20%EA%B5%AC%ED%98%84.gif?raw=true" width="600">
 </details>
 
+<details>
+  <summary>🎥 화상회의 - 카메라 및 마이크 설정</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%ED%99%94%EC%83%81%ED%9A%8C%EC%9D%98%20%EC%B9%B4%EB%A9%94%EB%9D%BC%20%EB%B0%8F%20%EB%A7%88%EC%9D%B4%ED%81%AC%20%EC%84%A4%EC%A0%95.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>🎥 화상회의 - 화면 녹화</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%ED%99%94%EC%83%81%ED%9A%8C%EC%9D%98%20%ED%99%94%EB%A9%B4%20%EB%85%B9%ED%99%94.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>🎥 화상회의 - 화면 공유</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%ED%99%94%EC%83%81%ED%9A%8C%EC%9D%98%20%ED%99%94%EB%A9%B4%EA%B3%B5%EC%9C%A0.gif?raw=true" width="600">
+</details>
+
+
 
 ---
 
