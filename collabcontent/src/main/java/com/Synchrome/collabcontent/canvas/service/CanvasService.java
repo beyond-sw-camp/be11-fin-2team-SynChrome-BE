@@ -46,7 +46,26 @@ public class CanvasService {
                 .map(canvas -> new CanvasListResDto(
                         canvas.getId(),
                         canvas.getTitle(),
-                        canvas.getUpdatedAt()
+                        canvas.getUpdatedTime(),
+                        canvas.getCreatedTime(),
+                        canvas.getChannelId(),
+                        canvas.getWorkspaceId(),
+                        canvas.getUserId()
+                ))
+                .toList();
+    }
+
+    public List<CanvasListResDto> getCanvasByChannelId(Long channelId) {
+        return canvasRepository.findByChannelId(channelId)
+                .stream()
+                .map(canvas -> new CanvasListResDto(
+                        canvas.getId(),
+                        canvas.getTitle(),
+                        canvas.getUpdatedTime(),
+                        canvas.getCreatedTime(),
+                        canvas.getChannelId(),
+                        canvas.getWorkspaceId(),
+                        canvas.getUserId()
                 ))
                 .toList();
     }
