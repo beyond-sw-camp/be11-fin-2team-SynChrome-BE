@@ -30,6 +30,8 @@ public class Notification {
     private NotificationType type;
     @Column(name = "is_read", nullable = false)
     private boolean read = false;
+    private String workspaceTitle;
+    private Long workspaceId;
 
     public void markAsRead() {
         this.read = true;
