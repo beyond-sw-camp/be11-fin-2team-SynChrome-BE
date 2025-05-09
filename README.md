@@ -180,6 +180,31 @@
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%ED%99%94%EC%83%81%ED%9A%8C%EC%9D%98%20%ED%99%94%EB%A9%B4%EA%B3%B5%EC%9C%A0.gif?raw=true" width="600">
 </details>
 
+<details>
+  <summary>▶️ 알림 - 초대</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%B4%88%EB%8C%80%EC%95%8C%EB%A6%BC.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 알림 - 멘션</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%ED%83%9C%EA%B7%B8%EC%95%8C%EB%A6%BC.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 캔버스 - 생성, 작성</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%94%EB%B2%84%EC%8A%A4%EC%83%9D%EC%84%B1,%EC%9E%91%EC%84%B1(%EC%A4%84%EB%B0%94%EA%BF%88).gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 캔버스 - 실시간 동시 작업</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%94%EB%B2%84%EC%8A%A42%EA%B0%9C%EC%9D%98%ED%99%94%EB%A9%B4%EC%97%90%EC%84%9C%EB%8F%99%EC%8B%9C%EC%9E%91%EC%97%85.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 검색 - 검색어가 포함된 채팅 검</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EA%B2%80%EC%83%89.gif?raw=true" width="600">
+</details>
+
 
 
 ---
