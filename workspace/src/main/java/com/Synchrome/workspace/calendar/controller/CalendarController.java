@@ -1,9 +1,8 @@
 package com.Synchrome.workspace.calendar.controller;
 
-import com.Synchrome.workspace.calendar.dto.ColorCategoryDto;
-import com.Synchrome.workspace.calendar.dto.ColorWorkspaceDto;
-import com.Synchrome.workspace.calendar.dto.EventDto;
-import com.Synchrome.workspace.calendar.dto.EventExceptionRequestDto;
+import com.Synchrome.workspace.calendar.domain.Calendar;
+import com.Synchrome.workspace.calendar.dto.*;
+import com.Synchrome.workspace.calendar.repository.CalendarRepository;
 import com.Synchrome.workspace.calendar.service.CalendarService;
 import com.Synchrome.workspace.calendar.service.EventService;
 import org.springframework.http.HttpStatus;
@@ -18,16 +17,36 @@ import java.util.List;
 public class CalendarController {
     private final CalendarService calendarService;
     private final EventService eventService;
+    private final CalendarRepository calendarRepository;
 
-    public CalendarController(CalendarService calendarService, EventService eventService) {
+    public CalendarController(CalendarService calendarService, EventService eventService, CalendarRepository calendarRepository) {
         this.calendarService = calendarService;
         this.eventService = eventService;
+        this.calendarRepository = calendarRepository;
     }
 //      캘린더 생성
     @PostMapping("/create/user")
     public ResponseEntity<Long> createCalendar(@RequestHeader("X-User-Id") Long userId) {
+        if (calendarRepository.existsByUserId(userId)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
         Long calendarId = calendarService.createCalendar(userId);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(calendarId);
+    }
+//      유저생성시 캘린더 조회
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Long> getOrCreateCalendarId(@PathVariable Long userId) {
+        Long calendarId = calendarService.findOrCreateCalendarIdByUserId(userId);
+        return ResponseEntity.ok(calendarId);
+    }
+
+    @GetMapping("/user/{userId}/or-create")
+    public ResponseEntity<Long> getOrCreateCalendar(@PathVariable Long userId) {
+        Long calendarId = calendarRepository.findByUserId(userId)
+                .map(Calendar::getId)
+                .orElseGet(() -> calendarService.createCalendar(userId));
+        return ResponseEntity.ok(calendarId);
     }
 
 //    일정추가
@@ -41,7 +60,7 @@ public class CalendarController {
     }
 //        일정수정
     @PutMapping("/event/update/{eventId}")
-    public ResponseEntity<EventDto> updateEvent( @PathVariable Long eventId,@RequestBody EventDto request){
+    public ResponseEntity<EventDto> updateEvent( @PathVariable Long eventId,@RequestBody UpdateEventDto request){
         EventDto updated = eventService.updateEvent(eventId, request);
         return ResponseEntity.ok(updated);
     }

@@ -2,6 +2,7 @@ package com.Synchrome.workspace.calendar.domain;
 
 import com.Synchrome.workspace.calendar.domain.Enum.RepeatType;
 import com.Synchrome.workspace.calendar.dto.EventDto;
+import com.Synchrome.workspace.calendar.dto.UpdateEventDto;
 import com.Synchrome.workspace.space.domain.WorkSpace;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,6 +34,9 @@ public class Event {
     private WorkSpace workspace;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    private ColorWorkspace colorWorkspace;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "calendar_id", nullable = false)
     private Calendar calendar;
 
@@ -50,7 +54,7 @@ public class Event {
     private List<EventException> exceptions = new ArrayList<>();
 
 
-    public void update(EventDto dto, ColorCategory category) {
+    public void update(UpdateEventDto dto, ColorCategory category) {
         this.title = dto.getTitle();
         this.content = dto.getContent();
         this.colorCategory = category;

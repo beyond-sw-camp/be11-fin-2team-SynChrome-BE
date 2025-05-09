@@ -7,6 +7,7 @@ import com.Synchrome.user.User.Domain.User;
 import com.Synchrome.user.User.Dto.*;
 import com.Synchrome.user.User.Repository.PaymentRepository;
 import com.Synchrome.user.User.Repository.UserRepository;
+import com.Synchrome.user.User.feign.WorkspaceFeignClient;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +42,7 @@ public class UserService {
     private final IamportClient iamportClient;
     private final PaymentRepository paymentRepository;
     private final S3Uploader s3Uploader;
+    private final WorkspaceFeignClient workspaceFeignClient;
 
     @Value("${oauth.google.client-id}")
     private String googleClientId;
@@ -49,12 +51,13 @@ public class UserService {
     @Value("${oauth.google.redirect-uri}")
     private String googleRedirectUri;
 
-    public UserService(UserRepository userRepository, @Qualifier("userInfoDB") RedisTemplate<String, Object> redisTemplate, IamportClient iamportClient, PaymentRepository paymentRepository, S3Uploader s3Uploader) {
+    public UserService(UserRepository userRepository, @Qualifier("userInfoDB") RedisTemplate<String, Object> redisTemplate, IamportClient iamportClient, PaymentRepository paymentRepository, S3Uploader s3Uploader, WorkspaceFeignClient workspaceFeignClient) {
         this.userRepository = userRepository;
         this.redisTemplate = redisTemplate;
         this.iamportClient = iamportClient;
         this.paymentRepository = paymentRepository;
         this.s3Uploader = s3Uploader;
+        this.workspaceFeignClient = workspaceFeignClient;
     }
 
     public User save(UserSaveReqDto userSaveReqDto){
@@ -292,6 +295,10 @@ public class UserService {
         }
 
         return userIds;
+    }
+
+    public Long getOrCreateCalendarId(Long userId, String token) {
+        return workspaceFeignClient.getOrCreateCalendarId(userId, token);
     }
 
 
