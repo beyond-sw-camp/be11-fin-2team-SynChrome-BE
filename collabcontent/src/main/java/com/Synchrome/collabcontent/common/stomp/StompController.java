@@ -113,8 +113,10 @@ public class StompController {
                             chatMessageReqDto.getUserId(),
                             roomId,
                             chatMessageReqDto.getMessage(),
+                            chatMessage.getWorkspaceId(),
                             chatMessage.getId(),
-                            NotificationType.MENTION // ✅
+                            NotificationType.MENTION, // ✅
+                            chatMessage.getWorkspaceTitle()
                     );
 
                     // WebSocket 알림 전송

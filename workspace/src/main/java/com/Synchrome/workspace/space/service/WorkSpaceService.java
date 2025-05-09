@@ -617,4 +617,10 @@ public class WorkSpaceService {
                 .toList();
     }
 
+    public String getChannelTitleById(Long channelId) {
+        Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 채널입니다."));
+        return channel.getTitle();
+    }
+
 }

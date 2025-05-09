@@ -195,4 +195,9 @@ public class WorkSpaceController {
         List<Long> response = workSpaceService.getUserIdsByChannelId(channelId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    @GetMapping("/channelTitle/{channelId}")
+    public ResponseEntity<String> getChannelTitle(@PathVariable Long channelId) {
+        String title = workSpaceService.getChannelTitleById(channelId);
+        return ResponseEntity.ok(title);
+    }
 }
