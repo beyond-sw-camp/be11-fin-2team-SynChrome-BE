@@ -128,6 +128,8 @@ public class ChatService {
                 .parentId(dto.getParentId()) // null 허용
                 .replyTo(dto.getReplyTo())
                 .replyPreview(dto.getReplyPreview())
+                .workspaceId(dto.getWorkspaceId())
+                .workspaceTitle(dto.getWorkspaceTitle())
                 .build();
         if (dto.getParentId() != null) {
             chatMessageRepository.findById(dto.getParentId())

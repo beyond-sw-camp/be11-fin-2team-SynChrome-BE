@@ -2,6 +2,7 @@ package com.Synchrome.workspace.space.service;
 
 import com.Synchrome.workspace.calendar.domain.Calendar;
 import com.Synchrome.workspace.calendar.domain.ColorWorkspace;
+import com.Synchrome.workspace.calendar.domain.Enum.ColorWorkspaceType;
 import com.Synchrome.workspace.calendar.repository.CalendarRepository;
 import com.Synchrome.workspace.calendar.repository.ColorWorkspaceRepository;
 import com.Synchrome.workspace.common.InviteCodeGenerator;
@@ -126,6 +127,7 @@ public class WorkSpaceService {
                 .workspace(saveWorkSpace)
                 .userId(dto.getUserId())
                 .color(randomColor) // 기본 색깔 (원하면 다른 로직으로 색 선택해도 됨)
+                .type(ColorWorkspaceType.WORKSPACE)
                 .build();
 
         colorWorkspaceRepository.save(colorWorkspace);
@@ -615,6 +617,12 @@ public class WorkSpaceService {
         return channelParticipantRepository.findByChannelIdAndDel(channelId, Del.N).stream()
                 .map(ChannelParticipant::getUserId)
                 .toList();
+    }
+
+    public String getChannelTitleById(Long channelId) {
+        Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 채널입니다."));
+        return channel.getTitle();
     }
 
 }

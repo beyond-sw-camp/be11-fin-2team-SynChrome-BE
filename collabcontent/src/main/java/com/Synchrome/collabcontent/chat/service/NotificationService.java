@@ -24,7 +24,7 @@ public class NotificationService {
         this.messagingTemplate = messagingTemplate;
         this.objectMapper = objectMapper;
     }
-    public Notification saveNotification(Long userId, Long fromUserId, Long roomId, String message, Long chatMessageId, NotificationType mention) {
+    public Notification saveNotification(Long userId, Long fromUserId, Long roomId, String message,Long workspaceId, Long chatMessageId, NotificationType mention, String workspaceTitle) {
         Notification notification = Notification.builder()
                 .userId(userId)
                 .fromUserId(fromUserId)
@@ -32,7 +32,9 @@ public class NotificationService {
                 .message(message)
                 .timestamp(LocalDateTime.now())
                 .chatMessageId(chatMessageId)
+                .workspaceId(workspaceId)
                 .type(mention)
+                .workspaceTitle(workspaceTitle)
                 .build();
         return notificationRepository.save(notification);
     }
@@ -48,9 +50,7 @@ public class NotificationService {
         noti.markAsRead(); // 엔티티에 메서드 만들자
     }
 
-    public Notification saveInviteNotification(Long userId, Long fromUserId, Long workspaceId, String message, NotificationType type) {
-        return saveNotification(userId, fromUserId, workspaceId, message, null, type);
-    }
+
 
     public void createAndPushNotification(NotificationDto dto) {
         // 타임스탬프가 안 들어왔을 경우 대비
