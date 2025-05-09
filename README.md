@@ -101,8 +101,8 @@
 
 ## 📑 시스템 아키텍처 설계서 (프로젝트기획)
 > 시스템 구성도 이미지 삽입  
-![시스템 아키텍처](./images/architecture.png)  
-👉 [📎 문서 보기](./docs/시스템_아키텍처_설계서.pdf)
+![시스템 아키텍처](https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/drawio.png?raw=true))  
+
 
 ---
 
