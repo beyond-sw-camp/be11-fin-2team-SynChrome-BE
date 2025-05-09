@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openvidu
+  namespace: synchrome
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openvidu
+  template:
+    metadata:
+      labels:
+        app: openvidu
+    spec:
+      containers:
+        - name: openvidu
+          image: openvidu/openvidu-dev:2.30.0
+          ports:
+            - containerPort: 4443
+          env:
+            - name: OPENVIDU_SECRET
+              value: "1234"
+            - name: OPENVIDU_RECORDING
+              value: "false"
+            - name: OPENVIDU_WEBHOOK
+              value: "false"
+            - name: OPENVIDU_CDR
+              value: "false"
+            - name: OPENVIDU_CORS
+              value: "*"
+            - name: OPENVIDU_PORT
+              value: "4443"
+            - name: OPENVIDU_PUBLICURL
+              value: "https://openvidu.synchrome.shop"  # 또는 Node IP:30443
+          resources:
+            limits:
+              cpu: "1"
+              memory: "2Gi"
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openvidu-service
+  namespace: synchrome
+spec:
+  type: NodePort
+  selector:
+    app: openvidu
+  ports:
+    - protocol: TCP
+      port: 4443
+      targetPort: 4443
+      nodePort: 30443
