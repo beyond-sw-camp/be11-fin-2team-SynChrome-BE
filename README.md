@@ -146,6 +146,21 @@
 </details>
 
 <details>
+  <summary>▶️ 워크스페이스 편집</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%9B%8C%ED%81%AC%EC%8A%A4%ED%8E%98%EC%9D%B4%EC%8A%A4%20%ED%8E%B8%EC%A7%91.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 워크스페이스 - 사용자 초대</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%9B%8C%ED%81%AC%EC%8A%A4%ED%8E%98%EC%9D%B4%EC%8A%A4%EC%97%90%20%EC%82%AC%EC%9A%A9%EC%9E%90%20%EC%B4%88%EB%8C%80.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 워크스페이스별 독립적인 채널내용</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%9B%8C%ED%81%AC%EC%8A%A4%ED%8E%98%EC%9D%B4%EC%8A%A4%EB%B3%84%20%EB%8F%85%EB%A6%BD%EC%A0%81%EC%9D%B8%20%EC%B1%84%EB%84%90%EB%82%B4%EC%9A%A9.gif?raw=true" width="600">
+</details>
+
+<details>
   <summary>▶️ 섹션 및 채널 생성</summary>
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%84%B9%EC%85%98%20%EB%B0%8F%20%EC%B1%84%EB%84%90%20%EC%83%9D%EC%84%B1.gif?raw=true" width="600">
 </details>
@@ -203,6 +218,31 @@
 <details>
   <summary>▶️ 검색 - 검색어가 포함된 채팅 검</summary>
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EA%B2%80%EC%83%89.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 캘린더 - 일정 생성 및 카테고리 추가</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%98%EB%A6%B0%EB%8D%94%20%EC%9D%BC%EC%A0%95%EC%83%9D%EC%84%B1%20%EB%B0%8F%20%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC%20%EC%B6%94%EA%B0%80.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 캘린더 - 연속 n일 일정 생성</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%98%EB%A6%B0%EB%8D%94%20n%EC%9D%BC%20%EC%9D%BC%EC%A0%95%EC%83%9D%EC%84%B1.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 캘린더 - 반복 일정 생성</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%98%EB%A6%B0%EB%8D%94%20%EB%B0%98%EB%B3%B5%EC%9D%BC%EC%A0%95%20%EC%83%9D%EC%84%B1.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 캘린더 - 상세일정 조회 및 삭제</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%98%EB%A6%B0%EB%8D%94%20%EC%9D%BC%EC%A0%95%EC%83%81%EC%84%B8%EC%A1%B0%ED%9A%8C%20%EB%B0%8F%20%EC%82%AD%EC%A0%9C.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 캘린더 - 워크스페이스라벨과 카테고리 이중 필터링 기능</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%98%EB%A6%B0%EB%8D%94%20%EC%9B%8C%ED%81%AC%EC%8A%A4%ED%8E%98%EC%9D%B4%EC%8A%A4%EC%99%80%20%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC%20%EC%9D%B4%EC%A4%91%20%ED%95%84%ED%84%B0%EB%A7%81%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
 </details>
 
 
