@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openvidu
+  namespace: synchrome
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openvidu
+  template:
+    metadata:
+      labels:
+        app: openvidu
+    spec:
+      containers:
+        - name: openvidu
+          image: openvidu/openvidu-dev:2.30.0
+          ports:
+            - containerPort: 4443
+          env:
+            - name: OPENVIDU_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: synchrome-secrets
+                  key: OPENVIDU_SECRET
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openvidu-service
+  namespace: synchrome
+spec:
+  type: ClusterIP
+  selector:
+    app: openvidu
+  ports:
+    - port: 80
+      targetPort: 4443
