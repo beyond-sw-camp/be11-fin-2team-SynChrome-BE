@@ -1,11 +1,11 @@
 spring:
   redis:
     port: 6379
-    host: localhost
+    host: redis-service
   datasource:
-    url: jdbc:mariadb://localhost:3306/user?serverTimezone=Asia/Seoul
-    username: root
-    password: 1234
+    url: jdbc:mariadb://${DB_HOST}:3306/user?serverTimezone=Asia/Seoul
+    username: admin
+    password: ${DB_PW}
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
@@ -26,16 +26,15 @@ spring:
     time-zone: Asia/Seoul
 
 server:
-  port: 0
+  port: 8080
 
 eureka:
   client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+    enabled: false
 
 iamport:
-  api_key: 5226421507036210
-  api_secret: 0DGqSUc8OoGu1Td51b9cypzx8ndn5kFLdUZao3XwE00J4SSchnO8zSFY60p3BXWS5es8z64dAQ5zEOXD
+  api_key: ${PAYMENT_KEY}
+  api_secret: ${PAYMENT_SECRET}
 
 jwt:
   expiration: 1000
@@ -50,8 +49,8 @@ jwt:
 oauth:
   google:
     client-id: 752078374240-4tdtnn7i8de5jpavh9qbupu7nbimt5rn.apps.googleusercontent.com
-    client-secret: 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
-    redirect_uri: http://localhost:3000/oauth/google/redirect
+    client-secret: ${GOOGLE_SECRET}
+    redirect_uri: https://www.synchrome.shop/oauth/google/redirect
 
 cloud:
   aws:

@@ -1,11 +1,11 @@
 spring:
   redis:
     port: 6379
-    host: localhost
+    host: redis-service
   datasource:
-    url: jdbc:mariadb://localhost:3306/workspace?serverTimezone=Asia/Seoul
-    username: root
-    password: 1234
+    url: jdbc:mariadb://${DB_HOST}:3306/workspace?serverTimezone=Asia/Seoul
+    username: admin
+    password: ${DB_PW}
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
     hibernate:
@@ -25,7 +25,7 @@ spring:
     date-format: yyyy-MM-dd HH:mm
     time-zone: Asia/Seoul
   kafka:
-    bootstrap-servers: localhost:9092  # ✅ 카프카 서버 주소
+    bootstrap-servers: kafka-service:9092  # ✅ 카프카 서버 주소
     consumer:
       group-id: workspace-group             # ✅ 컨슈머 그룹 ID
       auto-offset-reset: latest        # earliest | latest
@@ -37,12 +37,11 @@ spring:
 
 eureka:
   client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+    enabled: false
 
 # port ?? 0?? ??? ??????? port ??
 server:
-  port: 0
+  port: 8080
 cloud:
   aws:
     s3:

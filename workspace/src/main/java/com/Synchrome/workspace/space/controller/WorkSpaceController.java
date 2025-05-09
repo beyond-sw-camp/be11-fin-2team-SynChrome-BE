@@ -195,4 +195,9 @@ public class WorkSpaceController {
         List<Long> response = workSpaceService.getUserIdsByChannelId(channelId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/health")
+    public ResponseEntity<?> healthCheck() {
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
 }

@@ -88,4 +88,8 @@ public class ChatController {
         return ResponseEntity.ok(emotionService.getEmojiDetailsForRoom(roomId));
     }
 
+    @GetMapping("/health")
+    public ResponseEntity<?> healthCheck() {
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
 }
