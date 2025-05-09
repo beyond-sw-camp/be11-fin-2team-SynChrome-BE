@@ -12,4 +12,5 @@ public interface CalendarRepository extends JpaRepository<Calendar, Long> {
 
     boolean existsByUserId(Long userId);
     List<Calendar> findByUserIdAndDel(Long UserId, Del del);
+    Optional<Calendar> findByUserId(Long userId);
 }

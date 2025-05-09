@@ -1,18 +1,15 @@
 package com.Synchrome.workspace.calendar.service;
 
 import com.Synchrome.workspace.calendar.domain.*;
+import com.Synchrome.workspace.calendar.domain.Enum.ColorWorkspaceType;
 import com.Synchrome.workspace.calendar.domain.Enum.RepeatType;
-import com.Synchrome.workspace.calendar.dto.ColorCategoryDto;
-import com.Synchrome.workspace.calendar.dto.ColorWorkspaceDto;
-import com.Synchrome.workspace.calendar.dto.EventDto;
-import com.Synchrome.workspace.calendar.dto.EventExceptionRequestDto;
+import com.Synchrome.workspace.calendar.dto.*;
 import com.Synchrome.workspace.calendar.repository.*;
 import com.Synchrome.workspace.space.domain.WorkSpace;
 import com.Synchrome.workspace.space.repository.WorkSpaceRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -80,14 +77,11 @@ public class EventService {
     }
 
     //        일정수정
-    public EventDto updateEvent(Long eventId, EventDto dto) {
+    public EventDto updateEvent(Long eventId, UpdateEventDto dto) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("일정을 찾을 수 없습니다."));
-        ColorCategory colorCategory = null;
-        if (dto.getColorCategory() != null && dto.getColorCategory().getId() != null) {
-            colorCategory = colorCategoryRepository.findById(dto.getColorCategory().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
-        }
+        ColorCategory colorCategory = colorCategoryRepository.findById(dto.getColorCategoryId())
+                .orElseThrow(() -> new EntityNotFoundException("카테고리를 찾을 수 없습니다."));
 
 
         event.update(dto, colorCategory); // 엔티티 내부에 수정 메서드 존재 시
@@ -123,19 +117,6 @@ public class EventService {
         return result;
     }
 
-    public List<EventDto> getFilteredEvents(LocalDateTime start, LocalDateTime end,
-                                            List<Long> workspaceIds, List<Long> colorCategoryIds, Long userId) {
-        List<Event> events = eventRepository.findAllByUserAndDate(userId, start, end);
-
-        return events.stream()
-                .filter(e -> workspaceIds == null || workspaceIds.contains(e.getWorkspace().getId()))
-                .filter(e -> colorCategoryIds == null ||
-                        (e.getColorCategory() != null && colorCategoryIds.contains(e.getColorCategory().getId())))
-                .map(EventDto::from)
-                .toList();
-    }
-
-
     //            조회 시 반복일정 가상처리(가상일정은 db저장x)
     private List<EventDto> generateRepeats(Event event, LocalDateTime start, LocalDateTime end) {
         List<EventDto> repeated = new ArrayList<>();
@@ -167,11 +148,6 @@ public class EventService {
                 current = nextRepeat(current, event.getRepeatType());
                 continue;
             }
-
-//        Optional<EventException> overridden = exception.stream()
-//                .filter(ex -> ex.getExceptionDate().toLocalDate().equals(currentDate) && !ex.isDeleted())
-//                .findFirst();
-
             Optional<EventException> overridden = exception.stream()
                     .filter(ex -> ex.getExceptionDate().toLocalDate().equals(currentDate) && !ex.isDeleted())
                     .findFirst();
@@ -189,7 +165,8 @@ public class EventService {
                             .customId(customId)
                             .title(ex.getNewTitle() != null ? ex.getNewTitle() : event.getTitle())
                             .content(ex.getNewContent() != null ? ex.getNewContent() : event.getContent())
-                            .colorCategory(ColorCategoryDto.from(ex.getNewColorCategory() != null ? ex.getNewColorCategory() : event.getColorCategory()))
+                            .colorCategoryId((ex.getNewColorCategory() != null ? ex.getNewColorCategory() : event.getColorCategory()).getId())
+                            .workspaceId(event.getWorkspace() != null ? event.getWorkspace().getId() : null)
                             .startTime(ex.getNewStartTime() != null ? ex.getNewStartTime() : current)
                             .endTime(ex.getNewEndTime() != null ? ex.getNewEndTime() : current.plus(duration))
                             .repeatType(event.getRepeatType())
@@ -204,7 +181,8 @@ public class EventService {
                             .customId(customId)
                             .title(event.getTitle())
                             .content(event.getContent())
-                            .colorCategory(ColorCategoryDto.from(event.getColorCategory()))
+                            .colorCategoryId(event.getColorCategory() != null ? event.getColorCategory().getId() : null)
+                            .workspaceId(event.getWorkspace() != null ? event.getWorkspace().getId() : null)
                             .startTime(current)
                             .endTime(current.plus(duration))
                             .repeatType(event.getRepeatType())
@@ -436,30 +414,19 @@ public class EventService {
         colorCategoryRepository.delete(category);
     }
 
-//    //워크스페이스라벨 자동생성 메서드
-//    public void initColorWorkspaces(Long workspaceId, List<Long> memberUserIds) {
-//        WorkSpace workspace = workSpaceRepository.getReferenceById(workspaceId);
-//
-//        for (Long userId : memberUserIds) {
-//            boolean exists = colorWorkspaceRepository
-//                    .findByUserIdAndWorkspaceId(userId, workspaceId)
-//                    .isPresent();
-//
-//            if (!exists) {
-//                String color = generateDefaultColor(userId, workspaceId);
-//                ColorWorkspace cw = ColorWorkspace.create(userId, workspace, color);
-//                colorWorkspaceRepository.save(cw);
-//            }
-//        }
-//    }
-
     public List<ColorWorkspaceDto> getAllByUserId(Long userId) {
         return colorWorkspaceRepository.findByUserIdWithWorkspace(userId)
                 .stream()
                 .map(cw -> {
                     ColorWorkspaceDto dto = new ColorWorkspaceDto();
-                    dto.setWorkspaceId(cw.getWorkspace().getId());
-                    dto.setWorkspaceName(cw.getWorkspace().getTitle());
+                    if (cw.getType() == ColorWorkspaceType.PRIVATE) {
+                        dto.setWorkspaceId(cw.getId());  // ColorWorkspace의 ID 사용
+                        dto.setWorkspaceName("개인");  // 이름을 "개인"으로 설정
+                    } else {
+                        dto.setWorkspaceId(cw.getWorkspace().getId());
+                        dto.setWorkspaceName(cw.getWorkspace().getTitle());
+                    }
+                    dto.setType(cw.getType());
                     dto.setColor(cw.getColor());
                     return dto;
                 }).collect(Collectors.toList());

@@ -24,6 +24,7 @@ public class ChatMessageDto {
     private LocalDateTime updatedTime;
     private Long parentId;
     private Long workspaceId;
+    private String workspaceTitle;
     private String type;
     private Long emotionSize;
     private Long totalThreadCount;
@@ -41,6 +42,7 @@ public class ChatMessageDto {
                 .updatedTime(entity.getUpdatedTime())
                 .parentId(entity.getParentId())
                 .workspaceId(entity.getWorkspaceId())
+                .workspaceTitle(entity.getWorkspaceTitle())
                 .build();
     }
 

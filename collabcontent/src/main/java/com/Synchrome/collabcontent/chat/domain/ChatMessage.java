@@ -38,6 +38,7 @@ public class ChatMessage extends BaseTimeEntity {
 
     private Long replyTo;
     private String replyPreview;
+    private String workspaceTitle;
 
     @Builder.Default
     private Long totalThreadCount = 0L;

@@ -1,6 +1,7 @@
 package com.Synchrome.workspace.calendar.repository;
 
 import com.Synchrome.workspace.calendar.domain.ColorWorkspace;
+import com.Synchrome.workspace.calendar.domain.Enum.ColorWorkspaceType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,4 +15,5 @@ public interface ColorWorkspaceRepository extends JpaRepository<ColorWorkspace, 
     List<ColorWorkspace> findByUserIdWithWorkspace(@Param("userId") Long userId);
     List<ColorWorkspace> findByUserId(Long userId);
     List<ColorWorkspace> findByWorkspaceId(Long workspaceId);
+    boolean existsByUserIdAndType(Long userId, ColorWorkspaceType type);
 }

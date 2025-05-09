@@ -29,6 +29,8 @@ public class EventDto {
     private Long colorCategoryId;
     private ColorCategoryDto colorCategory;
     private Long workspaceId;
+    private Long colorWorkspaceId;
+    private ColorWorkspaceDto colorWorkspace;
 
 //        응답값
     public static EventDto from(Event event) {
@@ -36,9 +38,10 @@ public class EventDto {
                 .id(event.getId())
                 .title(event.getTitle())
                 .content(event.getContent())
-                .colorCategory(ColorCategoryDto.from(event.getColorCategory()))
                 .colorCategoryId(event.getColorCategory() != null ? event.getColorCategory().getId() : null)
                 .workspaceId(event.getWorkspace() != null ? event.getWorkspace().getId() : null)
+                .colorWorkspaceId(event.getColorWorkspace() != null ? event.getColorWorkspace().getId() : null)
+                .colorWorkspace(event.getColorWorkspace() != null ? ColorWorkspaceDto.from(event.getColorWorkspace()) : null)
                 .startTime(event.getStartTime())
                 .endTime(event.getEndTime())
                 .repeatType(event.getRepeatType())
