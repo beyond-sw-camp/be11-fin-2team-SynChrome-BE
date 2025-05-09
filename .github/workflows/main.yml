@@ -46,8 +46,8 @@ jobs:
 
       - name: eks kubectl apply
         run: |
-          kubectl apply -f ./gateway/k8s/depl_svc.yml
-          kubectl rollout restart deployment apigateway-depl
+          kubectl apply -f ./gateway/k8s/depl_svc.yml -n synchrome
+          kubectl rollout restart deployment apigateway-depl -n synchrome
 
       - name: user build and push docker image to ecr
         env:
@@ -62,8 +62,8 @@ jobs:
 
       - name: eks kubectl apply
         run: |
-          kubectl apply -f ./user/k8s/depl_svc.yml
-          kubectl rollout restart deployment user-depl
+          kubectl apply -f ./user/k8s/depl_svc.yml -n synchrome
+          kubectl rollout restart deployment user-depl -n synchrome
 
       - name: workspace build and push docker image to ecr
         env:
@@ -78,8 +78,8 @@ jobs:
 
       - name: eks kubectl apply
         run: |
-          kubectl apply -f ./workspace/k8s/depl_svc.yml
-          kubectl rollout restart deployment workspace-depl
+          kubectl apply -f ./workspace/k8s/depl_svc.yml -n synchrome
+          kubectl rollout restart deployment workspace-depl -n synchrome
 
       - name: collabcontent build and push docker image to ecr
         env:
@@ -94,5 +94,5 @@ jobs:
 
       - name: eks kubectl apply
         run: |
-          kubectl apply -f ./collabcontent/k8s/depl_svc.yml
-          kubectl rollout restart deployment collabcontent-depl
+          kubectl apply -f ./collabcontent/k8s/depl_svc.yml -n synchrome
+          kubectl rollout restart deployment collabcontent-depl -n synchrome
