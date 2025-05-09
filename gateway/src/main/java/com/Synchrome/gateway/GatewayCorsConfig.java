@@ -15,7 +15,7 @@ public class GatewayCorsConfig {
     @Bean
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // 정확하게 한 번만 설정
+        config.setAllowedOrigins(List.of("https://www.synchrome.shop")); // 정확하게 한 번만 설정
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.setAllowCredentials(true);

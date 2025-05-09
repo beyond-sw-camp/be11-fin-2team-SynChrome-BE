@@ -1,7 +1,6 @@
 eureka:
   client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+    enabled: false
 
 spring:
   application:
@@ -13,7 +12,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: 'http://localhost:3000'
+            allowedOrigins: 'https://www.synchrome.shop'
             allowedMethods: '*'
             allowedHeaders: '*'
             allowedCredentials: true
@@ -23,24 +22,24 @@ spring:
             - Path=/user-service/**
           filters:
             - StripPrefix=1
-          uri: lb://user-service
+          uri: http://user-service
 
         - id: collabcontent-service
           predicates:
             - Path=/collabcontent-service/**
           filters:
             - StripPrefix=1
-          uri: lb://collabcontent-service
+          uri: http://collabcontent-service
 
         - id: workspace-service
           predicates:
             - Path=/workspace-service/**
           filters:
             - StripPrefix=1
-          uri: lb://workspace-service
+          uri: http://workspace-service
       httpserver:
         websocket:
           max-frame-payload-length: 65536
 
 jwt:
-  secretKey: YmV5b25kYWNjZXNzdG9la25zZWNyZXRrZXliZXlvbmRhY2Nlc3N0b2VrbnNlY3JldGtleWJleW9uZGFjY2Vzc3RvZWtuc2VjcmV0a2V5YmV5b25kYWNjZXNzdG9la25zZWNyZXRrZXk=
+  secretKey: ${JWT_SECRET_KEY}
