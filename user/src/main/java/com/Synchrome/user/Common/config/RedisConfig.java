@@ -41,6 +41,26 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         return redisTemplate;
     }
+    @Bean
+    @Qualifier("workspaceRedisTemplate") // 이름 명확히
+    public RedisTemplate<String, String> workspaceRedisTemplate() {
+        RedisStandaloneConfiguration config = new RedisStandaloneConfiguration();
+        config.setHostName(host);
+        config.setPort(port);
+        config.setDatabase(0); // workspace 관련 DB
+
+        LettuceConnectionFactory factory = new LettuceConnectionFactory(config);
+        factory.afterPropertiesSet();
+
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setConnectionFactory(factory);
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
+    }
+
+
 
     @Bean
     @Qualifier("userInfoDB")
@@ -61,4 +81,6 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         return redisTemplate;
     }
+
+
 }

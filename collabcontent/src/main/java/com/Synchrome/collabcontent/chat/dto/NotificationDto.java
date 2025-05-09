@@ -22,6 +22,8 @@ public class NotificationDto {
     private Long chatMessageId;
     private NotificationType type;
     private boolean read;
+    private String workspaceTitle;
+    private Long workspaceId;
 
 
 

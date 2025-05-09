@@ -1,6 +1,7 @@
 package com.Synchrome.collabcontent.chat.controller;
 
 import com.Synchrome.collabcontent.chat.domain.Notification;
+import com.Synchrome.collabcontent.chat.dto.NotificationDto;
 import com.Synchrome.collabcontent.chat.service.NotificationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,11 @@ public class NotificationController {
     @PutMapping("/read/{id}")
     public void markAsRead(@PathVariable Long id) {
         notificationService.markAsRead(id);
+    }
+    @PostMapping("/invite")
+    public ResponseEntity<Void> sendInviteNotification(@RequestBody NotificationDto dto) {
+        notificationService.createAndPushNotification(dto);
+        return ResponseEntity.ok().build();
     }
 
 }
