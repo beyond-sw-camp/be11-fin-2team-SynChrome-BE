@@ -1,98 +1,98 @@
-#name: deploy synchrome-backend
-#
-#on:
-#  push:
-#    branches:
-#      - main
-#
-#jobs:
-#  build-and-deploy:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: checkout github
-#        uses: actions/checkout@v2
-#
-#      - name: install kubectl
-#        uses: azure/setup-kubectl@v3
-#        with:
-#          version: "v1.25.9"
-#        id: install
-#
-#      - name: configure aws
-#        uses: aws-actions/configure-aws-credentials@v1
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_KEY }}
-#          aws-secret-access-key:  ${{ secrets.AWS_SECRET }}
-#          aws-region: ap-northeast-2
-#
-#      - name: update cluster infomation
-#        run: aws eks update-kubeconfig --name synchrome-cluster --region ap-northeast-2
-#
-#      - name: Login to ECR
-#        id: login-ecr
-#        uses: aws-actions/amazon-ecr-login@v1
-#
-#
-#      - name: gateway build and push docker image to ecr
-#        env:
-#          REGISTRY: 565393066924.dkr.ecr.ap-northeast-2.amazonaws.com
-#          REPOSITORY: synchrome-apigateway
-#          IMAGE_TAG: latest
-#        run: |
-#          docker build \
-#          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
-#          -f ./gateway/Dockerfile ./gateway
-#          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-#
-#      - name: eks kubectl apply
-#        run: |
-#          kubectl apply -f ./gateway/k8s/depl_svc.yml
-#          kubectl rollout restart deployment apigateway-depl
-#
-#      - name: user build and push docker image to ecr
-#        env:
-#          REGISTRY: 565393066924.dkr.ecr.ap-northeast-2.amazonaws.com
-#          REPOSITORY: synchrome-user
-#          IMAGE_TAG: latest
-#        run: |
-#          docker build \
-#          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
-#          -f ./user/Dockerfile ./user
-#          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-#
-#      - name: eks kubectl apply
-#        run: |
-#          kubectl apply -f ./user/k8s/depl_svc.yml
-#          kubectl rollout restart deployment user-depl
-#
-#      - name: workspace build and push docker image to ecr
-#        env:
-#          REGISTRY: 565393066924.dkr.ecr.ap-northeast-2.amazonaws.com
-#          REPOSITORY: synchrome-workspace
-#          IMAGE_TAG: latest
-#        run: |
-#          docker build \
-#          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
-#          -f ./workspace/Dockerfile ./workspace
-#          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-#
-#      - name: eks kubectl apply
-#        run: |
-#          kubectl apply -f ./workspace/k8s/depl_svc.yml
-#          kubectl rollout restart deployment workspace-depl
-#
-#      - name: collabcontent build and push docker image to ecr
-#        env:
-#          REGISTRY: 565393066924.dkr.ecr.ap-northeast-2.amazonaws.com
-#          REPOSITORY: synchrome-collabcontent
-#          IMAGE_TAG: latest
-#        run: |
-#          docker build \
-#          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
-#          -f ./collabcontent/Dockerfile ./collabcontent
-#          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-#
-#      - name: eks kubectl apply
-#        run: |
-#          kubectl apply -f ./collabcontent/k8s/depl_svc.yml
-#          kubectl rollout restart deployment collabcontent-depl
+name: deploy synchrome-backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout github
+        uses: actions/checkout@v2
+
+      - name: install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "v1.25.9"
+        id: install
+
+      - name: configure aws
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY }}
+          aws-secret-access-key:  ${{ secrets.AWS_SECRET }}
+          aws-region: ap-northeast-2
+
+      - name: update cluster infomation
+        run: aws eks update-kubeconfig --name synchrome-cluster --region ap-northeast-2
+
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+
+      - name: gateway build and push docker image to ecr
+        env:
+          REGISTRY: 565393066924.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: synchrome-apigateway
+          IMAGE_TAG: latest
+        run: |
+          docker build \
+          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+          -f ./gateway/Dockerfile ./gateway
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: eks kubectl apply
+        run: |
+          kubectl apply -f ./gateway/k8s/depl_svc.yml
+          kubectl rollout restart deployment apigateway-depl
+
+      - name: user build and push docker image to ecr
+        env:
+          REGISTRY: 565393066924.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: synchrome-user
+          IMAGE_TAG: latest
+        run: |
+          docker build \
+          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+          -f ./user/Dockerfile ./user
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: eks kubectl apply
+        run: |
+          kubectl apply -f ./user/k8s/depl_svc.yml
+          kubectl rollout restart deployment user-depl
+
+      - name: workspace build and push docker image to ecr
+        env:
+          REGISTRY: 565393066924.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: synchrome-workspace
+          IMAGE_TAG: latest
+        run: |
+          docker build \
+          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+          -f ./workspace/Dockerfile ./workspace
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: eks kubectl apply
+        run: |
+          kubectl apply -f ./workspace/k8s/depl_svc.yml
+          kubectl rollout restart deployment workspace-depl
+
+      - name: collabcontent build and push docker image to ecr
+        env:
+          REGISTRY: 565393066924.dkr.ecr.ap-northeast-2.amazonaws.com
+          REPOSITORY: synchrome-collabcontent
+          IMAGE_TAG: latest
+        run: |
+          docker build \
+          -t $REGISTRY/$REPOSITORY:$IMAGE_TAG \
+          -f ./collabcontent/Dockerfile ./collabcontent
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: eks kubectl apply
+        run: |
+          kubectl apply -f ./collabcontent/k8s/depl_svc.yml
+          kubectl rollout restart deployment collabcontent-depl
