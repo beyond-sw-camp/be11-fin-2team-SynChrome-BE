@@ -200,4 +200,9 @@ public class WorkSpaceController {
     public ResponseEntity<?> healthCheck() {
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
+    @GetMapping("/channelTitle/{channelId}")
+    public ResponseEntity<String> getChannelTitle(@PathVariable Long channelId) {
+        String title = workSpaceService.getChannelTitleById(channelId);
+        return ResponseEntity.ok(title);
+    }
 }
