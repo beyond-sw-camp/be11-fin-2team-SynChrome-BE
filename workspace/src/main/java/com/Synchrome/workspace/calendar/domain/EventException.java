@@ -34,5 +34,7 @@ public class EventException {
     @ManyToOne
     private ColorCategory newColorCategory;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ColorWorkspace newColorWorkspace;
 
 }
