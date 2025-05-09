@@ -76,16 +76,16 @@ spec:
             #       name: synchrome-secrets
             #       key: S3_BUCKET
           
-          # # 컨테이너 상태 확인 
-          # readinessProbe:
-          #   httpGet:
-          #     # healthcheck 경로
-          #     path: /workspace/check
-          #     port: 8080
-          #   # 컨테이너 시작 후 지연
-          #   initialDelaySeconds: 10
-          #   # 확인 반복 주기
-          #   periodSeconds: 10
+          # 컨테이너 상태 확인
+          readinessProbe:
+            httpGet:
+              # healthcheck 경로
+              path: /workspace/health
+              port: 8080
+            # 컨테이너 시작 후 지연
+            initialDelaySeconds: 10
+            # 확인 반복 주기
+            periodSeconds: 10
 
 ---
 apiVersion: v1
