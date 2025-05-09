@@ -2,13 +2,13 @@ spring:
   application:
     name: collabcontent-service
   redis:
-    host: localhost
+    host: redis-service
     port: 6379
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/chatdb
-    username: root
-    password: 1234
+    url: jdbc:mariadb://${DB_HOST}:3306/chatdb
+    username: admin
+    password: ${DB_PW}
   jpa:
     database: mysql
     #    InnoDB
@@ -18,7 +18,7 @@ spring:
       ddl-auto: create
     show_sql: true
   kafka:
-    bootstrap-servers: localhost:9092  # ✅ 카프카 서버 주소
+    bootstrap-servers: kafka-service:9092 # ✅ 카프카 서버 주소
     consumer:
       group-id: chat-group             # ✅ 컨슈머 그룹 ID
       auto-offset-reset: latest        # earliest | latest
@@ -29,14 +29,13 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 eureka:
   client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+    enabled: false
 
 server:
-  port: 0
+  port: 8080
 
 openvidu:
-  url: http://localhost:4443
+  url: https://openvidu.synchrome.shop
   secret: 1234
 
 jwt:

@@ -27,6 +27,12 @@ public class CanvasController {
         return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
 
+    @GetMapping("/channel/{channelId}")
+    public ResponseEntity<?> getCanvasByChannelId(@PathVariable Long channelId) {
+        List<CanvasListResDto> canvasList = canvasService.getCanvasByChannelId(channelId);
+        return new ResponseEntity<>(canvasList, HttpStatus.OK);
+    }
+
     @PostMapping("/{canvasId}/save")
     public ResponseEntity<?> saveJson(@RequestBody CanvasSaveReqDto canvasSaveReqDto) {
         canvasService.saveCanvas(canvasSaveReqDto);

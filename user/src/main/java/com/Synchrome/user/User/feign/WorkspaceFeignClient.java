@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "workspace-service", url = "http://localhost:8080")
+@FeignClient(name = "workspace-service", url = "https://server.synchrome.shop")
 public interface WorkspaceFeignClient {
     @PostMapping("/workspace-service/calendar/create/user")
     Long createCalendarForUser(

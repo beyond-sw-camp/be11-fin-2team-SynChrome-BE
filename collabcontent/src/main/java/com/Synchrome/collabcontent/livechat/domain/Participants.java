@@ -20,4 +20,12 @@ public class Participants extends BaseTimeEntity {
     @JoinColumn(name = "livechat_id")
     private LiveChat liveChat;
     private Long userId;
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private IsEnded isEnded = IsEnded.N;
+
+
+    public void deleteParticipant(){
+        this.isEnded = IsEnded.Y;
+    }
 }

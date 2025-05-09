@@ -15,4 +15,8 @@ public class CanvasListResDto {
     private Long id;
     private String title;
     private LocalDateTime updatedAt;
+    private LocalDateTime createdAt;
+    private Long userId;
+    private Long channelId;
+    private Long workspaceId;
 }

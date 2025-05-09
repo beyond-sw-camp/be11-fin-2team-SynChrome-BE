@@ -1,6 +1,7 @@
 package com.Synchrome.user.User.Service;
 
 import com.Synchrome.user.Common.config.S3Uploader;
+import com.Synchrome.user.User.Domain.Enum.Del;
 import com.Synchrome.user.User.Domain.Enum.Paystatus;
 import com.Synchrome.user.User.Domain.Pay;
 import com.Synchrome.user.User.Domain.User;
@@ -18,6 +19,7 @@ import com.siot.IamportRestClient.response.Payment;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -25,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,6 +46,10 @@ public class UserService {
     private final PaymentRepository paymentRepository;
     private final S3Uploader s3Uploader;
     private final WorkspaceFeignClient workspaceFeignClient;
+
+    @Autowired
+    @Qualifier("workspaceRedisTemplate")
+    private RedisTemplate<String, String> workspaceRedisTemplate;
 
     @Value("${oauth.google.client-id}")
     private String googleClientId;
@@ -274,6 +281,47 @@ public class UserService {
             throw new RuntimeException("Redis 저장 중 오류 발생", e);
         }
 
+        // ✅ workspace용: 필요한 필드만 Map으로 만들기
+        Map<String, String> redisUserMap = new HashMap<>();
+        redisUserMap.put("userId", String.valueOf(user.getId()));
+        redisUserMap.put("name", user.getName());
+        redisUserMap.put("email", user.getEmail());
+        redisUserMap.put("profile", user.getProfile());
+
+// ✅ workspace 참가자 Redis 정보 갱신
+        try {
+            String workspaceJson = objectMapper.writeValueAsString(redisUserMap);
+            Set<String> keys = workspaceRedisTemplate.keys("workspace:participants:*");
+            if (keys != null && !keys.isEmpty()) {
+                for (String key : keys) {
+                    List<String> participants = workspaceRedisTemplate.opsForList().range(key, 0, -1);
+                    if (participants == null) continue;
+
+                    for (int i = 0; i < participants.size(); i++) {
+                        String json = participants.get(i);
+                        Map<String, String> participantMap = objectMapper.readValue(json, Map.class);
+                        String userIdFromMap = String.valueOf(participantMap.get("userId")).trim();
+                        String userIdFromUser = String.valueOf(user.getId()).trim();
+
+                        System.out.println("🔍 비교 대상 - Redis userId: [" + userIdFromMap + "], DB userId: [" + userIdFromUser + "]");
+
+                        if (userIdFromMap.equals(userIdFromUser)) {
+                            System.out.println("✅ 일치하는 유저 발견! → 덮어쓰기 시도");
+                            System.out.println("   → key: " + key + ", index: " + i);
+                            System.out.println("   → 새로운 값: " + workspaceJson);
+
+                            workspaceRedisTemplate.opsForList().set(key, i, workspaceJson);
+
+                            System.out.println("🚀 덮어쓰기 완료됨!");
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.warn("워크스페이스 참가자 Redis 갱신 중 오류 발생", e);
+        }
+
         return user.getId();
     }
 
@@ -295,6 +343,17 @@ public class UserService {
         }
 
         return userIds;
+    }
+
+    public List<UserInfoDto> getUserInfosByIds(@RequestBody List<Long> userIds) {
+        return userRepository.findByIdInAndDel(userIds, Del.N).stream()
+                .map(user -> UserInfoDto.builder()
+                        .id(user.getId())
+                        .name(user.getName())
+                        .email(user.getEmail())
+                        .profile(user.getProfile())
+                        .build())
+                .toList();
     }
 
     public Long getOrCreateCalendarId(Long userId, String token) {

@@ -27,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
+import java.nio.file.AccessDeniedException;
 import java.util.*;
 
 @Service
@@ -230,8 +231,20 @@ public class WorkSpaceService {
                 .toList();
     }
 
-    public Long updateMyWorkSpace(WorkSpaceUpdateDto dto){
-        WorkSpace tgWorkSpace = workSpaceRepository.findById(dto.getWorkSpaceId()).orElseThrow(()->new EntityNotFoundException("없는 워크스페이스"));
+    public Long updateMyWorkSpace(WorkSpaceUpdateDto dto) throws IOException {
+        WorkSpace tgWorkSpace = workSpaceRepository.findById(dto.getWorkSpaceId())
+                .orElseThrow(() -> new EntityNotFoundException("없는 워크스페이스"));
+
+        if (!tgWorkSpace.getUserId().equals(dto.getUserId())) {
+            return -1L;
+        }
+
+        MultipartFile logoFile = dto.getLogo();
+        if (logoFile != null && !logoFile.isEmpty()) {
+            String logoUrl = s3Uploader.uploadFile(logoFile);
+            tgWorkSpace.updateLogo(logoUrl);
+        }
+
         tgWorkSpace.update(dto);
         return tgWorkSpace.getId();
     }
@@ -268,7 +281,8 @@ public class WorkSpaceService {
     }
 
     public Long updateSection(SectionupdateDto dto){
-        Section section = sectionRepository.findById(dto.getSectionId()).orElseThrow(()-> new EntityNotFoundException("없는 섹션"));
+        Section section = sectionRepository.findById(dto.getSectionId())
+                .orElseThrow(() -> new EntityNotFoundException("없는 섹션"));
         section.update(dto.getTitle());
         return section.getId();
     }
@@ -364,9 +378,21 @@ public class WorkSpaceService {
     }
 
     public Long updateChannel(ChannelUpdateDto dto){
-        Channel channel = channelRepository.findById(dto.getChannelId()).orElseThrow(()->new EntityNotFoundException("없는 채널"));
-        Section section = sectionRepository.findById(dto.getSectionId()).orElseThrow(()->new EntityNotFoundException("없는 섹션"));
-        channel.update(section,dto.getTitle());
+        Channel channel = channelRepository.findById(dto.getChannelId())
+                .orElseThrow(() -> new EntityNotFoundException("없는 채널"));
+
+        if (!channel.getUserId().equals(dto.getUserId())) {
+            return -1L;
+        }
+
+        Section section = null;
+        if (dto.getSectionId() != null) {
+            section = sectionRepository.findById(dto.getSectionId())
+                    .orElseThrow(() -> new EntityNotFoundException("없는 섹션"));
+        }
+
+        channel.update(section, dto.getTitle());
+
         return channel.getId();
     }
 
@@ -485,6 +511,7 @@ public class WorkSpaceService {
                 .toList();
 
         workSpaceParticipantRepository.saveAll(newParticipants);
+
     }
 
 
@@ -561,6 +588,41 @@ public class WorkSpaceService {
     private String generateDefaultColor(Long userId, Long workspaceId) {
         String[] colors = {"#3498db", "#e67e22", "#2ecc71", "#9b59b6", "#1abc9c"};
         return colors[Math.abs(Objects.hash(userId, workspaceId)) % colors.length];
+    }
+
+    public List<WorkSpaceParticipantDto> getWorkspaceParticipantsFromRedis(Long workspaceId) {
+        String workspaceRedisKey = "workspace:participants:" + workspaceId;
+        List<String> participantsJsonList = redisTemplate.opsForList().range(workspaceRedisKey, 0, -1);
+
+        if (participantsJsonList == null) {
+            return Collections.emptyList();
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<WorkSpaceParticipantDto> participants = new ArrayList<>();
+
+        for (String json : participantsJsonList) {
+            try {
+                WorkSpaceParticipantDto dto = objectMapper.readValue(json, WorkSpaceParticipantDto.class);
+                participants.add(dto);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace(); // 오류 로깅
+            }
+        }
+
+        return participants;
+    }
+
+    public List<Long> getUserIdsByChannelId(Long channelId) {
+        return channelParticipantRepository.findByChannelIdAndDel(channelId, Del.N).stream()
+                .map(ChannelParticipant::getUserId)
+                .toList();
+    }
+
+    public String getChannelTitleById(Long channelId) {
+        Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 채널입니다."));
+        return channel.getTitle();
     }
 
 }

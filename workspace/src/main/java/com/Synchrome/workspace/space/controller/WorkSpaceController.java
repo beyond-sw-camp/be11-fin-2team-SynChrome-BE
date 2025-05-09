@@ -10,12 +10,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import jakarta.ws.rs.Path;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -66,8 +68,11 @@ public class WorkSpaceController {
     }
 
     @PostMapping("/updateMyWorkSpace")
-    public ResponseEntity<?> updateWorkSpace(@Valid WorkSpaceUpdateDto workSpaceUpdateDto){
+    public ResponseEntity<?> updateWorkSpace(@Valid WorkSpaceUpdateDto workSpaceUpdateDto) throws IOException {
         Long response = workSpaceService.updateMyWorkSpace(workSpaceUpdateDto);
+        if (response == -1L) {
+            return ResponseEntity.status(HttpStatus.OK).body("수정 권한이 없습니다.");
+        }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -123,6 +128,10 @@ public class WorkSpaceController {
     @PostMapping("/updateMyChannel")
     public ResponseEntity<?> updateMyChannel(@RequestBody ChannelUpdateDto channelUpdateDto){
         Long response = workSpaceService.updateChannel(channelUpdateDto);
+
+        if (response == -1L) {
+            return ResponseEntity.ok("수정 권한이 없습니다.");
+        }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -173,5 +182,27 @@ public class WorkSpaceController {
         }
 
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/workspaceParticipants/{workspaceId}")
+    public ResponseEntity<?> getWorkspaceParticipants(@PathVariable Long workspaceId){
+        List<WorkSpaceParticipantDto> participants = workSpaceService.getWorkspaceParticipantsFromRedis(workspaceId);
+        return ResponseEntity.ok(participants);
+    }
+
+    @GetMapping("/channelParticipants/{channelId}")
+    public ResponseEntity<?> getChannelParticipants(@PathVariable Long channelId){
+        List<Long> response = workSpaceService.getUserIdsByChannelId(channelId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<?> healthCheck() {
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+    @GetMapping("/channelTitle/{channelId}")
+    public ResponseEntity<String> getChannelTitle(@PathVariable Long channelId) {
+        String title = workSpaceService.getChannelTitleById(channelId);
+        return ResponseEntity.ok(title);
     }
 }

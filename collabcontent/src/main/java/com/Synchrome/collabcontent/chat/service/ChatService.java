@@ -13,12 +13,16 @@ import com.Synchrome.collabcontent.chat.repository.ChatMessageRepository;
 import com.Synchrome.collabcontent.chat.repository.ChatParticipantRepository;
 import com.Synchrome.collabcontent.chat.repository.ChatRoomRepository;
 import com.Synchrome.collabcontent.chat.repository.ReadStatusRepository;
+import com.Synchrome.collabcontent.common.domain.DelYN;
+import com.Synchrome.collabcontent.opensearch.service.OpenSearchService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,11 +33,13 @@ public class ChatService {
     private final ChatParticipantRepository chatParticipantRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final ReadStatusRepository readStatusRepository;
-    public ChatService(ChatRoomRepository chatRoomRepository, ChatParticipantRepository chatParticipantRepository, ChatMessageRepository chatMessageRepository, ReadStatusRepository readStatusRepository) {
+    private final OpenSearchService openSearchService;
+    public ChatService(ChatRoomRepository chatRoomRepository, ChatParticipantRepository chatParticipantRepository, ChatMessageRepository chatMessageRepository, ReadStatusRepository readStatusRepository, OpenSearchService openSearchService) {
         this.chatRoomRepository = chatRoomRepository;
         this.chatParticipantRepository = chatParticipantRepository;
         this.chatMessageRepository = chatMessageRepository;
         this.readStatusRepository = readStatusRepository;
+        this.openSearchService = openSearchService;
     }
 
     public List<MyChatListResDto> getMyChatRooms(Long userId) {
@@ -120,20 +126,38 @@ public class ChatService {
                 .userId(dto.getUserId())
                 .content(dto.getMessage())
                 .parentId(dto.getParentId()) // null 허용
+                .replyTo(dto.getReplyTo())
+                .replyPreview(dto.getReplyPreview())
+                .workspaceId(dto.getWorkspaceId())
+                .workspaceTitle(dto.getWorkspaceTitle())
                 .build();
+        if (dto.getParentId() != null) {
+            chatMessageRepository.findById(dto.getParentId())
+                    .orElseThrow(()->new IllegalArgumentException("없는 메시지 입니다"))
+                    .addThreadCount();
+        }
+        ChatMessage saved = chatMessageRepository.save(chatMessage);
 
-        return chatMessageRepository.save(chatMessage);
-    }
+            // ✅ OpenSearch에도 인덱싱
+                    try {
+                        openSearchService.indexChatMessage(saved);
+                    } catch (IOException e) {
+                        System.out.println("OpenSearch 인덱싱 실패: " + e.getMessage());
+                    }
+
+                    return saved;
+                }
 
     public List<ChatMessageDto> getChatMessages(Long roomId, int limit, Long beforeId) {
         List<ChatMessage> messages;
 
         if (beforeId == null) {
             // 최신 메시지부터
-            messages = chatMessageRepository.findByChatRoomIdAndParentIdIsNullOrderByIdDesc(roomId, PageRequest.of(0, limit));
+            messages = chatMessageRepository.findByChatRoomIdAndParentIdIsNullAndDelYNOrderByCreatedTimeDesc(roomId,  DelYN.N, PageRequest.of(0, limit));
         } else {
             // 특정 메시지보다 이전 메시지
-            messages = chatMessageRepository.findByChatRoomIdAndIdLessThanAndParentIdIsNullOrderByIdDesc(roomId, beforeId, PageRequest.of(0, limit));
+            LocalDateTime beforeTime = chatMessageRepository.findById(beforeId).get().getCreatedTime();
+            messages = chatMessageRepository.findByChatRoomIdAndCreatedTimeLessThanAndParentIdIsNullAndDelYNOrderByCreatedTimeDesc(roomId, beforeTime, DelYN.N, PageRequest.of(0, limit));
         }
         System.out.println(messages);
         return messages.stream()
@@ -144,6 +168,9 @@ public class ChatService {
                         .message(m.getContent())
                         .createdTime(m.getCreatedTime())
                         .parentId(m.getParentId())
+                        .totalThreadCount(m.getTotalThreadCount())
+                        .replyTo(m.getReplyTo())
+                        .replyPreview(m.getReplyPreview())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -164,10 +191,10 @@ public class ChatService {
 
         if (beforeId == null) {
             // 최신 메시지부터
-            messages = chatMessageRepository.findByParentIdOrderByIdDesc(parentId, pageable);
+            messages = chatMessageRepository.findByParentIdAndDelYNOrderByIdDesc(parentId, DelYN.N, pageable);
         } else {
             // 특정 메시지 ID보다 이전
-            messages = chatMessageRepository.findByParentIdAndIdLessThanOrderByIdDesc(parentId, beforeId, pageable);
+            messages = chatMessageRepository.findByParentIdAndDelYNAndIdLessThanOrderByIdDesc(parentId, beforeId, DelYN.N, pageable);
         }
 
         return messages.stream()
@@ -178,8 +205,25 @@ public class ChatService {
                         .message(m.getContent())
                         .createdTime(m.getCreatedTime())
                         .parentId(m.getParentId())
+                        .replyTo(m.getReplyTo())
+                        .replyPreview(m.getReplyPreview())
                         .build())
                 .collect(Collectors.toList());
     }
 
+    public ChatMessage modifyMessage(ChatMessageDto chatMessageDto){
+        ChatMessage chatMessage = chatMessageRepository.findById(chatMessageDto.getId()).orElseThrow(()->new IllegalArgumentException("없는 메세지 입니다"));
+        chatMessage.modifyContent(chatMessageDto.getMessage());
+        return chatMessage;
+    }
+
+    public void deleteMessage(ChatMessageDto chatMessageDto){
+        ChatMessage chatMessage = chatMessageRepository.findById(chatMessageDto.getId()).orElseThrow(()->new IllegalArgumentException("없는 메세지 입니다"));
+        if (chatMessageDto.getParentId() != null) {
+            chatMessageRepository.findById(chatMessageDto.getParentId())
+                    .orElseThrow(()->new IllegalArgumentException("없는 메시지 입니다"))
+                    .decreaseThreadCount();
+        }
+        chatMessage.deleteMessage(DelYN.Y);
+    }
 }

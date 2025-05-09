@@ -140,6 +140,47 @@
 ## 📑 UI/UX 단위 테스트 결과서 (프론트엔드 설계 및 구축)
 - 사용성 테스트, 인터페이스 반응
 👉 [📎 문서 보기](./docs/UIUX_단위_테스트_결과서.pdf)
+<details>
+  <summary>▶️ 로그인 및 워크스페이스 생성</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EB%A1%9C%EA%B7%B8%EC%9D%B8%20%EB%B0%8F%20%EC%9B%8C%ED%81%AC%EC%8A%A4%ED%8E%98%EC%9D%B4%EC%8A%A4%20%EC%83%9D%EC%84%B1.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 섹션 및 채널 생성</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%84%B9%EC%85%98%20%EB%B0%8F%20%EC%B1%84%EB%84%90%20%EC%83%9D%EC%84%B1.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 채팅 기능</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%B1%84%ED%8C%85%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 화상회의 및 알림</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%ED%99%94%EC%83%81%ED%9A%8C%EC%9D%98%20%EB%B0%8F%20%EC%95%8C%EB%A6%BC.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>▶️ 구독 및 구독취소 기능 구현</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EA%B5%AC%EB%8F%85%20%EB%B0%8F%20%EA%B5%AC%EB%8F%85%EC%B7%A8%EC%86%8C%20%EA%B8%B0%EB%8A%A5%20%EA%B5%AC%ED%98%84.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>🎥 화상회의 - 카메라 및 마이크 설정</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%ED%99%94%EC%83%81%ED%9A%8C%EC%9D%98%20%EC%B9%B4%EB%A9%94%EB%9D%BC%20%EB%B0%8F%20%EB%A7%88%EC%9D%B4%ED%81%AC%20%EC%84%A4%EC%A0%95.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>🎥 화상회의 - 화면 녹화</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%ED%99%94%EC%83%81%ED%9A%8C%EC%9D%98%20%ED%99%94%EB%A9%B4%20%EB%85%B9%ED%99%94.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>🎥 화상회의 - 화면 공유</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%ED%99%94%EC%83%81%ED%9A%8C%EC%9D%98%20%ED%99%94%EB%A9%B4%EA%B3%B5%EC%9C%A0.gif?raw=true" width="600">
+</details>
+
+
 
 ---
 

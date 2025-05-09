@@ -30,7 +30,7 @@ public class KafkaSubscriber {
         CanvasUpdateReqDto docMessage = objectMapper.readValue(message, CanvasUpdateReqDto.class);
         Long canvasId = docMessage.getCanvasId();
         System.out.println("📄 문서 ID: " + canvasId);
-        messagingTemplate.convertAndSend("/topic/canvas/" + canvasId, docMessage.getUpdate());
+        messagingTemplate.convertAndSend("/topic/canvas/" + canvasId, docMessage);
     }
 
     @KafkaListener(topics = "notification", groupId = "noti-group")

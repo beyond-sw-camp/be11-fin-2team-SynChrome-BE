@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,9 +19,17 @@ public class ChatMessageDto {
     private Long userId;
     private Long roomId;
     private String message;
+    private List<Long> mentionedUserIds;
     private LocalDateTime createdTime;
+    private LocalDateTime updatedTime;
     private Long parentId;
     private Long workspaceId;
+    private String workspaceTitle;
+    private String type;
+    private Long emotionSize;
+    private Long totalThreadCount;
+    private Long replyTo;
+    private String replyPreview;
 
 
     public static ChatMessageDto fromEntity(ChatMessage entity) {
@@ -30,8 +39,10 @@ public class ChatMessageDto {
                 .roomId(entity.getChatRoom().getId())
                 .message(entity.getContent())
                 .createdTime(entity.getCreatedTime())
+                .updatedTime(entity.getUpdatedTime())
                 .parentId(entity.getParentId())
                 .workspaceId(entity.getWorkspaceId())
+                .workspaceTitle(entity.getWorkspaceTitle())
                 .build();
     }
 

@@ -1,6 +1,7 @@
 package com.Synchrome.collabcontent.chat.dto;
 
 
+import com.Synchrome.collabcontent.chat.domain.ENUM.NotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,4 +20,12 @@ public class NotificationDto {
     private String message;
     private LocalDateTime timestamp;
     private Long chatMessageId;
+    private NotificationType type;
+    private boolean read;
+    private String workspaceTitle;
+    private Long workspaceId;
+
+
+
 }
+

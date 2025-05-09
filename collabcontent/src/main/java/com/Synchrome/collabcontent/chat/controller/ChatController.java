@@ -5,6 +5,7 @@ import com.Synchrome.collabcontent.chat.domain.ChatMessage;
 import com.Synchrome.collabcontent.chat.dto.*;
 import com.Synchrome.collabcontent.chat.repository.ChatMessageRepository;
 import com.Synchrome.collabcontent.chat.service.ChatService;
+import com.Synchrome.collabcontent.chat.service.EmotionService;
 import com.Synchrome.collabcontent.common.auth.annotation.CurrentUserId;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -18,10 +19,12 @@ import java.util.List;
 public class ChatController {
     private final ChatService chatService;
     private final ChatMessageRepository chatMessageRepository;
+    private final EmotionService emotionService;
 
-    public ChatController(ChatService chatService, ChatMessageRepository chatMessageRepository) {
+    public ChatController(ChatService chatService, ChatMessageRepository chatMessageRepository, EmotionService emotionService) {
         this.chatService = chatService;
         this.chatMessageRepository = chatMessageRepository;
+        this.emotionService = emotionService;
     }
 
     @GetMapping("/my/rooms")
@@ -78,5 +81,15 @@ public class ChatController {
         ChatMessage message = chatMessageRepository.findById(messageId)
                 .orElseThrow(() -> new EntityNotFoundException("Message not found"));
         return ChatMessageDto.fromEntity(message);
+    }
+
+    @GetMapping("/emoji/{roomId}")
+    public ResponseEntity<List<MessageEmotionDto>> getAllEmojiDetails(@PathVariable Long roomId) {
+        return ResponseEntity.ok(emotionService.getEmojiDetailsForRoom(roomId));
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<?> healthCheck() {
+        return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 }
