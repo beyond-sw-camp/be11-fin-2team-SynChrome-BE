@@ -48,7 +48,7 @@ jwt:
 
 oauth:
   google:
-    client-id: 1092335572522-7t30vfvb8kkju4k6u35ivsiu3iutijis.apps.googleusercontent.com
+    client-id: 752078374240-4tdtnn7i8de5jpavh9qbupu7nbimt5rn.apps.googleusercontent.com
     client-secret: ${GOOGLE_SECRET}
     redirect_uri: https://www.synchrome.shop/oauth/google/redirect
 #뭘까
