@@ -51,7 +51,7 @@ oauth:
     client-id: 1092335572522-7t30vfvb8kkju4k6u35ivsiu3iutijis.apps.googleusercontent.com
     client-secret: ${GOOGLE_SECRET}
     redirect_uri: https://www.synchrome.shop/oauth/google/redirect
-
+#뭘까
 cloud:
   aws:
     s3:
