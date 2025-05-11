@@ -352,12 +352,12 @@
 </details>
 
 <details>
-  <summary>캔버스 복제 기능</summary>
+  <summary>캔버스 블럭 복제 기능</summary>
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%94%EB%B2%84%EC%8A%A4%20%EB%B8%94%EB%9F%AD%20%EB%B3%B5%EC%A0%9C%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
 </details>
 
 <details>
-  <summary>캔버스 삭제 기능</summary>
+  <summary>캔버스 블럭 삭제 기능</summary>
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%94%EB%B2%84%EC%8A%A4%20%EB%B8%94%EB%9F%AD%20%EC%82%AD%EC%A0%9C%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
 </details>
 
