@@ -142,8 +142,7 @@
 👉 [📎 문서 보기](./docs/UIUX_단위_테스트_결과서.pdf)
 ---
 
-<details>
-<summary>📁 워크스페이스</summary>
+### 📁 워크스페이스
 
 <details>
   <summary>로그인 및 워크스페이스 생성</summary>
@@ -170,10 +169,9 @@
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/워크스페이스별%20독립적인%20채널내용.gif?raw=true" width="600">
 </details>
 
-</details>
+---
 
-<details>
-<summary>💬 채팅</summary>
+### 💬 채팅
 
 <details>
   <summary>채팅 기능</summary>
@@ -190,10 +188,9 @@
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/태그알림.gif?raw=true" width="600">
 </details>
 
-</details>
+---
 
-<details>
-<summary>🎥 화상회의</summary>
+### 🎥 화상회의
 
 <details>
   <summary>입장 및 알림</summary>
@@ -215,10 +212,9 @@
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/화상회의%20화면공유.gif?raw=true" width="600">
 </details>
 
-</details>
+---
 
-<details>
-<summary>📅 캘린더</summary>
+### 📅 캘린더
 
 <details>
   <summary>일정 생성 및 카테고리 추가</summary>
@@ -245,10 +241,9 @@
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/캘린더%20워크스페이스와%20카테고리%20이중%20필터링%20기능.gif?raw=true" width="600">
 </details>
 
-</details>
+---
 
-<details>
-<summary>🧩 캔버스</summary>
+### 🧩 캔버스
 
 <details>
   <summary>캔버스 생성 및 작성</summary>
@@ -260,17 +255,15 @@
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/캔버스2개의화면에서동시작업.gif?raw=true" width="600">
 </details>
 
-</details>
+---
 
-<details>
-<summary>💳 결제</summary>
+### 💳 결제
 
 <details>
   <summary>구독 및 구독 취소 기능</summary>
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/구독%20및%20구독취소%20기능%20구현.gif?raw=true" width="600">
 </details>
 
-</details>
 ---
 
 ## 📑 배포 후 통합 테스트 결과서 (시스템 통합)
