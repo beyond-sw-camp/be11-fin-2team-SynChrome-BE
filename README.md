@@ -140,111 +140,129 @@
 ## 📑 UI/UX 단위 테스트 결과서 (프론트엔드 설계 및 구축)
 - 사용성 테스트, 인터페이스 반응
 👉 [📎 문서 보기](./docs/UIUX_단위_테스트_결과서.pdf)
+---
+
+### 📁 워크스페이스
+
 <details>
   <summary>▶️ 로그인 및 워크스페이스 생성</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EB%A1%9C%EA%B7%B8%EC%9D%B8%20%EB%B0%8F%20%EC%9B%8C%ED%81%AC%EC%8A%A4%ED%8E%98%EC%9D%B4%EC%8A%A4%20%EC%83%9D%EC%84%B1.gif?raw=true" width="600">
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/로그인%20및%20워크스페이스%20생성.gif?raw=true" width="600">
 </details>
 
 <details>
   <summary>▶️ 워크스페이스 편집</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%9B%8C%ED%81%AC%EC%8A%A4%ED%8E%98%EC%9D%B4%EC%8A%A4%20%ED%8E%B8%EC%A7%91.gif?raw=true" width="600">
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/워크스페이스%20편집.gif?raw=true" width="600">
 </details>
 
 <details>
-  <summary>▶️ 워크스페이스 - 사용자 초대</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%9B%8C%ED%81%AC%EC%8A%A4%ED%8E%98%EC%9D%B4%EC%8A%A4%EC%97%90%20%EC%82%AC%EC%9A%A9%EC%9E%90%20%EC%B4%88%EB%8C%80.gif?raw=true" width="600">
-</details>
-
-<details>
-  <summary>▶️ 워크스페이스별 독립적인 채널내용</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%9B%8C%ED%81%AC%EC%8A%A4%ED%8E%98%EC%9D%B4%EC%8A%A4%EB%B3%84%20%EB%8F%85%EB%A6%BD%EC%A0%81%EC%9D%B8%20%EC%B1%84%EB%84%90%EB%82%B4%EC%9A%A9.gif?raw=true" width="600">
+  <summary>▶️ 사용자 초대</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/워크스페이스에%20사용자%20초대.gif?raw=true" width="600">
 </details>
 
 <details>
   <summary>▶️ 섹션 및 채널 생성</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%84%B9%EC%85%98%20%EB%B0%8F%20%EC%B1%84%EB%84%90%20%EC%83%9D%EC%84%B1.gif?raw=true" width="600">
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/섹션%20및%20채널%20생성.gif?raw=true" width="600">
 </details>
+
+<details>
+  <summary>▶️ 워크스페이스별 독립 채널 관리</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/워크스페이스별%20독립적인%20채널내용.gif?raw=true" width="600">
+</details>
+
+---
+
+### 💬 채팅
 
 <details>
   <summary>▶️ 채팅 기능</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%B1%84%ED%8C%85%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/채팅%20기능.gif?raw=true" width="600">
 </details>
 
 <details>
-  <summary>▶️ 화상회의 및 알림</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%ED%99%94%EC%83%81%ED%9A%8C%EC%9D%98%20%EB%B0%8F%20%EC%95%8C%EB%A6%BC.gif?raw=true" width="600">
+  <summary>▶️ 검색 - 채팅 메시지 검색</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/검색.gif?raw=true" width="600">
 </details>
 
 <details>
-  <summary>▶️ 구독 및 구독취소 기능 구현</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EA%B5%AC%EB%8F%85%20%EB%B0%8F%20%EA%B5%AC%EB%8F%85%EC%B7%A8%EC%86%8C%20%EA%B8%B0%EB%8A%A5%20%EA%B5%AC%ED%98%84.gif?raw=true" width="600">
+  <summary>▶️ 멘션 알림</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/태그알림.gif?raw=true" width="600">
+</details>
+
+---
+
+### 🎥 화상회의
+
+<details>
+  <summary>▶️ 입장 및 알림</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/화상회의%20및%20알림.gif?raw=true" width="600">
 </details>
 
 <details>
-  <summary>🎥 화상회의 - 카메라 및 마이크 설정</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%ED%99%94%EC%83%81%ED%9A%8C%EC%9D%98%20%EC%B9%B4%EB%A9%94%EB%9D%BC%20%EB%B0%8F%20%EB%A7%88%EC%9D%B4%ED%81%AC%20%EC%84%A4%EC%A0%95.gif?raw=true" width="600">
+  <summary>▶️ 카메라 및 마이크 설정</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/화상회의%20카메라%20및%20마이크%20설정.gif?raw=true" width="600">
 </details>
 
 <details>
-  <summary>🎥 화상회의 - 화면 녹화</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%ED%99%94%EC%83%81%ED%9A%8C%EC%9D%98%20%ED%99%94%EB%A9%B4%20%EB%85%B9%ED%99%94.gif?raw=true" width="600">
+  <summary>▶️ 화면 녹화</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/화상회의%20화면%20녹화.gif?raw=true" width="600">
 </details>
 
 <details>
-  <summary>🎥 화상회의 - 화면 공유</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%ED%99%94%EC%83%81%ED%9A%8C%EC%9D%98%20%ED%99%94%EB%A9%B4%EA%B3%B5%EC%9C%A0.gif?raw=true" width="600">
+  <summary>▶️ 화면 공유</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/화상회의%20화면공유.gif?raw=true" width="600">
+</details>
+
+---
+
+### 📅 캘린더
+
+<details>
+  <summary>▶️ 일정 생성 및 카테고리 추가</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/캘린더%20일정생성%20및%20카테고리%20추가.gif?raw=true" width="600">
 </details>
 
 <details>
-  <summary>▶️ 알림 - 초대</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%B4%88%EB%8C%80%EC%95%8C%EB%A6%BC.gif?raw=true" width="600">
+  <summary>▶️ 연속 일정 생성 (n일)</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/캘린더%20n일%20일정생성.gif?raw=true" width="600">
 </details>
 
 <details>
-  <summary>▶️ 알림 - 멘션</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%ED%83%9C%EA%B7%B8%EC%95%8C%EB%A6%BC.gif?raw=true" width="600">
+  <summary>▶️ 반복 일정 생성</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/캘린더%20반복일정%20생성.gif?raw=true" width="600">
 </details>
 
 <details>
-  <summary>▶️ 캔버스 - 생성, 작성</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%94%EB%B2%84%EC%8A%A4%EC%83%9D%EC%84%B1,%EC%9E%91%EC%84%B1(%EC%A4%84%EB%B0%94%EA%BF%88).gif?raw=true" width="600">
+  <summary>▶️ 상세 일정 조회 및 삭제</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/캘린더%20일정상세조회%20및%20삭제.gif?raw=true" width="600">
 </details>
 
 <details>
-  <summary>▶️ 캔버스 - 실시간 동시 작업</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%94%EB%B2%84%EC%8A%A42%EA%B0%9C%EC%9D%98%ED%99%94%EB%A9%B4%EC%97%90%EC%84%9C%EB%8F%99%EC%8B%9C%EC%9E%91%EC%97%85.gif?raw=true" width="600">
+  <summary>▶️ 워크스페이스 + 카테고리 이중 필터</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/캘린더%20워크스페이스와%20카테고리%20이중%20필터링%20기능.gif?raw=true" width="600">
+</details>
+
+---
+
+### 🧩 캔버스
+
+<details>
+  <summary>▶️ 캔버스 생성 및 작성</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/캔버스생성,작성(줄바꿈).gif?raw=true" width="600">
 </details>
 
 <details>
-  <summary>▶️ 검색 - 검색어가 포함된 채팅 검</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EA%B2%80%EC%83%89.gif?raw=true" width="600">
+  <summary>▶️ 실시간 동시 편집 (멀티유저)</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/캔버스2개의화면에서동시작업.gif?raw=true" width="600">
 </details>
+
+---
+
+### 💳 결제
 
 <details>
-  <summary>▶️ 캘린더 - 일정 생성 및 카테고리 추가</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%98%EB%A6%B0%EB%8D%94%20%EC%9D%BC%EC%A0%95%EC%83%9D%EC%84%B1%20%EB%B0%8F%20%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC%20%EC%B6%94%EA%B0%80.gif?raw=true" width="600">
+  <summary>▶️ 구독 및 구독 취소 기능</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/구독%20및%20구독취소%20기능%20구현.gif?raw=true" width="600">
 </details>
-
-<details>
-  <summary>▶️ 캘린더 - 연속 n일 일정 생성</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%98%EB%A6%B0%EB%8D%94%20n%EC%9D%BC%20%EC%9D%BC%EC%A0%95%EC%83%9D%EC%84%B1.gif?raw=true" width="600">
-</details>
-
-<details>
-  <summary>▶️ 캘린더 - 반복 일정 생성</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%98%EB%A6%B0%EB%8D%94%20%EB%B0%98%EB%B3%B5%EC%9D%BC%EC%A0%95%20%EC%83%9D%EC%84%B1.gif?raw=true" width="600">
-</details>
-
-<details>
-  <summary>▶️ 캘린더 - 상세일정 조회 및 삭제</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%98%EB%A6%B0%EB%8D%94%20%EC%9D%BC%EC%A0%95%EC%83%81%EC%84%B8%EC%A1%B0%ED%9A%8C%20%EB%B0%8F%20%EC%82%AD%EC%A0%9C.gif?raw=true" width="600">
-</details>
-
-<details>
-  <summary>▶️ 캘린더 - 워크스페이스라벨과 카테고리 이중 필터링 기능</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%98%EB%A6%B0%EB%8D%94%20%EC%9B%8C%ED%81%AC%EC%8A%A4%ED%8E%98%EC%9D%B4%EC%8A%A4%EC%99%80%20%EC%B9%B4%ED%85%8C%EA%B3%A0%EB%A6%AC%20%EC%9D%B4%EC%A4%91%20%ED%95%84%ED%84%B0%EB%A7%81%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
-</details>
-
 
 
 ---
