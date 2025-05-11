@@ -1,6 +1,7 @@
-# 📁 Synchrome
-
-> 실시간 커뮤니케이션 및 협업을 위한 올인원 플랫폼
+<h1 align="center">💼 Synchrome : 실시간 커뮤니케이션 및 협업을 위한 올인원 플랫폼</h1>
+<p align="center">
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/new_synchrome%EB%A1%9C%EA%B3%A0.png" width="400">
+</p>
 
 ## 📌 팀원소개
 <div align="center">
@@ -29,6 +30,62 @@
   </tr>
 </table>
 </div>
+
+---
+
+## 기술 스택  
+
+### 📌 Backend  
+<div>
+  <img src="https://img.shields.io/badge/Spring-6DB33F?style=flat-square&logo=Spring&logoColor=white">
+  <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=flat-square&logo=SpringBoot&logoColor=white">
+  <img src="https://img.shields.io/badge/SpringSecurity-6DB33F?style=flat-square&logo=SpringSecurity&logoColor=white">
+  <img src="https://img.shields.io/badge/SpringDataJPA-26A641?style=flat-square&logo=Hibernate&logoColor=white">
+  <img src="https://img.shields.io/badge/Gradle-02303A?style=flat-square&logo=Gradle&logoColor=white">
+  <img src="https://img.shields.io/badge/JWT-000000?style=flat-square&logo=jsonwebtokens&logoColor=white">
+  <img src="https://img.shields.io/badge/Hibernate-59666C?style=flat-square&logo=Hibernate&logoColor=white">
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=Docker&logoColor=white">
+  <img src="https://img.shields.io/badge/WebSocket-000000?style=flat-square&logo=WebSocket&logoColor=white">
+</div>
+
+### 📌 Frontend  
+<div>
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=CSS3&logoColor=white">
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=HTML5&logoColor=white">
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=JavaScript&logoColor=black">
+  <img src="https://img.shields.io/badge/Vue.js-4FC08D?style=flat-square&logo=Vue.js&logoColor=white">
+  <img src="https://img.shields.io/badge/Axios-764ABC?style=flat-square&logo=Axios&logoColor=white">
+  <img src="https://img.shields.io/badge/VueRouter-4FC08D?style=flat-square&logo=Vue.js&logoColor=white">
+  <img src="https://img.shields.io/badge/Vuetify-1867C0?style=flat-square&logo=Vuetify&logoColor=white">
+</div>
+
+### 📌 DB  
+<div>
+  <img src="https://img.shields.io/badge/MariaDB-003545?style=flat-square&logo=MariaDB&logoColor=white">
+  <img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=Redis&logoColor=white">
+  <img src="https://img.shields.io/badge/AmazonS3-569A31?style=flat-square&logo=AmazonS3&logoColor=white">
+</div>
+
+### 📌 DevOps  
+<div>
+  <img src="https://img.shields.io/badge/Kubernetes-326CE5?style=flat-square&logo=Kubernetes&logoColor=white">
+  <img src="https://img.shields.io/badge/AmazonEKS-FF9900?style=flat-square&logo=AmazonEKS&logoColor=white">
+  <img src="https://img.shields.io/badge/AmazonEC2-FF9900?style=flat-square&logo=AmazonEC2&logoColor=white">
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=Docker&logoColor=white">
+  <img src="https://img.shields.io/badge/AmazonRDS-527FFF?style=flat-square&logo=AmazonRDS&logoColor=white">
+  <img src="https://img.shields.io/badge/AmazonS3-569A31?style=flat-square&logo=AmazonS3&logoColor=white">
+  <img src="https://img.shields.io/badge/AmazonRoute53-FF9900?style=flat-square&logo=AmazonRoute53&logoColor=white">
+  <img src="https://img.shields.io/badge/GitHubActions-2088FF?style=flat-square&logo=GitHubActions&logoColor=white">
+</div>
+
+
+
+### 📌 Communication  
+<div>
+  <img src="https://img.shields.io/badge/Discord-5865F2?style=flat-square&logo=Discord&logoColor=white">
+  <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=GitHub&logoColor=white">
+</div>
+
 ---
 
 ## 📌 목차
@@ -47,7 +104,6 @@
 12. [배포 후 통합 테스트 결과서 (시스템 통합)](#배포-후-통합-테스트-결과서-시스템-통합)
 13. [CI/CD 계획서 (시스템 통합)](#cicd-계획서-시스템-통합)
 14. [배포 및 운영](#배포-및-운영)
-15. [팀원 정보](#팀원-정보)
 
 ---
 
@@ -58,9 +114,7 @@
     - 실시간 채팅 및 메시지 동기화  
     - 음성 및 화상 통화 지원  
     - 메시지 및 알림 시스템 제공  
-  - **2️⃣ 파일 및 문서 관리**  
-    - 드래그 앤 드롭 방식의 파일 공유  
-    - 클라우드 기반 파일 저장 및 버전 관리  
+  - **2️⃣ 문서 관리**  
     - 문서(캔버스) 실시간 공동 편집 기능  
   - **3️⃣ 스마트 검색 및 확장성**  
     - Elasticsearch 기반의 메시지 및 파일 검색 기능 제공  
@@ -90,7 +144,7 @@
 ## 📑 프로젝트 기획서 (프로젝트기획)
 
 ## 📌 1. 프로젝트 추진 배경
-- 기존 협업 환경은 **채팅, 파일 공유, 회의, 문서 관리 등** 다양한 툴이 분산되어 있어  
+- 기존 협업 환경은 **채팅, 회의, 문서 관리 등** 다양한 툴이 분산되어 있어  
   업무 효율 저하 및 정보 동기화 문제 발생
 - **원격 근무/비대면 협업 증가**로 인해, **실시간 소통과 데이터 공유의 중요성** 증대
 - 하나의 플랫폼에서 모든 협업을 통합하려는 수요 급증  
@@ -99,9 +153,9 @@
 
 
 ## 🎯 2. 프로젝트 목적
-- 다양한 협업 기능(채팅, 파일 공유, 음성/화상 통화 등)을 **하나의 플랫폼에 통합**하여  
+- 다양한 협업 기능(채팅, 음성/화상 통화 등)을 **하나의 플랫폼에 통합**하여  
   업무 생산성을 극대화하고 **실시간 동기화 기반의 협업 환경 제공**
-- **별도 도구 전환 없이 즉시 피드백, 실시간 소통, 파일 공유**를 가능하게 하여  
+- **별도 도구 전환 없이 즉시 피드백, 실시간 소통**를 가능하게 하여  
   팀워크와 업무 흐름을 강화
 
 
@@ -121,26 +175,22 @@
 ---
 
 ## 📑 요구사항 정의서 (프로젝트기획)
-- 기능적 / 비기능 요구사항, 유즈케이스
-👉 [📎 문서 보기](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?gid=1069002790#gid=1069002790)
+[📎요구사항 정의서](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?gid=1069002790#gid=1069002790)
 
 ---
 
-## 📑 시스템 아키텍처 설계서 (프로젝트기획)
-> 시스템 구성도 이미지 삽입  
+## 📑 시스템 아키텍처 설계서 (CI/CD 계획서)
 ![시스템 아키텍처](https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/drawio.png?raw=true))  
 
 
 ---
 
 ## 📑 WBS (프로젝트기획)
-- 업무 분류 체계, 일정계획
-👉 [📎 문서 보기](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?gid=1938375019#gid=1938375019)
+[📎 WBS](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?gid=1938375019#gid=1938375019)
 
 ---
 
-## 📑 ERD (프로젝트기획)
-> 데이터베이스 구조  
+## 📑 ERD (프로젝트기획) 
 <div align="center">
   <img src="images/Synchrome_DB.png" >
 </div>
@@ -148,25 +198,23 @@
 ---
 
 ## 📑 화면설계서 (프로젝트기획)
-> 주요 UI/UX 흐름  
-👉 [📎 문서 보기](https://www.figma.com/design/uPfg5bZWj3IgpGT3QXOHVM/Synchrome?node-id=17-2&p=f&t=rBab0xfYe9HFknH1-0)
+[📎 화면설계서(figma)](https://www.figma.com/design/uPfg5bZWj3IgpGT3QXOHVM/Synchrome?node-id=17-2&p=f&t=rBab0xfYe9HFknH1-0)
 
 ---
 
 ## 📑 프로그램사양서 (백엔드 설계 및 구축)
-- 상세 기능별 사양, 입력/출력 정의
-👉 [📎 문서 보기](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?gid=282459126#gid=282459126)
+[📎 프로그램 사양서](https://docs.google.com/spreadsheets/d/1nOe75VhnAemKxZIbsGkTzGwdzArp8Akl8MRr9XVAgQU/edit?gid=282459126#gid=282459126)
 
 ---
 
 ## 📑 단위 테스트 결과서 (백엔드 설계 및 구축)
-👉 [📎 문서 보기](https://documenter.getpostman.com/view/41079375/2sB2cYbzyZ)
+[📎 단위테스트 결과서(백엔드)](https://documenter.getpostman.com/view/41079375/2sB2cYbzyZ)
 
 ---
 
 ## 📑 UI/UX 단위 테스트 결과서 (프론트엔드 설계 및 구축)
-- 사용성 테스트, 인터페이스 반응
-👉 [📎 문서 보기](./docs/UIUX_단위_테스트_결과서.pdf)
+[📎 단위테스트 결과서(프론트엔드)](./docs/UIUX_단위_테스트_결과서.pdf)
+
 ---
 
 ### 📁 워크스페이스
@@ -294,19 +342,7 @@
 
 ---
 
-## 📑 CI/CD 계획서 (시스템 통합)
-| 항목 | 내용 |
-|:------------------|:-------------------------------|
-| 자동화 도구 | GitHub Actions, Docker |
-| 배포 환경 | AWS EC2 / ECS |
-| 테스트 방식 | 단위/통합 자동 테스트 포함 |
-
-👉 [📎 문서 보기](./docs/CICD_계획서.pdf)
-
----
-
 ## 🚀 배포 및 운영
 
-- 운영 URL : [https://yourproject.com](https://yourproject.com)  
-- 배포 환경 : AWS / Vercel / 기타  
-- 컨테이너 이미지 : `yourproject:latest`
+- 운영 URL : https://www.synchrome.shop 
+- 배포 환경 : AWS
