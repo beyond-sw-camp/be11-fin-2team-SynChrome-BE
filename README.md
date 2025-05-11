@@ -2,6 +2,33 @@
 
 > 실시간 커뮤니케이션 및 협업을 위한 올인원 플랫폼
 
+## 📌 팀원소개
+<div align="center">
+<table>
+  <tr>
+    <td align="center" width="150">
+      <img src="https://github.com/beyond-sw-camp/be11-2nd-ChulungChulung-StomachForce-FE/blob/main/src/assets/%EC%8B%AC%EC%88%9C.jpeg?raw=true" width="120" height="120">
+      <hr>
+      <b>정준환</b><br>팀장
+    </td>
+    <td align="center" width="150">
+      <img src="https://github.com/beyond-sw-camp/be11-2nd-ChulungChulung-StomachForce-FE/blob/main/src/assets/%EB%A7%88%EC%A7%80%EC%8B%9C%EB%AF%93%E3%84%B4.png?raw=true" width="120" height="120">
+      <hr>
+      <b>이준서</b><br>팀원
+    </td>
+    <td align="center" width="150">
+      <img src="https://github.com/beyond-sw-camp/be11-2nd-ChulungChulung-StomachForce-FE/blob/main/src/assets/%EB%B0%94%ED%8A%B8%EC%8B%AC%EC%8A%A8.jpeg?raw=true" width="120" height="120">
+      <hr>
+      <b>임성재</b><br>팀원
+    </td>
+    <td align="center" width="150">
+      <img src="https://github.com/beyond-sw-camp/be11-2nd-ChulungChulung-StomachForce-FE/blob/main/src/assets/%EB%B0%94%ED%8A%B8%EC%8B%AC%EC%8A%A8.png?raw=true" width="120" height="120">
+      <hr>
+      <b>홍성혁</b><br>팀원
+    </td>
+  </tr>
+</table>
+</div>
 ---
 
 ## 📌 목차
@@ -283,14 +310,3 @@
 - 운영 URL : [https://yourproject.com](https://yourproject.com)  
 - 배포 환경 : AWS / Vercel / 기타  
 - 컨테이너 이미지 : `yourproject:latest`
-
----
-
-## 👨‍👩‍👧‍👦 팀원 정보
-
-| 이름 | 역할 | GitHub |
-|:------|:------------------------|:-----------------------------|
-| 정준환 | 팀장 | [github.com/JungJunHwan](https://github.com/JungJunHwan) |
-| 이준서 | 팀원 | [github.com/LetsSeeterrapin](https://github.com/LetsSeeterrapin) |
-| 임성재 | 팀원 | [github.com/LSJ0621](https://github.com/LSJ0621) |
-| 홍성혁 | 팀원 | [github.com/dksqjq4851](https://github.com/dksqjq4851) |
