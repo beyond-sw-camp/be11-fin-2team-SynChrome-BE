@@ -169,7 +169,6 @@
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/워크스페이스별%20독립적인%20채널내용.gif?raw=true" width="600">
 </details>
 
----
 
 ### 💬 채팅
 
@@ -188,7 +187,6 @@
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/태그알림.gif?raw=true" width="600">
 </details>
 
----
 
 ### 🎥 화상회의
 
@@ -212,7 +210,6 @@
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/화상회의%20화면공유.gif?raw=true" width="600">
 </details>
 
----
 
 ### 📅 캘린더
 
@@ -241,7 +238,6 @@
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/캘린더%20워크스페이스와%20카테고리%20이중%20필터링%20기능.gif?raw=true" width="600">
 </details>
 
----
 
 ### 🧩 캔버스
 
@@ -255,7 +251,6 @@
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/캔버스2개의화면에서동시작업.gif?raw=true" width="600">
 </details>
 
----
 
 ### 💳 결제
 
