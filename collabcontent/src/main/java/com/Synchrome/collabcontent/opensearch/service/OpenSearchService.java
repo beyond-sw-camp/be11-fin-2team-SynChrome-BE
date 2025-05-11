@@ -42,6 +42,8 @@ public class OpenSearchService {
         data.put("roomId", message.getChatRoom().getId());
         data.put("content", message.getContent());
         data.put("createdAt", message.getCreatedTime());
+        data.put("workspaceId", message.getWorkspaceId());
+        data.put("workspaceTitle", message.getWorkspaceTitle());
 
         System.out.println("✅ OpenSearch 인덱싱: " + data); // 로그 추가
 
