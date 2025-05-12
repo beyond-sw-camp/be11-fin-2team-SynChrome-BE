@@ -258,23 +258,28 @@
 </details>
 
 <details>
-  <summary>채팅 답장 기능x</summary>
-  <img src="" width="600">
+  <summary>채팅 답장 기능</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%B1%84%ED%8C%85%20%EB%8B%B5%EC%9E%A5%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
 </details>
 
 <details>
-  <summary>채팅 이모티콘 기능x</summary>
-  <img src="" width="600">
+  <summary>채팅 이모티콘 기능</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%B1%84%ED%8C%85%20%EC%9D%B4%EB%AA%A8%ED%8B%B0%EC%BD%98%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
 </details>
 
 <details>
-  <summary>채팅 수정 및 삭제 기능x</summary>
-  <img src="" width="600">
+  <summary>채팅 수정 및 삭제 기능</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%B1%84%ED%8C%85%20%EC%88%98%EC%A0%95%20%EB%B0%8F%20%EC%82%AD%EC%A0%9C%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
 </details>
 
 <details>
   <summary>채팅 전달 기능x</summary>
   <img src="" width="600">
+</details>
+
+<details>
+  <summary>채팅 스레드 기능</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%B1%84%ED%8C%85%20%EC%8A%A4%EB%A0%88%EB%93%9C%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
 </details>
 
 <details>
