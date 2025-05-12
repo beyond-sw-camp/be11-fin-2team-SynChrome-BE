@@ -168,7 +168,7 @@ public ResponseEntity<?> promoteOrDelete(@PathVariable Long eventId) {
     }
 
     // 색상 변경
-    @PatchMapping("/color-workspace")
+    @PutMapping("/color-workspace")
     public ResponseEntity<Void> updateColor(
             @RequestHeader("X-User-Id") Long userId,
             @RequestBody ColorWorkspaceDto dto
