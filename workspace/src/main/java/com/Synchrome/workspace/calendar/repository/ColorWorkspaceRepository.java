@@ -16,4 +16,5 @@ public interface ColorWorkspaceRepository extends JpaRepository<ColorWorkspace, 
     List<ColorWorkspace> findByUserId(Long userId);
     List<ColorWorkspace> findByWorkspaceId(Long workspaceId);
     boolean existsByUserIdAndType(Long userId, ColorWorkspaceType type);
+    long countByType(ColorWorkspaceType type);
 }
