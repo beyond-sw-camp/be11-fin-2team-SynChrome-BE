@@ -258,33 +258,33 @@
 </details>
 
 <details>
-  <summary>채팅 답장 기능</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%B1%84%ED%8C%85%20%EB%8B%B5%EC%9E%A5%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
-</details>
-
-<details>
-  <summary>채팅 이모티콘 기능</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%B1%84%ED%8C%85%20%EC%9D%B4%EB%AA%A8%ED%8B%B0%EC%BD%98%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
-</details>
-
-<details>
-  <summary>채팅 수정 및 삭제 기능</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%B1%84%ED%8C%85%20%EC%88%98%EC%A0%95%20%EB%B0%8F%20%EC%82%AD%EC%A0%9C%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
-</details>
-
-<details>
-  <summary>채팅 전달 기능x</summary>
-  <img src="" width="600">
-</details>
-
-<details>
-  <summary>채팅 스레드 기능</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%B1%84%ED%8C%85%20%EC%8A%A4%EB%A0%88%EB%93%9C%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
-</details>
-
-<details>
   <summary>멘션 알림</summary>
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/태그알림.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>메시지 전달</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/채팅%20전달%20기능.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>이모티콘 반응</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/채팅%20이모티콘%20기능.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>스레드 기능</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/채팅%20스레드%20기능.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>메시지 수정 및 삭제</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/채팅%20수정%20및%20삭제%20기능.gif?raw=true" width="600">
+</details>
+
+<details>
+  <summary>답장 기능</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/채팅%20답장%20기능.gif?raw=true" width="600">
 </details>
 
 
@@ -352,18 +352,18 @@
 </details>
 
 <details>
-  <summary>캔버스 글꼴변환 기능</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%94%EB%B2%84%EC%8A%A4%20%EA%B8%80%EA%BC%B4%EB%B3%80%ED%99%98%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
+  <summary>블럭 삭제</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/캔버스%20블럭%20삭제%20기능.gif?raw=true" width="600">
 </details>
 
 <details>
-  <summary>캔버스 블럭 복제 기능</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%94%EB%B2%84%EC%8A%A4%20%EB%B8%94%EB%9F%AD%20%EB%B3%B5%EC%A0%9C%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
+  <summary>블럭 복제</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/캔버스%20블럭%20복제%20기능.gif?raw=true" width="600">
 </details>
 
 <details>
-  <summary>캔버스 블럭 삭제 기능</summary>
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%94%EB%B2%84%EC%8A%A4%20%EB%B8%94%EB%9F%AD%20%EC%82%AD%EC%A0%9C%20%EA%B8%B0%EB%8A%A5.gif?raw=true" width="600">
+  <summary>글꼴 변경</summary>
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/캔버스%20글꼴변환%20기능.gif?raw=true" width="600">
 </details>
 
 
