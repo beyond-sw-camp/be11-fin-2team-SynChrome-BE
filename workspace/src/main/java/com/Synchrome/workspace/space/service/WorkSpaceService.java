@@ -47,7 +47,6 @@ public class WorkSpaceService {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-    private static int colorIndex = 0;
 
     public WorkSpaceService(RedisTemplate<String, String> redisTemplate, RedisTemplate<String, Object> userInfoRedisTemplate, WorkSpaceRepository workSpaceRepository, SectionRepository sectionRepository, ChannelRepository channelRepository, WorkSpaceParticipantRepository workSpaceParticipantRepository, ChannelParticipantRepository channelParticipantRepository, S3Uploader s3Uploader, WorkSpaceFeign workSpaceFeign, ColorWorkspaceRepository colorWorkspaceRepository, CalendarRepository calendarRepository) {
         this.redisTemplate = redisTemplate;
@@ -121,8 +120,11 @@ public class WorkSpaceService {
 
         workSpaceParticipantRepository.save(participant);
 
-        String[] colors = {"#3BB9FF", "#2B1B17", "#46C7C7", "#6F4E37","#ff2800","#F653A6","#FC6C85","#A74AC7","#FFD801"};
-        String assignedColor = colors[colorIndex % colors.length];
+        String[] colors = {"#3BB9FF","#2B1B17", "#46C7C7", "#6F4E37","#ff2800","#F653A6","#FC6C85","#A74AC7", "#FFD801"};
+
+        long count = colorWorkspaceRepository.countByType(ColorWorkspaceType.WORKSPACE);
+        int colorIndex = (int) (count % colors.length);
+        String assignedColor = colors[colorIndex];
 
         ColorWorkspace colorWorkspace = ColorWorkspace.builder()
                 .workspace(saveWorkSpace)
