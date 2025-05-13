@@ -22,6 +22,5 @@ spec:
         backend:
           service:
             name: apigateway-service
-            namespace: synchrome
             port:
               number: 80
