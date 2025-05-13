@@ -1,4 +1,4 @@
-<h1 align="center">💼 Synchrome : 실시간 커뮤니케이션 및 협업을 위한 올인원 플랫폼</h1>
+<h1 align="center">💼 Synchrome : 실시간 커뮤니케이션 및 협업을 위한 플랫폼</h1>
 <p align="center">
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/new_synchrome%EB%A1%9C%EA%B3%A0.png" width="400">
 </p>
@@ -114,7 +114,9 @@
   <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%98%EB%A6%B0%EB%8D%941.gif" width="45%" style="margin: 10px;" alt="캘린더 작업" />
 </div>
 
-<p align="center" style="margin-top: 16px;">
+<br>
+
+<p align="center">
   <b>📝 실시간 문서 동시 편집</b>과 <b>📅 일정 등록/조회</b> 기능을 통해  
   팀원 간의 원활한 협업과 계획 수립을 지원합니다.
 </p>
