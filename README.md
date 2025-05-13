@@ -109,13 +109,14 @@
 
 ## 🧑‍💻 협업 기능 미리보기
 
-<p align="center">
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EB%8F%99%EC%8B%9C%ED%8E%B8%EC%A7%91%201.gif" width="48%" alt="동시편집 기능">
-  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%98%EB%A6%B0%EB%8D%941.gif" width="48%" alt="캘린더 작업">
-</p>
+<div align="center">
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EB%8F%99%EC%8B%9C%ED%8E%B8%EC%A7%91%201.gif" width="45%" style="margin: 10px;" alt="동시편집 기능" />
+  <img src="https://github.com/beyond-sw-camp/be11-fin-2team-SynChrome-BE/blob/main/images/%EC%BA%98%EB%A6%B0%EB%8D%941.gif" width="45%" style="margin: 10px;" alt="캘린더 작업" />
+</div>
 
-<p align="center">
-  <b>실시간 문서 동시 편집</b> 및 <b>일정 등록/조회 기능</b>을 통해 효율적인 팀 협업을 지원합니다.
+<p align="center" style="margin-top: 16px;">
+  <b>📝 실시간 문서 동시 편집</b>과 <b>📅 일정 등록/조회</b> 기능을 통해  
+  팀원 간의 원활한 협업과 계획 수립을 지원합니다.
 </p>
 
 ---
