@@ -37,6 +37,7 @@ public class CanvasService {
         Canvas canvas = Canvas.builder()
                 .title(canvasCreateReqDto.getTitle())
                 .ydocState(canvasCreateReqDto.getYdocState())
+                .channelId(canvasCreateReqDto.getChannelId())
                 .build();
         return canvasRepository.save(canvas).getId();
     }
