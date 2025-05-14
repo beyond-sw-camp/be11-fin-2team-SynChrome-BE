@@ -8,6 +8,8 @@ COPY build.gradle .
 COPY settings.gradle .
 COPY gradlew .
 # 빌드
+ENV TZ=Asia/Seoul
+RUN apt-get update && apt-get install -y tzdata
 RUN chmod +x gradlew
 RUN ./gradlew bootJar
 
