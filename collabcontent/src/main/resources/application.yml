@@ -36,7 +36,7 @@ server:
 
 openvidu:
   url: https://myopenvidu.synchrome.shop
-  secret: 1234
+  secret: ${OPENVIDU_SECRET}
 
 jwt:
   secretKey: YmV5b25kYWNjZXNzdG9la25zZWNyZXRrZXliZXlvbmRhY2Nlc3N0b2VrbnNlY3JldGtleWJleW9uZGFjY2Vzc3RvZWtuc2VjcmV0a2V5YmV5b25kYWNjZXNzdG9la25zZWNyZXRrZXk
@@ -45,8 +45,8 @@ cloud:
     s3:
       bucket: hans-ordersystem-image
     credentials:
-      access-key: AKIA2AUOPD3OP5O6TQG2
-      secret-key: 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
+      access-key: ${AWS_KEY}
+      secret-key: ${AWS_SECRET}
     region:
       static: ap-northeast-2
     stack:
