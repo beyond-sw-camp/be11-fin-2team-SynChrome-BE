@@ -47,8 +47,8 @@ cloud:
     s3:
       bucket: stomachforce
     credentials:
-      access-key: AKIAT4GVRVENSQ6EB6P6
-      secret-key: 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
+      access-key: ${AWS_ACCESS}
+      secret-key: ${AWS_SECRET}
     region:
       static: ap-northeast-2
     stack:
